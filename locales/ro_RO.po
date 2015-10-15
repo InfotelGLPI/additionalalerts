@@ -1,0 +1,152 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Additionalalerts Development Team
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2014
+# Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: GLPI Project - additionalalerts plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-29 12:16+0100\n"
+"PO-Revision-Date: 2015-01-29 11:52+0000\n"
+"Last-Translator: Xavier CAILLAUD <tsmr@thetsmr.fr>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/GLPI_additionalalerts/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: setup.php:72 inc/additionalalert.class.php:40 inc/menu.class.php:34
+#: inc/profile.class.php:71
+msgid "Other alert"
+msgid_plural "Others alerts"
+msgstr[0] "Altă alertă"
+msgstr[1] "Alte alerte"
+msgstr[2] "Alte alerte"
+
+#: setup.php:86
+msgid "This plugin requires GLPI >= 0.85"
+msgstr "Acest plugin cere  GLPI >= 0.85"
+
+#: inc/additionalalert.class.php:112
+msgid "No used alerts"
+msgstr "Nu utiliza alerte"
+
+#: inc/additionalalert.class.php:143
+msgid "No computers with no buy date"
+msgstr "Nici un calculator fără dată de cumpărare "
+
+#: inc/additionalalert.class.php:169 inc/config.class.php:87
+#: inc/notificationtargetocsalert.class.php:41 inc/ocsalert.class.php:315
+#: inc/ocsalert.class.php:421
+msgid "New imported computers from OCS-NG"
+msgstr "Import nou calculatoare din OCS - NG"
+
+#: inc/additionalalert.class.php:177 inc/additionalalert.class.php:218
+#: inc/notificationtargetocsalert.class.php:68
+#: inc/notificationtargetocsalert.class.php:112
+msgid "Last OCSNG inventory date"
+msgstr "Data ultimului inventar OCSNG"
+
+#: inc/additionalalert.class.php:178 inc/additionalalert.class.php:219
+#: inc/notificationtargetocsalert.class.php:69
+#: inc/notificationtargetocsalert.class.php:113
+msgid "Import date in GLPI"
+msgstr "Data import in GLPI"
+
+#: inc/additionalalert.class.php:179 inc/additionalalert.class.php:220
+#: inc/notificationtargetocsalert.class.php:70
+#: inc/notificationtargetocsalert.class.php:114
+msgid "OCSNG server"
+msgstr "Server OCSNG "
+
+#: inc/additionalalert.class.php:186
+msgid "No new imported computer from OCS-NG"
+msgstr "Niciun  import nou de calculatoare din OCS-NG"
+
+#: inc/additionalalert.class.php:210
+#: inc/notificationtargetocsalert.class.php:59
+msgid "Computers not synchronized with OCS-NG since more"
+msgstr "Calculatoare nesincronizate cu OCS-NG incă din"
+
+#: inc/additionalalert.class.php:228
+msgid "No computer not synchronized since more"
+msgstr "Nici un calculator nesincronizat încă din"
+
+#: inc/additionalalert.class.php:248 inc/config.class.php:100
+#: inc/inkalert.class.php:40 inc/inkalert.class.php:72
+#: inc/inkalert.class.php:212 inc/inkalert.class.php:315
+#: inc/notificationtargetinkalert.class.php:38
+#: inc/notificationtargetinkalert.class.php:90
+msgid "Cartridges whose level is low"
+msgstr ""
+
+#: inc/additionalalert.class.php:254
+msgid "Ink level"
+msgstr ""
+
+#: inc/additionalalert.class.php:261
+msgid "No cartridge is below the threshold"
+msgstr ""
+
+#: inc/additionalalert.class.php:265 inc/inkthreshold.class.php:48
+#: inc/inkthreshold.class.php:51
+msgid "Ink level alerts"
+msgstr ""
+
+#: inc/additionalalert.class.php:265 inc/config.class.php:107
+#: inc/inkalert.class.php:322 inc/inkthreshold.class.php:62
+msgid "Fusioninventory plugin is not installed"
+msgstr ""
+
+#: inc/config.class.php:39
+msgid "Plugin Setup"
+msgstr ""
+
+#: inc/config.class.php:81 inc/config.class.php:87
+msgid "Reminders frequency"
+msgstr "Frecvenţă reamintire"
+
+#: inc/config.class.php:92 inc/ocsalert.class.php:69
+#: inc/ocsalert.class.php:428
+msgid "OCS-NG Synchronization alerts"
+msgstr "Alerte Sincronizare OCS-NG"
+
+#: inc/infocomalert.class.php:40
+msgid "Computer with no buy date"
+msgid_plural "Computers with no buy date"
+msgstr[0] "Calculator fără dată de cumpărare"
+msgstr[1] "Calculatoare fără dată de cumpărare"
+msgstr[2] "Calculatoare fără dată de cumpărare"
+
+#: inc/infocomalert.class.php:46 inc/inkalert.class.php:46
+#: inc/ocsalert.class.php:46
+msgid "Plugin setup"
+msgstr "Setare plugin"
+
+#: inc/infocomalert.class.php:264 inc/ocsalert.class.php:363
+msgid "Parameter"
+msgstr "Parametru"
+
+#: inc/infocomalert.class.php:265
+msgid "Type not used for check of buy date"
+msgstr "Tip nefolosit pentru verificarea datei de cumpărare"
+
+#: inc/inkalert.class.php:258
+msgid "Statutes used for the ink level"
+msgstr ""
+
+#: inc/ocsalert.class.php:40
+msgid "OCSNG synchronization"
+msgstr "Sincronizare OCSNG"
+
+#: inc/ocsalert.class.php:73
+msgid "Alert for the new imported computers"
+msgstr "Alertă pentru noile importuri de calculatoare"
+
+#: inc/ocsalert.class.php:364
+msgid "Status used by OCS-NG"
+msgstr "Status folosit de OCS-NG"
