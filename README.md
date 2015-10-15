@@ -2,20 +2,19 @@
 
 Plugin Additionalalerts pour GLPI
 
-Ce plugin est sur Transifex - Aidez-nous à le traduire :
+Ce plugin est sur Transifex - Aidez-nous Ã  le traduire :
 https://www.transifex.com/tsmr/GLPI_additionalalerts/
 
 This plugin is on Transifex - Help us to translate :
 https://www.transifex.com/tsmr/GLPI_additionalalerts/
 
-### Français
+### FranÃ§ais
 
-Ce plugin vous permet d'envoyer les alertes email supplémentaires
-* Nouvelles machines inventoriés depuis OCS-NG (Ayant le statut défini dan la configuration du module OCS-NG),
-* Machines non inventoriés depuis X jours (Choix des statuts pris en charge : pour ne pas prendre en compte les machines en stock),
-* Matériels ayant une date d'achat vide (Choix des types pris en charge : pour ne pas prendre en compte les matériels non achetés),
+Ce plugin vous permet d'envoyer les alertes email supplÃ©mentaires
+* Nouvelles machines inventoriÃ©s depuis OCS-NG (Ayant le statut dÃ©fini dan la configuration du module OCS-NG),
+* Machines non inventoriÃ©s depuis X jours (Choix des statuts pris en charge : pour ne pas prendre en compte les machines en stock),
+* MatÃ©riels ayant une date d'achat vide (Choix des types pris en charge : pour ne pas prendre en compte les matÃ©riels non achetÃ©s),
 * Niveaux des cartouches bas (information provenant de Fusion Inventory).
-
 
 ### English
 
