@@ -3,7 +3,7 @@
    <name>Additional Alerts</name>
    <key>additionalalerts</key>
    <state>stable</state>
-   <logo>https://raw.githubusercontent.com/InfotelGLPI/additionalalerts/master/wiki/additionalalerts.png</logo>
+   <logo>https://raw.githubusercontent.com/InfotelGLPI/additionalalerts/master/additionalalerts.png</logo>
    <description>
       <short>
          <fr><![CDATA[Envoi d'alertes supplémentaires. Ce plugin vous permet d’envoyer les alertes email concernant les nouvelles machines inventoriés depuis OCS-NG, les machines non inventoriés depuis X jours, les matériels ayant une date d'achat vide et les cartouches ayant un niveau faible.]]></fr>
