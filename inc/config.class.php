@@ -62,10 +62,11 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
          $conf->showForm($target);
          
       } else if ($item->getType()=='Entity') {
-      
+         
          PluginAdditionalalertsInfocomAlert::showNotificationOptions($item);
          PluginAdditionalalertsOcsAlert::showNotificationOptions($item);
          PluginAdditionalalertsInkAlert::showNotificationOptions($item);
+         PluginAdditionalalertsTicketUnresolved::showNotificationOptions($item);
 
       }
       return true;
@@ -107,6 +108,16 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
         echo "<div align='center'><b>".__('Fusioninventory plugin is not installed', 'additionalalerts')."</b></div>";
       }
       echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Unresolved Ticket Alerts', 'additionalalerts') . "</td><td>";
+     
+      Alert::dropdownIntegerNever('delay_ticket_alert',
+                                  $this->fields["delay_ticket_alert"],
+                                  array('max'=>99));
+      echo "&nbsp;"._n('Day','Days',2)."</td></tr>";
+      echo "</td></tr>";
+      
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
       echo "<input type='hidden' name='id' value='1'>";

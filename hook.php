@@ -35,12 +35,13 @@ function plugin_additionalalerts_install() {
    $install=false;
    $update78=false;
    $update80=false;
+   $update90=false;
    
-   if (!TableExists("glpi_plugin_additionalalerts_inkalerts") 
-         && !TableExists("glpi_plugin_additionalalerts_notificationstates")) {
+   if (!TableExists("glpi_plugin_additionalalerts_ticketunresolveds") 
+         && !TableExists("glpi_plugin_additionalalerts_configs")) {
       
       $install=true;
-      $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/empty-1.7.1.sql");
+      $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/empty-1.8.0.sql");
 
    } else if (TableExists("glpi_plugin_alerting_profiles") 
                   && FieldExists("glpi_plugin_alerting_profiles","interface")) {
@@ -125,6 +126,10 @@ function plugin_additionalalerts_install() {
                                           'mail',".$itemtype.",
                                           '', 1, 1, '2010-03-20 10:36:46');";
       $result=$DB->query($query);
+   }  else if (TableExists("glpi_plugin_additionalalerts_ticketunresolveds")) {
+
+      $update90 = true;
+      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.8.0.sql");
    }
    
    if ($install || $update78) {
@@ -230,6 +235,7 @@ function plugin_additionalalerts_install() {
                                           '', 1, 1, '2010-03-20 10:36:46');";
       $result=$DB->query($query);
       
+      //////////////////////
       $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginAdditionalalertsInkAlert' AND `name` = 'Alert ink level'";
       $result = $DB->query($query_id) or die ($DB->error());
       $itemtype = $DB->result($result,0,'id');
@@ -265,7 +271,7 @@ function plugin_additionalalerts_install() {
                                           '', 1, 1, '2010-03-20 10:36:46');";
       $result=$DB->query($query);
 
-
+     
    }
    if ($update78) {
       //Do One time on 0.78
@@ -288,22 +294,72 @@ function plugin_additionalalerts_install() {
       $result=$DB->query($query);
    }
    
+      if ($install || $update90) {
+        ////////////////
+      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginAdditionalalertsTicketUnresolved' AND `name` = 'Alert Ticket Unresolved'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $itemtype = $DB->result($result,0,'id');
+
+      $query="INSERT INTO `glpi_notificationtemplatetranslations`
+                                VALUES(NULL, ".$itemtype.", '','##ticket.action## ##ticket.entity##',
+      '##lang.ticket.entity## : ##ticket.entity##
+     ##FOREACHtickets##
+
+      ##lang.ticket.title## : ##ticket.title##
+       ##lang.ticket.status## : ##ticket.status##
+
+       ##ticket.url## 
+       ##ENDFOREACHtickets##','&lt;table class=\"tab_cadre\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&gt;
+      &lt;tbody&gt;
+      &lt;tr&gt;
+      &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.title##&lt;/span&gt;&lt;/td&gt;
+      &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.priority##&lt;/span&gt;&lt;/td&gt;
+      &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.status##&lt;/span&gt;&lt;/td&gt;
+      &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.attribution##&lt;/span&gt;&lt;/td&gt;
+      &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.creationdate##&lt;/span&gt;&lt;/td&gt;
+      &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.content##&lt;/span&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      ##FOREACHtickets##                   
+      &lt;tr&gt;
+      &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;&lt;a href=\"##ticket.url##\"&gt;##ticket.title##&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
+      &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##ticket.priority##&lt;/span&gt;&lt;/td&gt;
+      &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##ticket.status##&lt;/span&gt;&lt;/td&gt;
+      &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##IFticket.assigntousers####ticket.assigntousers##&lt;br /&gt;##ENDIFticket.assigntousers####IFticket.assigntogroups##&lt;br /&gt;##ticket.assigntogroups## ##ENDIFticket.assigntogroups####IFticket.assigntosuppliers##&lt;br /&gt;##ticket.assigntosuppliers## ##ENDIFticket.assigntosuppliers##&lt;/span&gt;&lt;/td&gt;
+      &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##ticket.creationdate##&lt;/span&gt;&lt;/td&gt;
+      &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##ticket.content##&lt;/span&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      ##ENDFOREACHtickets##
+      &lt;/tbody&gt;
+      &lt;/table&gt;')";
+
+      $result=$DB->query($query);
+
+      $query = "INSERT INTO `glpi_notifications`
+                                   VALUES (NULL, 'Alert Ticket Unresolved', 0, 'PluginAdditionalalertsTicketUnresolved', 'ticketunresolved',
+                                          'mail',".$itemtype.",
+                                          '', 1, 1, '2010-03-20 10:36:46');";
+      $result=$DB->query($query);
+         
+    }
+   
    // To be called for each task the plugin manage
    CronTask::Register('PluginAdditionalalertsOcsAlert', 'AdditionalalertsOcs', DAY_TIMESTAMP);
    CronTask::Register('PluginAdditionalalertsOcsAlert', 'AdditionalalertsNewOcs', HOUR_TIMESTAMP);
    CronTask::Register('PluginAdditionalalertsInfocomAlert', 'AdditionalalertsNotInfocom', HOUR_TIMESTAMP);
    CronTask::Register('PluginAdditionalalertsInkAlert', 'AdditionalalertsInk', DAY_TIMESTAMP);
+   CronTask::Register('PluginAdditionalalertsTicketUnresolved', 'AdditionalalertsTicketUnresolved', DAY_TIMESTAMP);
    
    PluginAdditionalalertsProfile::initProfile();
    PluginAdditionalalertsProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
-   $migration = new Migration("1.7.0");
-   $migration->dropTable('glpi_plugin_additionalalerts_profiles');
    return true;
 }
 
 function plugin_additionalalerts_uninstall() {
    global $DB;
 
+   include_once(GLPI_ROOT."/plugins/additionalalerts/inc/profile.class.php");
+   include_once(GLPI_ROOT."/plugins/additionalalerts/inc/menu.class.php");
+   
    $tables = array(
                "glpi_plugin_additionalalerts_ocsalerts",
                "glpi_plugin_additionalalerts_infocomalerts",
@@ -312,7 +368,8 @@ function plugin_additionalalerts_uninstall() {
                "glpi_plugin_additionalalerts_notificationtypes",
                "glpi_plugin_additionalalerts_configs",
                "glpi_plugin_additionalalerts_inkthresholds",
-               "glpi_plugin_additionalalerts_inkprinterstates");
+               "glpi_plugin_additionalalerts_inkprinterstates",
+               "glpi_plugin_additionalalerts_ticketunresolveds");
 
 
    foreach($tables as $table)
@@ -363,7 +420,14 @@ function plugin_additionalalerts_uninstall() {
       $notif->delete($data);
    }
    
-   //templates
+   $options = array('itemtype' => 'PluginAdditionalalertsTicketUnresolved',
+                     'event' => 'ticketunresolved',
+                     'FIELDS' => 'id');
+   foreach ($DB->request('glpi_notifications', $options) as $data) {
+      $notif->delete($data);
+   }
+
+      //templates
    $template = new NotificationTemplate();
    $translation = new NotificationTemplateTranslation();
    $options = array('itemtype' => 'PluginAdditionalalertsOcsAlert',
@@ -407,7 +471,23 @@ function plugin_additionalalerts_uninstall() {
          }
       $template->delete($data);
    }
+   
+      //templates
+   $template = new NotificationTemplate();
+   $translation = new NotificationTemplateTranslation();
+   $options = array('itemtype' => 'PluginAdditionalalertsTicketUnresolved',
+                    'FIELDS'   => 'id');
+   foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
+      $options_template = array('notificationtemplates_id' => $data['id'],
+                    'FIELDS'   => 'id');
+   
+         foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
+            $translation->delete($data_template);
+         }
+      $template->delete($data);
+   }
 
+   Plugin::registerClass('PluginAdditionalalertsProfile');
    
    //Delete rights associated with the plugin
    $profileRight = new ProfileRight();
@@ -417,6 +497,8 @@ function plugin_additionalalerts_uninstall() {
    PluginAdditionalalertsProfile::removeRightsFromSession();
    
    PluginAdditionalalertsMenu::removeRightsFromSession();
+   
+   CronTask::Unregister('additionalalerts');
    
    return true;
 }

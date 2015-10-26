@@ -38,6 +38,11 @@ function plugin_init_additionalalerts() {
       'notificationtemplates_types' => true,
       'addtabon' => 'CronTask'
    ));
+   
+   Plugin::registerClass('PluginAdditionalalertsTicketUnresolved', array(
+      'notificationtemplates_types' => true,
+      'addtabon' => 'CronTask'
+   ));
 
    Plugin::registerClass('PluginAdditionalalertsOcsAlert', array(
       'notificationtemplates_types' => true,

@@ -82,7 +82,16 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
             $additionalalerts_new_ocs=1;
          }
       }
-
+      
+      $ticketunresolved = new PluginAdditionalalertsTicketUnresolved();
+      $ticketunresolved->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
+      if (isset($ticketunresolved->fields["delay_ticket_alert"]) 
+         && $ticketunresolved->fields["delay_ticket_alert"] > 0){
+         $delay_ticket_alert = $ticketunresolved->fields["delay_ticket_alert"];
+      }else{
+         $delay_ticket_alert = $config->fields["delay_ticket_alert"];
+      }
+      
       $inkalert = new PluginAdditionalalertsInkAlert();
       $inkalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($inkalert->fields["use_ink_alert"])
@@ -105,10 +114,18 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
          }
       }
       
+      $additionalalerts_ticket_unresolved=0;
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsTicketUnresolved","AdditionalalertsTicketUnresolved")) {
+         if ($CronTask->fields["state"]!=CronTask::STATE_DISABLE && $delay_ticket_alert > 0) {
+            $additionalalerts_ticket_unresolved=1;
+         }
+      }
+      
       if ($additionalalerts_ocs==0 
          && $additionalalerts_new_ocs==0 
             && $additionalalerts_not_infocom==0
-               && $additionalalerts_ink==0) {
+               && $additionalalerts_ink==0
+                  && $additionalalerts_ticket_unresolved == 0) {
          echo "<div align='center'><b>".__('No used alerts','additionalalerts')."</b></div>";
       }
       if ($additionalalerts_not_infocom!=0) {
@@ -146,126 +163,177 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
          }
       }
 
-      if ($additionalalerts_new_ocs!=0) {
+      if ($additionalalerts_new_ocs != 0) {
          $plugin = new Plugin();
 
-         if ($plugin->isActivated("ocsinventoryng")/*$CFG_GLPI["use_ocs_mode"]*/
-               && Session::haveRight("plugin_ocsinventoryng_ocsng", READ)) {
+         if ($plugin->isActivated("ocsinventoryng")/* $CFG_GLPI["use_ocs_mode"] */ && Session::haveRight("plugin_ocsinventoryng_ocsng", READ)) {
 
-            foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers","`is_active` = 1") as $config) {
+            foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers", "`is_active` = 1") as $config) {
 
-               $query=PluginAdditionalalertsOcsAlert::queryNew($config,$_SESSION["glpiactive_entity"]);
+               $query = PluginAdditionalalertsOcsAlert::queryNew($config, $_SESSION["glpiactive_entity"]);
                $result = $DB->query($query);
 
-               if ($DB->numrows($result)>0) {
+               if ($DB->numrows($result) > 0) {
 
                   if (Session::isMultiEntitiesMode()) {
-                     $nbcol=9;
+                     $nbcol = 9;
                   } else {
-                     $nbcol=8;
+                     $nbcol = 8;
                   }
 
                   echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-                  echo __('New imported computers from OCS-NG', 'additionalalerts')."</th></tr>";
-                  echo "<tr><th>".__('Name')."</th>";
+                  echo __('New imported computers from OCS-NG', 'additionalalerts') . "</th></tr>";
+                  echo "<tr><th>" . __('Name') . "</th>";
                   if (Session::isMultiEntitiesMode())
-                     echo "<th>".__('Entity')."</th>";
-                  echo "<th>".__('Operating system')."</th>";
-                  echo "<th>".__('Status')."</th>";
-                  echo "<th>".__('Location')."</th>";
-                  echo "<th>".__('User')." / ".__('Group')." / ".__('Alternate username')."</th>";
-                  echo "<th>".__('Last OCSNG inventory date', 'additionalalerts')."</th>";
-                  echo "<th>".__('Import date in GLPI', 'additionalalerts')."</th>";
-                  echo "<th>".__('OCSNG server', 'additionalalerts')."</th></tr>";
+                     echo "<th>" . __('Entity') . "</th>";
+                  echo "<th>" . __('Operating system') . "</th>";
+                  echo "<th>" . __('Status') . "</th>";
+                  echo "<th>" . __('Location') . "</th>";
+                  echo "<th>" . __('User') . " / " . __('Group') . " / " . __('Alternate username') . "</th>";
+                  echo "<th>" . __('Last OCSNG inventory date', 'additionalalerts') . "</th>";
+                  echo "<th>" . __('Import date in GLPI', 'additionalalerts') . "</th>";
+                  echo "<th>" . __('OCSNG server', 'additionalalerts') . "</th></tr>";
 
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data = $DB->fetch_array($result)) {
                      echo PluginAdditionalalertsOcsAlert::displayBody($data);
                   }
                   echo "</table></div>";
                } else {
-                  echo "<br><div align='center'><b>".__('No new imported computer from OCS-NG', 'additionalalerts')."</b></div>";
+                  echo "<br><div align='center'><b>" . __('No new imported computer from OCS-NG', 'additionalalerts') . "</b></div>";
                }
             }
             echo "<br>";
          }
       }
 
-      if ($additionalalerts_ocs!=0) {
+      if ($additionalalerts_ocs != 0) {
          $plugin = new Plugin();
 
-         if ($plugin->isActivated("ocsinventoryng")/*$CFG_GLPI["use_ocs_mode"]*/ 
-               && Session::haveRight("plugin_ocsinventoryng_ocsng", READ)) {
-         
-            foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers","`is_active` = 1") as $config) {
-               $query=PluginAdditionalalertsOcsAlert::query($delay_ocs,$config,$_SESSION["glpiactive_entity"]);
+         if ($plugin->isActivated("ocsinventoryng")/* $CFG_GLPI["use_ocs_mode"] */ && Session::haveRight("plugin_ocsinventoryng_ocsng", READ)) {
+
+            foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers", "`is_active` = 1") as $config) {
+               $query = PluginAdditionalalertsOcsAlert::query($delay_ocs, $config, $_SESSION["glpiactive_entity"]);
                $result = $DB->query($query);
-               if ($DB->numrows($result)>0) {
+               if ($DB->numrows($result) > 0) {
 
                   if (Session::isMultiEntitiesMode()) {
-                     $nbcol=9;
+                     $nbcol = 9;
                   } else {
-                     $nbcol=8;
+                     $nbcol = 8;
                   }
                   echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-                  echo __('Computers not synchronized with OCS-NG since more', 'additionalalerts')." ".$delay_ocs." "._n('Day', 'Days',2)."</th></tr>";
-                  echo "<tr><th>".__('Name')."</th>";
+                  echo __('Computers not synchronized with OCS-NG since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2) . "</th></tr>";
+                  echo "<tr><th>" . __('Name') . "</th>";
                   if (Session::isMultiEntitiesMode())
-                     echo "<th>".__('Entity')."</th>";
-                  echo "<th>".__('Operating system')."</th>";
-                  echo "<th>".__('Status')."</th>";
-                  echo "<th>".__('Location')."</th>";
-                  echo "<th>".__('User')." / ".__('Group')." / ".__('Alternate username')."</th>";
-                  echo "<th>".__('Last OCSNG inventory date', 'additionalalerts')."</th>";
-                  echo "<th>".__('Import date in GLPI', 'additionalalerts')."</th>";
-                  echo "<th>".__('OCSNG server', 'additionalalerts')."</th></tr>";
+                     echo "<th>" . __('Entity') . "</th>";
+                  echo "<th>" . __('Operating system') . "</th>";
+                  echo "<th>" . __('Status') . "</th>";
+                  echo "<th>" . __('Location') . "</th>";
+                  echo "<th>" . __('User') . " / " . __('Group') . " / " . __('Alternate username') . "</th>";
+                  echo "<th>" . __('Last OCSNG inventory date', 'additionalalerts') . "</th>";
+                  echo "<th>" . __('Import date in GLPI', 'additionalalerts') . "</th>";
+                  echo "<th>" . __('OCSNG server', 'additionalalerts') . "</th></tr>";
 
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data = $DB->fetch_array($result)) {
 
                      echo PluginAdditionalalertsOcsAlert::displayBody($data);
                   }
                   echo "</table></div>";
                } else {
-                  echo "<br><div align='center'><b>".__('No computer not synchronized since more', 'additionalalerts')." ".$delay_ocs." "._n('Day', 'Days',2)."</b></div>";
+                  echo "<br><div align='center'><b>" . __('No computer not synchronized since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2) . "</b></div>";
                }
             }
             echo "<br>";
          }
       }
 
-    if ($additionalalerts_ink!=0) {
+      if ($additionalalerts_ink != 0) {
          if (TableExists("glpi_plugin_fusioninventory_printercartridges")) {
-            if (Session::haveRight("cartridge",READ)) {
+            if (Session::haveRight("cartridge", READ)) {
                $query = PluginAdditionalalertsInkAlert::query($_SESSION["glpiactiveentities_string"]);
                $result = $DB->query($query);
 
-               if ($DB->numrows($result)>0) {
+               if ($DB->numrows($result) > 0) {
                   if (Session::isMultiEntitiesMode()) {
-                     $nbcol=4;
+                     $nbcol = 4;
                   } else {
-                     $nbcol=3;
+                     $nbcol = 3;
                   }
                   echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'>";
-                  echo "<tr><th colspan='$nbcol'>".__('Cartridges whose level is low', 'additionalalerts')."</th></tr>";
+                  echo "<tr><th colspan='$nbcol'>" . __('Cartridges whose level is low', 'additionalalerts') . "</th></tr>";
                   echo "<tr>";
-                  echo "<th>".__('Printer')."</th>";
+                  echo "<th>" . __('Printer') . "</th>";
                   if (Session::isMultiEntitiesMode())
-                     echo "<th>".__('Entity')."</th>";
-                  echo "<th>".__('Cartridge')."</th>";
-                  echo "<th>".__('Ink level', 'additionalalerts')."</th></tr>";
+                     echo "<th>" . __('Entity') . "</th>";
+                  echo "<th>" . __('Cartridge') . "</th>";
+                  echo "<th>" . __('Ink level', 'additionalalerts') . "</th></tr>";
 
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data = $DB->fetch_array($result)) {
                      echo PluginAdditionalalertsInkAlert::displayBody($data);
                   }
                   echo "</table></div>";
                } else {
-                  echo "<br><div align='center'><b>".__('No cartridge is below the threshold', 'additionalalerts')."</b></div>";
+                  echo "<br><div align='center'><b>" . __('No cartridge is below the threshold', 'additionalalerts') . "</b></div>";
                }
             }
          } else {
-            echo "<br><div align='center'><b>".__('Ink level alerts', 'additionalalerts')." : ".__('Fusioninventory plugin is not installed', 'additionalalerts')."</b></div>";
+            echo "<br><div align='center'><b>" . __('Ink level alerts', 'additionalalerts') . " : " . __('Fusioninventory plugin is not installed', 'additionalalerts') . "</b></div>";
          }
       }
+
+      if ($additionalalerts_ticket_unresolved != 0) {
+         $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $_SESSION["glpiactive_entity"]);
+         $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $_SESSION["glpiactive_entity"]);
+         $result = $DB->query($query_technician);
+         $result_supervisor = $DB->query($query_supervisor);
+
+         if ($DB->numrows($result) > 0) {
+            $nbcol = 6;
+            
+            echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
+            echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . "</th></tr>";
+            echo "<tr><th>" . __('Title') . "</th>";
+            echo "<th>" . __('Entity') . "</th>";
+            echo "<th>" . __('Status') . "</th>";
+            echo "<th>" . __('Opening date') . "</th>";
+            echo "<th>" . __('Last update') . "</th>";
+            echo "<th>" . __('Assigned to') . "</th>";
+
+            while ($data = $DB->fetch_array($result)) {
+               echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
+            }
+            
+            if ($DB->numrows($result_supervisor) > 0) {
+               while ($data_supevisor = $DB->fetch_array($result_supervisor)) {
+                  echo PluginAdditionalalertsTicketUnresolved::displayBody($data_supevisor);
+               }
+            }
+            echo "</table></div>";
+            
+            
+         } elseif ($DB->numrows($result_supervisor) > 0) {
+            echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
+            echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . "</th></tr>";
+            echo "<tr><th>" . __('Title') . "</th>";
+            echo "<th>" . __('Entity') . "</th>";
+            echo "<th>" . __('Status') . "</th>";
+            echo "<th>" . __('Opening date') . "</th>";
+            echo "<th>" . __('Last update') . "</th>";
+            echo "<th>" . __('Assigned to') . "</th>";
+
+            while ($data = $DB->fetch_array($result_supervisor)) {
+
+               echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
+            }
+            echo "</table></div>";
+         } else {
+            echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2) . "</b></div>";
+         }
+
+         echo "<br>";
+      }
    }
+
 }
 
 ?>

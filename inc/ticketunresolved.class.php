@@ -31,18 +31,18 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
+class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
    
    static $rightname = "plugin_additionalalerts";
    
    static function getTypeName($nb=0) {
 
-      return _n('Computer with no buy date', 'Computers with no buy date', $nb, 'additionalalerts');
+      return _n('Ticket unresolved', 'Tickets unresolved', $nb, 'additionalalerts');
    }
    
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if ($item->getType()=='CronTask' && $item->getField('name')=="AdditionalalertsNotInfocom") {
+      if ($item->getType()=='CronTask' && $item->getField('name')=="AdditionalalertsTicketUnresolved") {
             return __('Plugin setup', 'additionalalerts');
       }
       return '';
@@ -54,69 +54,89 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
 
       if ($item->getType()=='CronTask') {
 
-         $target = $CFG_GLPI["root_doc"]."/plugins/additionalalerts/front/infocomalert.form.php";
+         $target = $CFG_GLPI["root_doc"]."/plugins/additionalalerts/front/ticketunresolved.form.php";
          self::configCron($target,$item->getField('id'));
-}
+      }
       return true;
    }
-
+   
    // Cron action
    static function cronInfo($name) {
 
       switch ($name) {
-         case 'AdditionalalertsNotInfocom':
+         case 'AdditionalalertsTicketUnresolved':
             return array (
-               'description' => PluginAdditionalalertsInfocomAlert::getTypeName(2));   // Optional
+               'description' => PluginAdditionalalertsTicketUnresolved::getTypeName(2));   // Optional
             break;
       }
       return array();
    }
    
-   static function query($entity) {
+   static function queryTechnician($delay_ticket_alert, $entity) {
       global $DB;
 
-      $query = "SELECT `glpi_computers`.*
-      FROM `glpi_computers`
-      LEFT JOIN `glpi_infocoms` ON (`glpi_computers`.`id` = `glpi_infocoms`.`items_id` AND `glpi_infocoms`.`itemtype` = 'Computer')
-      WHERE `glpi_computers`.`is_deleted` = 0
-      AND `glpi_computers`.`is_template` = 0
-      AND `glpi_infocoms`.`buy_date` IS NULL ";
-      $query_type = "SELECT `types_id`
-      FROM `glpi_plugin_additionalalerts_notificationtypes` ";
-      $result_type = $DB->query($query_type);
+      $delay_stamp= mktime(0, 0, 0, date("m"), date("d")-$delay_ticket_alert, date("y"));
+      $date=date("Y-m-d",$delay_stamp);
+      $date = $date." 00:00:00";
+     
+      $querytechnician = "SELECT `glpi_tickets`.*, `glpi_tickets_users`.users_id
+      FROM `glpi_tickets`
+      LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` 
+      WHERE `glpi_tickets`.`date` <= '".$date."'
+      AND `glpi_tickets`.`status` <= 4
+      AND `glpi_tickets_users`.`type` = 2
+      ORDER BY `glpi_tickets_users`.`users_id`";
       
-      if ($DB->numrows($result_type)>0) {
-         $query .= " AND (`glpi_computers`.`computertypes_id` != 0 ";
-         while ($data_type=$DB->fetch_array($result_type)) {
-            $type_where="AND `glpi_computers`.`computertypes_id` != '".$data_type["types_id"]."' ";
-            $query .= " $type_where ";
+      return $querytechnician;
+   }
+   
+   static function querySupervisor($delay_ticket_alert, $entity){
+       global $DB;
+       
+      $delay_stamp = mktime(0, 0, 0, date("m"), date("d") - $delay_ticket_alert, date("y"));
+      $date = date("Y-m-d", $delay_stamp);
+      $date = $date . " 00:00:00";
+
+      $query_id_technician = "SELECT `glpi_tickets`.`id`, `glpi_tickets_users`.users_id
+      FROM `glpi_tickets`
+      LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` 
+      WHERE `glpi_tickets`.`date` <= '".$date."'
+      AND `glpi_tickets`.`status` <= 4
+      AND `glpi_tickets_users`.`type` = 2";
+      
+      $result_id_technician = $DB->query($query_id_technician);
+
+      $querysupervisor = "SELECT `glpi_tickets`.*, `glpi_groups_users`.`users_id`
+      FROM `glpi_tickets`
+      LEFT JOIN `glpi_groups_tickets` ON `glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id` 
+      LEFT JOIN `glpi_groups_users` ON `glpi_groups_users`.`groups_id` = `glpi_groups_tickets`.`groups_id`
+      WHERE `glpi_tickets`.`date` <= '" . $date . "'
+      AND `glpi_tickets`.`status` <= 4
+      AND `glpi_groups_tickets`.`type` = 2
+      AND `glpi_groups_users`.`is_manager` = 1";
+
+      if ($DB->numrows($result_id_technician) > 0) {
+         while ($data_type = $DB->fetch_array($result_id_technician)) {
+            $type_where = "AND `glpi_tickets`.`id` != '" . $data_type["id"] . "' ";
+            $querysupervisor .= " $type_where ";
          }
-         $query .= ") ";
       }
-      $query .= "AND `glpi_computers`.`entities_id`= '".$entity."' ";
-
-      $query .= " ORDER BY `glpi_computers`.`name` ASC";
-
-      return $query;
+      $querysupervisor .= " ORDER BY `glpi_groups_users`.`users_id`";
+      
+      return $querysupervisor;
    }
    
       
    static function displayBody($data) {
       global $CFG_GLPI;
-
-      $body="<tr class='tab_bg_2'><td><a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$data["id"]."\">".$data["name"];
-
-      if ($_SESSION["glpiis_ids_visible"] == 1 || empty($data["name"])) {
-         $body.=" (";
-         $body.=$data["id"].")";
-      }
+      
+      $body="<tr class='tab_bg_2'><td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data["id"]."\">".$data["name"];
       $body.="</a></td>";
-      if (Session::isMultiEntitiesMode())
-         $body.="<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_computertypes",$data["computertypes_id"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_operatingsystems",$data["operatingsystems_id"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_states",$data["states_id"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_locations",$data["locations_id"])."</td>";
+
+      $body.="<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+      $body.="<td>".Ticket::getStatus($data["status"])."</td>";
+      $body.="<td>".($data["date"])."</td>";
+      $body.="<td>".($data["date_mod"])."</td>";
       $body.="<td>";
       if (!empty($data["users_id"])) {
 
@@ -148,14 +168,14 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `entities_id` as `entity`,`$field`
-               FROM `glpi_plugin_additionalalerts_infocomalerts`";
+               FROM `glpi_plugin_additionalalerts_ticketunresolveds`";
       $query.= " ORDER BY `entities_id` ASC";
-
+      
       $entities = array();
       foreach ($DB->request($query) as $entitydatas) {
-         PluginAdditionalalertsInfocomAlert::getDefaultValueForNotification($field,$entities, $entitydatas);
+         PluginAdditionalalertsTicketUnresolved::getDefaultValueForNotification($field,$entities, $entitydatas);
       }
-
+     
       return $entities;
    }
 
@@ -180,72 +200,70 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
     *
     * @param $task for log, if NULL display
     *
-    **/
-   static function cronAdditionalalertsNotInfocom($task=NULL) {
+    */
+   static function cronAdditionalalertsTicketUnresolved($task=NULL) {
       global $DB,$CFG_GLPI;
-
+      
       if (!$CFG_GLPI["use_mailing"]) {
          return 0;
       }
       
       $CronTask=new CronTask();
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsInfocomAlert","AdditionalalertsNotInfocom")) {
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsTicketUnresolved","AdditionalalertsTicketUnresolved")) {
          if ($CronTask->fields["state"]==CronTask::STATE_DISABLE) {
             return 0;
          }
       } else {
          return 0;
       }
-
-      $message=array();
+         
       $cron_status = 0;
-      
-      foreach (self::getEntitiesToNotify('use_infocom_alert') as $entity => $repeat) {
-         $query_notinfocom = self::query($entity);
 
-         $notinfocom_infos = array();
-         $notinfocom_messages = array();
-         
-         $type = Alert::END;
-         $notinfocom_infos[$type] = array();
-         foreach ($DB->request($query_notinfocom) as $data) {
-         
-            $entity = $data['entities_id'];
-            $message = $data["name"];
-            $notinfocom_infos[$type][$entity][] = $data;
+      foreach (self::getEntitiesToNotify('delay_ticket_alert') as $entity => $delay_ticket_alert) {
+         $query_technician = self::queryTechnician($delay_ticket_alert, $entity);
+         $query_supervisor = self::querySupervisor($delay_ticket_alert, $entity);
 
-            if (!isset($notinfocoms_infos[$type][$entity])) {
-               $notinfocom_messages[$type][$entity] = PluginAdditionalalertsInfocomAlert::getTypeName(2)."<br />";
-            }
-            $notinfocom_messages[$type][$entity] .= $message;
-         }
-         
-         foreach ($notinfocom_infos[$type] as $entity => $notinfocoms) {
-            Plugin::loadLang('additionalalerts');
-            
-            if (NotificationEvent::raiseEvent("notinfocom",
-                                              new PluginAdditionalalertsInfocomAlert(),
-                                              array('entities_id'=>$entity,
-                                                    'notinfocoms'=>$notinfocoms))) {
-               $message = $notinfocom_messages[$type][$entity];
-               $cron_status = 1;
-               if ($task) {
-                  $task->log(Dropdown::getDropdownName("glpi_entities",
-                                                       $entity).":  $message\n");
-                  $task->addVolume(1);
-               } else {
-                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                    $entity).":  $message");
-               }
+         $ticket_technician = array();
+         $temp = 0;
+         foreach ($DB->request($query_technician) as $tick) {
 
+            if (empty($ticket_technician)) {
+               $ticket_technician[$temp][] = $tick;
+            } elseif ($ticket_technician[$temp][0]['users_id'] == $tick['users_id']) {
+               $ticket_technician[$temp][] = $tick;
             } else {
-               if ($task) {
-                  $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
-                             ":  Send infocoms alert failed\n");
-               } else {
-                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
-                                          ":  Send infocoms alert failed",false,ERROR);
-               }
+               $temp ++;
+               $ticket_technician[$temp][] = $tick;
+            }
+         }
+
+         foreach ($ticket_technician as $tickets) { 
+            $ticket = new PluginAdditionalalertsTicketUnresolved();
+           
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
+                  'items' => $tickets, 'notifType' => "TECH" ))) {
+               $cron_status = 1;
+            }
+         }
+
+         $ticket_supervisor = array();
+         $temp = 0;
+         foreach ($DB->request($query_supervisor) as $tick) {
+
+            if (empty($ticket_supervisor)) {
+               $ticket_supervisor[$temp][] = $tick;
+            } elseif ($ticket_supervisor[$temp][0]['users_id'] == $tick['users_id']) {
+               $ticket_supervisor[$temp][] = $tick;
+            } else {
+               $temp ++;
+               $ticket_supervisor[$temp][] = $tick;
+            }
+         }
+         foreach ($ticket_supervisor as $tickets) {
+            $ticket = new PluginAdditionalalertsTicketUnresolved();
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
+                  'items' => $tickets, 'notifType' => "SUPERVISOR"))) {
+               $cron_status = 1;
             }
          }
       }
@@ -255,35 +273,16 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
      
    static function configCron($target,$ID) {
 
-      echo "<div align='center'>";
-      echo "<form method='post' action=\"$target\">";
-      echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-      $colspan=2;
-   
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Parameter', 'additionalalerts')."</td>";
-      echo "<td>".__('Type not used for check of buy date', 'additionalalerts');
-      Dropdown::show('ComputerType', array('name' => "types_id"));
-      echo "&nbsp;<input type='submit' name='add_type' value=\""._sx('button','Add')."\" class='submit' ></div></td>";
-      echo "</tr>";
-   
-      echo "</table>";
-      Html::closeForm();
-
-      echo "</div>";
-         
-      $type = new PluginAdditionalalertsNotificationType();
-      $type->showForm($target);
 
    }
    
    function getFromDBbyEntity($entities_id) {
       global $DB;
-
+      
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `entities_id` = '$entities_id'";
-
+      
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 1) {
             return false;
@@ -310,7 +309,8 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
       $canedit = Session::haveRight('notification',UPDATE) && Session::haveAccessToEntity($ID);
 
       // Get data
-      $entitynotification=new PluginAdditionalalertsInfocomAlert();
+      $entitynotification=new PluginAdditionalalertsTicketUnresolved();
+      
       if (!$entitynotification->getFromDBbyEntity($ID)) {
          $entitynotification->getEmpty();
       }
@@ -320,14 +320,14 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
       }
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='2'>".__('Alarms options')."</th></tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</td><td>";
-      $default_value = $entitynotification->fields['use_infocom_alert'];
-      Alert::dropdownYesNo(array('name'           => "use_infocom_alert",
-                                 'value'          => $default_value,
-                                 'inherit_global' => 1));
+      echo "<tr class='tab_bg_1'><td>" . PluginAdditionalalertsTicketUnresolved::getTypeName(2) . "</td><td>";
+      Alert::dropdownIntegerNever('delay_ticket_alert',
+                                  $entitynotification->fields["delay_ticket_alert"],
+                                  array('max'=>99));
+      
       echo "</td></tr>";
+      
+      
 
       if ($canedit) {
          echo "<tr>";
@@ -346,6 +346,9 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
          echo "</table>";
       }
    }
-}
+
+   
+   
+      }
 
 ?>
