@@ -223,8 +223,8 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
          if (!$notificationtarget) {
             return false;
          }
-         $entity             = $notificationtarget->getEntity();
-        
+         $entity = $options["entities_id"];
+
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(), $entity)
                   as $data) {

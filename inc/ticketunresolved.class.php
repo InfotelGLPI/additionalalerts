@@ -84,7 +84,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` 
       WHERE `glpi_tickets`.`date` <= '".$date."'
       AND `glpi_tickets`.`status` <= 4
-      AND `glpi_tickets_users`.`type` = 2
+      AND `glpi_tickets_users`.`type` = 2 
+      AND `glpi_tickets`.`entities_id` = '".$entity."'
       ORDER BY `glpi_tickets_users`.`users_id`";
       
       return $querytechnician;
@@ -102,8 +103,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` 
       WHERE `glpi_tickets`.`date` <= '".$date."'
       AND `glpi_tickets`.`status` <= 4
-      AND `glpi_tickets_users`.`type` = 2";
-      
+      AND `glpi_tickets_users`.`type` = 2 
+      AND `glpi_tickets`.`entities_id` = '".$entity."' ";
       $result_id_technician = $DB->query($query_id_technician);
 
       $querysupervisor = "SELECT `glpi_tickets`.*, `glpi_groups_users`.`users_id`
@@ -113,7 +114,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       WHERE `glpi_tickets`.`date` <= '" . $date . "'
       AND `glpi_tickets`.`status` <= 4
       AND `glpi_groups_tickets`.`type` = 2
-      AND `glpi_groups_users`.`is_manager` = 1";
+      AND `glpi_groups_users`.`is_manager` = 1 
+      AND `glpi_tickets`.`entities_id` = '".$entity."' ";
 
       if ($DB->numrows($result_id_technician) > 0) {
          while ($data_type = $DB->fetch_array($result_id_technician)) {
@@ -241,7 +243,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
            
             if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
-                  'items' => $tickets, 'notifType' => "TECH" ))) {
+                'items' => $tickets, 
+                'notifType' => "TECH" ))) {
                $cron_status = 1;
             }
          }
@@ -262,7 +265,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          foreach ($ticket_supervisor as $tickets) {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
             if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
-                  'items' => $tickets, 'notifType' => "SUPERVISOR"))) {
+                'items' => $tickets,
+                'notifType' => "SUPERVISOR"))) {
                $cron_status = 1;
             }
          }
@@ -347,8 +351,6 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       }
    }
 
-   
-   
-      }
+}
 
 ?>
