@@ -135,8 +135,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
 
       $body.="<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
       $body.="<td>".Ticket::getStatus($data["status"])."</td>";
-      $body.="<td>".($data["date"])."</td>";
-      $body.="<td>".($data["date_mod"])."</td>";
+      $body.="<td>".Html::convDateTime($data["date"])."</td>";
+      $body.="<td>".Html::convDateTime($data["date_mod"])."</td>";
       $body.="<td>";
       if (!empty($data["users_id"])) {
 

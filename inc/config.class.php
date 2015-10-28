@@ -75,17 +75,17 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
    function showForm($options=array()) {
 
       $this->getFromDB(1);
-      
+      $options['colspan'] = 1;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Reminders frequency', 'additionalalerts') . " " . PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</td><td>";
+      echo "<td>" . PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</td><td>";
       Alert::dropdownYesNo(array('name'=>"use_infocom_alert",
                               'value'=>$this->fields["use_infocom_alert"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td >" . __('Reminders frequency', 'additionalalerts') . " " . __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
+      echo "<td >" .  __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
       Alert::dropdownYesNo(array('name'=>"use_newocs_alert",
                               'value'=>$this->fields["use_newocs_alert"]));
       echo "</td></tr>";
@@ -122,7 +122,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "</td></tr>";
-
+      
       $this->showFormButtons($options);
       
       return true;

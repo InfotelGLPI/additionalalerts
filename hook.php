@@ -126,7 +126,7 @@ function plugin_additionalalerts_install() {
                                           'mail',".$itemtype.",
                                           '', 1, 1, '2010-03-20 10:36:46');";
       $result=$DB->query($query);
-   }  else if (TableExists("glpi_plugin_additionalalerts_ticketunresolveds")) {
+   }  else if (!TableExists("glpi_plugin_additionalalerts_ticketunresolveds")) {
 
       $update90 = true;
       $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.8.0.sql");
@@ -351,6 +351,12 @@ function plugin_additionalalerts_install() {
    
    PluginAdditionalalertsProfile::initProfile();
    PluginAdditionalalertsProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
+   
+   if (TableExists("glpi_plugin_additionalalerts_profiles")) {
+      $query="DROP TABLE `glpi_plugin_additionalalerts_profiles`;";
+      $result=$DB->query($query);
+   }
+   
    return true;
 }
 
@@ -487,7 +493,7 @@ function plugin_additionalalerts_uninstall() {
       $template->delete($data);
    }
 
-   Plugin::registerClass('PluginAdditionalalertsProfile');
+   //Plugin::registerClass('PluginAdditionalalertsProfile');
    
    //Delete rights associated with the plugin
    $profileRight = new ProfileRight();
