@@ -282,55 +282,66 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
       }
 
       if ($additionalalerts_ticket_unresolved != 0) {
-         $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $_SESSION["glpiactive_entity"]);
-         $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $_SESSION["glpiactive_entity"]);
-         $result = $DB->query($query_technician);
-         $result_supervisor = $DB->query($query_supervisor);
-
-         if ($DB->numrows($result) > 0) {
-            $nbcol = 6;
-            
-            echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-            echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . "</th></tr>";
-            echo "<tr><th>" . __('Title') . "</th>";
-            echo "<th>" . __('Entity') . "</th>";
-            echo "<th>" . __('Status') . "</th>";
-            echo "<th>" . __('Opening date') . "</th>";
-            echo "<th>" . __('Last update') . "</th>";
-            echo "<th>" . __('Assigned to') . "</th>";
-
-            while ($data = $DB->fetch_array($result)) {
-               echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
+         $entites = PluginAdditionalalertsTicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
+         foreach (getAllDatasFromTable('glpi_entities') as $entity) {
+            $delay_ticket_alert = 0;
+            if (isset($entites[$entity['id']])) {
+               $delay_ticket_alert = $entites[$entity['id']];
             }
-            
-            if ($DB->numrows($result_supervisor) > 0) {
-               while ($data_supevisor = $DB->fetch_array($result_supervisor)) {
-                  echo PluginAdditionalalertsTicketUnresolved::displayBody($data_supevisor);
+            if ($delay_ticket_alert == 0) {
+               $config = getAllDatasFromTable('glpi_plugin_additionalalerts_configs');
+               $config = reset($config);
+               $delay_ticket_alert = $config['delay_ticket_alert'];
+            }
+
+            $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $entity['id']);
+            $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $entity['id']);
+            $result = $DB->query($query_technician);
+            $result_supervisor = $DB->query($query_supervisor);
+
+            if ($DB->numrows($result) > 0) {
+               $nbcol = 6;
+
+               echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
+               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".$entity['name'].  "</th></tr>";
+               echo "<tr><th>" . __('Title') . "</th>";
+               echo "<th>" . __('Entity') . "</th>";
+               echo "<th>" . __('Status') . "</th>";
+               echo "<th>" . __('Opening date') . "</th>";
+               echo "<th>" . __('Last update') . "</th>";
+               echo "<th>" . __('Assigned to') . "</th>";
+
+               while ($data = $DB->fetch_array($result)) {
+                  echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
                }
-            }
-            echo "</table></div>";
-            
-            
-         } elseif ($DB->numrows($result_supervisor) > 0) {
-            echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-            echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . "</th></tr>";
-            echo "<tr><th>" . __('Title') . "</th>";
-            echo "<th>" . __('Entity') . "</th>";
-            echo "<th>" . __('Status') . "</th>";
-            echo "<th>" . __('Opening date') . "</th>";
-            echo "<th>" . __('Last update') . "</th>";
-            echo "<th>" . __('Assigned to') . "</th>";
 
-            while ($data = $DB->fetch_array($result_supervisor)) {
+               if ($DB->numrows($result_supervisor) > 0) {
+                  while ($data_supevisor = $DB->fetch_array($result_supervisor)) {
+                     echo PluginAdditionalalertsTicketUnresolved::displayBody($data_supevisor);
+                  }
+               }
+               echo "</table></div>";
+            } elseif ($DB->numrows($result_supervisor) > 0) {
+               echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
+               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".$entity['name']. "</th></tr>";
+               echo "<tr><th>" . __('Title') . "</th>";
+               echo "<th>" . __('Entity') . "</th>";
+               echo "<th>" . __('Status') . "</th>";
+               echo "<th>" . __('Opening date') . "</th>";
+               echo "<th>" . __('Last update') . "</th>";
+               echo "<th>" . __('Assigned to') . "</th>";
 
-               echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
+               while ($data = $DB->fetch_array($result_supervisor)) {
+
+                  echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
+               }
+               echo "</table></div>";
+            } else {
+               echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".$entity['name']."</b></div>";
             }
-            echo "</table></div>";
-         } else {
-            echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2) . "</b></div>";
+
+            echo "<br>";
          }
-
-         echo "<br>";
       }
    }
 

@@ -86,6 +86,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       AND `glpi_tickets`.`status` <= 4
       AND `glpi_tickets_users`.`type` = 2 
       AND `glpi_tickets`.`entities_id` = '".$entity."'
+      AND `glpi_tickets`.`is_deleted` = 0
       ORDER BY `glpi_tickets_users`.`users_id`";
       
       return $querytechnician;
@@ -104,6 +105,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       WHERE `glpi_tickets`.`date` <= '".$date."'
       AND `glpi_tickets`.`status` <= 4
       AND `glpi_tickets_users`.`type` = 2 
+      AND `glpi_tickets`.`is_deleted` = 0
       AND `glpi_tickets`.`entities_id` = '".$entity."' ";
       $result_id_technician = $DB->query($query_id_technician);
 
@@ -115,6 +117,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       AND `glpi_tickets`.`status` <= 4
       AND `glpi_groups_tickets`.`type` = 2
       AND `glpi_groups_users`.`is_manager` = 1 
+      AND `glpi_tickets`.`is_deleted` = 0
       AND `glpi_tickets`.`entities_id` = '".$entity."' ";
 
       if ($DB->numrows($result_id_technician) > 0) {
@@ -166,9 +169,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
    }
    
    
-   static function getEntitiesToNotify($field,$with_value=false) {
+   static function getEntitiesToNotify($field, $with_value=false) {
       global $DB;
-
       $query = "SELECT `entities_id` as `entity`,`$field`
                FROM `glpi_plugin_additionalalerts_ticketunresolveds`";
       $query.= " ORDER BY `entities_id` ASC";
@@ -177,7 +179,6 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       foreach ($DB->request($query) as $entitydatas) {
          PluginAdditionalalertsTicketUnresolved::getDefaultValueForNotification($field,$entities, $entitydatas);
       }
-     
       return $entities;
    }
 
@@ -197,6 +198,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          $entities[$entitydatas['entity']] = $config->fields[$field];
       }
    }
+   
+  
    /**
     * Cron action
     *
@@ -218,55 +221,47 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       } else {
          return 0;
       }
-         
+      $entites  = self::getEntitiesToNotify('delay_ticket_alert');
       $cron_status = 0;
-
-      foreach (self::getEntitiesToNotify('delay_ticket_alert') as $entity => $delay_ticket_alert) {
-         $query_technician = self::queryTechnician($delay_ticket_alert, $entity);
-         $query_supervisor = self::querySupervisor($delay_ticket_alert, $entity);
-
-         $ticket_technician = array();
-         $temp = 0;
-         foreach ($DB->request($query_technician) as $tick) {
-
-            if (empty($ticket_technician)) {
-               $ticket_technician[$temp][] = $tick;
-            } elseif ($ticket_technician[$temp][0]['users_id'] == $tick['users_id']) {
-               $ticket_technician[$temp][] = $tick;
-            } else {
-               $temp ++;
-               $ticket_technician[$temp][] = $tick;
-            }
+      foreach(getAllDatasFromTable('glpi_entities') as $entity){
+         $delay_ticket_alert = 0;
+         if(isset($entites[$entity['id']])){
+            $delay_ticket_alert = $entites[$entity['id']];
+         } 
+         if($delay_ticket_alert == 0){
+            $config = getAllDatasFromTable('glpi_plugin_additionalalerts_configs');
+            $config = reset($config);
+            $delay_ticket_alert = $config['delay_ticket_alert'];
          }
-
-         foreach ($ticket_technician as $tickets) { 
+         $query_technician = self::queryTechnician($delay_ticket_alert, $entity['id']);
+         $query_supervisor = self::querySupervisor($delay_ticket_alert, $entity['id']);
+         
+         $ticket_technician = array();
+         foreach ($DB->request($query_technician) as $tick) {
+            $ticket_technician[$tick['users_id']][] = $tick;
+         }
+         
+         foreach ($ticket_technician as $tickets) {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
-           
-            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
-                'items' => $tickets, 
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity['id'],
+                'items' => $tickets,
                 'notifType' => "TECH" ))) {
+                $task->addVolume(1);
                $cron_status = 1;
             }
          }
 
          $ticket_supervisor = array();
-         $temp = 0;
          foreach ($DB->request($query_supervisor) as $tick) {
-
-            if (empty($ticket_supervisor)) {
-               $ticket_supervisor[$temp][] = $tick;
-            } elseif ($ticket_supervisor[$temp][0]['users_id'] == $tick['users_id']) {
-               $ticket_supervisor[$temp][] = $tick;
-            } else {
-               $temp ++;
-               $ticket_supervisor[$temp][] = $tick;
-            }
+            $ticket_supervisor[$tick['users_id']][] = $tick;
          }
+         
          foreach ($ticket_supervisor as $tickets) {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
-            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity['id'],
                 'items' => $tickets,
                 'notifType' => "SUPERVISOR"))) {
+               $task->addVolume(1);
                $cron_status = 1;
             }
          }
@@ -318,7 +313,9 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       if (!$entitynotification->getFromDBbyEntity($ID)) {
          $entitynotification->getEmpty();
       }
-
+      if(empty($entitynotification->fields["delay_ticket_alert"])){
+         $entitynotification->fields["delay_ticket_alert"] = 0;
+      }
       if ($canedit) {
          echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       }

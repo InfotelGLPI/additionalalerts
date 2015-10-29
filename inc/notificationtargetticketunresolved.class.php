@@ -101,11 +101,11 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
     *
     * @param $type type of linked users
    **/
-   function getLinkedUserByType($tickets_id, $type) {
+   function getLinkedUserByType($users_id, $type) {
       global $DB, $CFG_GLPI;
 
       $userlinktable = "glpi_tickets_users";
-      $fkfield       = "tickets_id";
+      $fkfield       = "users_id";
 
       //Look for the user by his id
       $query =        $this->getDistinctUserSql().",
@@ -114,9 +114,9 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
                FROM `$userlinktable`
                LEFT JOIN `glpi_users` ON (`$userlinktable`.`users_id` = `glpi_users`.`id`)".
                $this->getProfileJoinSql()."
-               WHERE `$userlinktable`.`$fkfield` = '".$tickets_id."'
+               WHERE `$userlinktable`.`$fkfield` = '".$users_id."'
                      AND `$userlinktable`.`type` = '$type'";
-
+            
       foreach ($DB->request($query) as $data) {
          //Add the user email and language in the notified users list
          if ($data['notif']) {
@@ -144,7 +144,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
       // Anonymous user
       $query = "SELECT `alternative_email`
                 FROM `$userlinktable`
-                WHERE `$userlinktable`.`$fkfield` = '".$tickets_id."'
+                WHERE `$userlinktable`.`$fkfield` = '".$users_id."'
                       AND `$userlinktable`.`users_id` = 0
                       AND `$userlinktable`.`use_notification` = 1
                       AND `$userlinktable`.`type` = '$type'";
@@ -171,16 +171,12 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
 
             switch ($data['items_id']) {
                case Notification::ASSIGN_TECH :
-                  foreach($options['items'] as $item){
-                     $this->getLinkedUserByType($item['id'], CommonITILActor::ASSIGN);
-                  }
+                  $this->getLinkedUserByType($options['items'][0]['users_id'], CommonITILActor::ASSIGN);
                   break;
 
                //Send to the supervisor of group in charge of the ITIL object
                case Notification::SUPERVISOR_ASSIGN_GROUP :
-                  foreach($options['items'] as $item){
-                     $this->getLinkedGroupSupervisorByType($item['id'], CommonITILActor::ASSIGN);
-                  }
+                  $this->getLinkedGroupSupervisorByType($options['items'][0]['users_id'], CommonITILActor::ASSIGN);
                   break;
             }
          }
@@ -193,12 +189,16 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
     * @param $event  (default '')
    **/
    function getAdditionalTargets($event='') {
+      $this->notification_targets = array();
+      $this->notification_targets_labels = array();
 
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                           __('Manager of the group in charge of the ticket'));
 
          $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of the ticket'));
    }
+   
+     
    
      /**
     * Raise a notification event event
@@ -210,7 +210,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
    **/
    static function raiseEventTicket($event, $item, $options=array(), $label='') {
       global $CFG_GLPI;
-
+      
       //If notifications are enabled in GLPI's configuration
       if ($CFG_GLPI["use_mailing"]) {
          $email_processed    = array();
@@ -219,18 +219,18 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
          $template           = new NotificationTemplate();
          
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
-
          if (!$notificationtarget) {
             return false;
          }
+         
          $entity = $options["entities_id"];
-
+         
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(), $entity)
                   as $data) {
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id = '.$data['id']);
-           
+          
             $notificationtarget->clearAddressesList();
 
             //Process more infos (for example for tickets)
@@ -269,6 +269,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
                foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
                   if ($label
                       || $notificationtarget->validateSendTo($event, $users_infos, $notify_me)) {
+                     
                      //If the user have not yet been notified
                      if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
                         //If ther user's language is the same as the template's one
@@ -289,8 +290,8 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
                               $datas['_itemtype']                 = $item->getType();
                               $datas['_items_id']                 = $item->getID();
                               $datas['_entities_id']              = $entity;
-
-                              Notification::send($datas);
+                             
+                              self::send($datas);
                            } else {
                               $notificationtarget->getFromDB($target['id']);
                               echo "<tr class='tab_bg_2'><td>".$label."</td>";
@@ -317,6 +318,15 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
       unset($email_notprocessed);
       $template = null;
       return true;
+   }
+   
+   /**
+    * @param $mailing_options
+   **/
+   static function send($mailing_options) {
+
+      $mail = new NotificationMail();
+      $mail->sendNotification($mailing_options);
    }
 
 }
