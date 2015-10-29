@@ -179,6 +179,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       foreach ($DB->request($query) as $entitydatas) {
          PluginAdditionalalertsTicketUnresolved::getDefaultValueForNotification($field,$entities, $entitydatas);
       }
+
       return $entities;
    }
 
@@ -195,7 +196,10 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       else if ((!isset($entitydatas[$field])
                 || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
                && $config->fields[$field]) {
-         $entities[$entitydatas['entity']] = $config->fields[$field];
+
+         foreach (getAllDatasFromTable('glpi_entities') as $entity) {
+            $entities[$entity['id']] = $config->fields[$field];
+         }
       }
    }
    
@@ -221,20 +225,12 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       } else {
          return 0;
       }
-      $entites  = self::getEntitiesToNotify('delay_ticket_alert');
+      $entities  = self::getEntitiesToNotify('delay_ticket_alert');
       $cron_status = 0;
-      foreach(getAllDatasFromTable('glpi_entities') as $entity){
-         $delay_ticket_alert = 0;
-         if(isset($entites[$entity['id']])){
-            $delay_ticket_alert = $entites[$entity['id']];
-         } 
-         if($delay_ticket_alert == 0){
-            $config = getAllDatasFromTable('glpi_plugin_additionalalerts_configs');
-            $config = reset($config);
-            $delay_ticket_alert = $config['delay_ticket_alert'];
-         }
-         $query_technician = self::queryTechnician($delay_ticket_alert, $entity['id']);
-         $query_supervisor = self::querySupervisor($delay_ticket_alert, $entity['id']);
+      foreach ($entities as $entity => $delay_ticket_alert) {
+
+         $query_technician = self::queryTechnician($delay_ticket_alert, $entity);
+         $query_supervisor = self::querySupervisor($delay_ticket_alert, $entity);
          
          $ticket_technician = array();
          foreach ($DB->request($query_technician) as $tick) {
@@ -243,7 +239,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          
          foreach ($ticket_technician as $tickets) {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
-            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity['id'],
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
                 'items' => $tickets,
                 'notifType' => "TECH" ))) {
                 $task->addVolume(1);
@@ -258,7 +254,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          
          foreach ($ticket_supervisor as $tickets) {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
-            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity['id'],
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
                 'items' => $tickets,
                 'notifType' => "SUPERVISOR"))) {
                $task->addVolume(1);

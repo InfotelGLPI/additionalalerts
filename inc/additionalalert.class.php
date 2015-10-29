@@ -282,20 +282,12 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
       }
 
       if ($additionalalerts_ticket_unresolved != 0) {
-         $entites = PluginAdditionalalertsTicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
-         foreach (getAllDatasFromTable('glpi_entities') as $entity) {
-            $delay_ticket_alert = 0;
-            if (isset($entites[$entity['id']])) {
-               $delay_ticket_alert = $entites[$entity['id']];
-            }
-            if ($delay_ticket_alert == 0) {
-               $config = getAllDatasFromTable('glpi_plugin_additionalalerts_configs');
-               $config = reset($config);
-               $delay_ticket_alert = $config['delay_ticket_alert'];
-            }
+         $entities = PluginAdditionalalertsTicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
+         
+         foreach ($entities as $entity => $delay_ticket_alert) {
 
-            $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $entity['id']);
-            $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $entity['id']);
+            $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $entity);
+            $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $entity);
             $result = $DB->query($query_technician);
             $result_supervisor = $DB->query($query_supervisor);
 
