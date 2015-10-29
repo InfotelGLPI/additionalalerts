@@ -285,7 +285,6 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
          $entities = PluginAdditionalalertsTicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
          
          foreach ($entities as $entity => $delay_ticket_alert) {
-
             $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $entity);
             $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $entity);
             $result = $DB->query($query_technician);
@@ -295,7 +294,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                $nbcol = 6;
 
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".$entity['name'].  "</th></tr>";
+               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".Dropdown::getDropdownName("glpi_entities",$entity).  "</th></tr>";
                echo "<tr><th>" . __('Title') . "</th>";
                echo "<th>" . __('Entity') . "</th>";
                echo "<th>" . __('Status') . "</th>";
@@ -315,7 +314,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                echo "</table></div>";
             } elseif ($DB->numrows($result_supervisor) > 0) {
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".$entity['name']. "</th></tr>";
+               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".Dropdown::getDropdownName("glpi_entities",$entity). "</th></tr>";
                echo "<tr><th>" . __('Title') . "</th>";
                echo "<th>" . __('Entity') . "</th>";
                echo "<th>" . __('Status') . "</th>";
