@@ -198,7 +198,9 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       else if ((!isset($entitydatas[$field])
                 || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
                && $config->fields[$field]) {
-         $entities[$entitydatas['entity']] = $config->fields[$field];
+         foreach (getAllDatasFromTable('glpi_entities') as $entity) {
+            $entities[$entity['id']] = $config->fields[$field];
+         }
       }
    }
 

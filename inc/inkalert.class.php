@@ -163,11 +163,12 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
         }
         //No configuration for this entity : if global config allows notification then add the entity
         //to the array of entities to be notified
-        else if ((!isset($entitydatas[$field])
-                 || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
-                 && $config->fields[$field]) {
-            $entities[$entitydatas['entity']] = $config->fields[$field];
-        }
+        else if ((!isset($entitydatas[$field]) || (isset($entitydatas[$field]) && $entitydatas[$field] == -1)) && $config->fields[$field]) {
+
+         foreach (getAllDatasFromTable('glpi_entities') as $entity) {
+            $entities[$entity['id']] = $config->fields[$field];
+         }
+      }
     }
 
     /**
