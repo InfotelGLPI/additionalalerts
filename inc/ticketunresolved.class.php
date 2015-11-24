@@ -176,9 +176,20 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       $query.= " ORDER BY `entities_id` ASC";
       
       $entities = array();
-      foreach ($DB->request($query) as $entitydatas) {
-         PluginAdditionalalertsTicketUnresolved::getDefaultValueForNotification($field,$entities, $entitydatas);
+      $result = $DB->query($query);
+ 
+      if ($DB->numrows($result) > 0) {
+         foreach ($result as $entitydatas) {
+            PluginAdditionalalertsTicketUnresolved::getDefaultValueForNotification($field, $entities, $entitydatas);
+         }
+      } else {
+         $config = new PluginAdditionalalertsConfig();
+         $config->getFromDB(1);
+         foreach (getAllDatasFromTable('glpi_entities') as $entity) {
+            $entities[$entity['id']] = $config->fields[$field];
+         }
       }
+
 
       return $entities;
    }
