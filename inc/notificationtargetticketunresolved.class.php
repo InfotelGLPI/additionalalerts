@@ -73,29 +73,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
       $this->datas = $notificationTargetTicket->datas;
 
    }
-   
-      /**
-    * Add linked group supervisor to the notified user list
-    *
-    * @param $type type of linked groups
-   **/
-   function getLinkedGroupSupervisorByType($tickets_id, $type) {
-      global $DB;
-
-      $grouplinktable = "glpi_groups_tickets";
-      $fkfield        = "tickets_id";
-
-      $query = "SELECT `groups_id`
-                FROM `$grouplinktable`
-                WHERE `$grouplinktable`.`$fkfield` = '".$tickets_id."'
-                      AND `$grouplinktable`.`type` = '$type'";
-
-      foreach ($DB->request($query) as $data) {
-         //Add the group in the notified users list
-         $this->getAddressesByGroup(1, $data['groups_id']);
-      }
-   }
-   
+    
     /**
     * Add linked users to the notified users list
     *
@@ -176,7 +154,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
 
                //Send to the supervisor of group in charge of the ITIL object
                case Notification::SUPERVISOR_ASSIGN_GROUP :
-                  $this->getLinkedGroupSupervisorByType($options['items'][0]['users_id'], CommonITILActor::ASSIGN);
+                  $this->getLinkedUserByType($options['items'][0]['users_id'], CommonITILActor::ASSIGN);
                   break;
             }
          }

@@ -300,7 +300,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                echo "<th>" . __('Status') . "</th>";
                echo "<th>" . __('Opening date') . "</th>";
                echo "<th>" . __('Last update') . "</th>";
-               echo "<th>" . __('Assigned to') . "</th>";
+               echo "<th>" . __('Send to', 'additionalalerts') . "</th>";
 
                while ($data = $DB->fetch_array($result)) {
                   echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
