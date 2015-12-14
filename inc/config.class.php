@@ -59,7 +59,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
 
          $target = $CFG_GLPI["root_doc"]."/plugins/additionalalerts/front/config.form.php";
          $conf = new PluginAdditionalalertsConfig;
-         $conf->showForm($target);
+         $conf->showForm(array('target' =>$target));
          
       } else if ($item->getType()=='Entity') {
          
