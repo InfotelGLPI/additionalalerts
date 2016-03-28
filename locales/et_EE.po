@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-30 10:44+0100\n"
-"PO-Revision-Date: 2015-10-30 09:49+0000\n"
+"POT-Creation-Date: 2016-03-28 19:08+0200\n"
+"PO-Revision-Date: 2016-03-28 17:12+0000\n"
 "Last-Translator: Xavier CAILLAUD <tsmr@thetsmr.fr>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/tsmr/GLPI_additionalalerts/language/et_EE/)\n"
 "MIME-Version: 1.0\n"
@@ -38,8 +38,8 @@ msgid "No computers with no buy date"
 msgstr ""
 
 #: inc/additionalalert.class.php:185 inc/config.class.php:88
-#: inc/notificationtargetocsalert.class.php:41 inc/ocsalert.class.php:317
-#: inc/ocsalert.class.php:423
+#: inc/notificationtargetocsalert.class.php:41 inc/ocsalert.class.php:328
+#: inc/ocsalert.class.php:434
 msgid "New imported computers from OCS-NG"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr "Ühtegi arvutit pole sünkroniseeritud OCSNG serveriga vähemalt"
 
 #: inc/additionalalert.class.php:263 inc/config.class.php:101
 #: inc/inkalert.class.php:40 inc/inkalert.class.php:72
-#: inc/inkalert.class.php:213 inc/inkalert.class.php:316
+#: inc/inkalert.class.php:223 inc/inkalert.class.php:326
 #: inc/notificationtargetinkalert.class.php:38
 #: inc/notificationtargetinkalert.class.php:90
 msgid "Cartridges whose level is low"
@@ -96,12 +96,16 @@ msgid "Ink level alerts"
 msgstr ""
 
 #: inc/additionalalert.class.php:280 inc/config.class.php:108
-#: inc/inkalert.class.php:323 inc/inkthreshold.class.php:62
+#: inc/inkalert.class.php:333 inc/inkthreshold.class.php:62
 msgid "Fusioninventory plugin is not installed"
 msgstr ""
 
 #: inc/additionalalert.class.php:297 inc/additionalalert.class.php:317
 msgid "Tickets unresolved since more"
+msgstr ""
+
+#: inc/additionalalert.class.php:303
+msgid "Send to"
 msgstr ""
 
 #: inc/additionalalert.class.php:331
@@ -113,7 +117,7 @@ msgid "Plugin Setup"
 msgstr ""
 
 #: inc/config.class.php:93 inc/ocsalert.class.php:69
-#: inc/ocsalert.class.php:430
+#: inc/ocsalert.class.php:441
 msgid "OCS-NG Synchronization alerts"
 msgstr "OCSNG sünkroniseerimise teavitused"
 
@@ -132,15 +136,15 @@ msgstr[1] ""
 msgid "Plugin setup"
 msgstr "Lisaprogrammi seadistus"
 
-#: inc/infocomalert.class.php:266 inc/ocsalert.class.php:365
+#: inc/infocomalert.class.php:276 inc/ocsalert.class.php:376
 msgid "Parameter"
 msgstr ""
 
-#: inc/infocomalert.class.php:267
+#: inc/infocomalert.class.php:277
 msgid "Type not used for check of buy date"
 msgstr ""
 
-#: inc/inkalert.class.php:259
+#: inc/inkalert.class.php:269
 msgid "Statutes used for the ink level"
 msgstr ""
 
@@ -152,7 +156,7 @@ msgstr "OCSNG sünkroniseerimine"
 msgid "Alert for the new imported computers"
 msgstr "Teavitus uutest imporditud arvutitest"
 
-#: inc/ocsalert.class.php:366
+#: inc/ocsalert.class.php:377
 msgid "Status used by OCS-NG"
 msgstr ""
 

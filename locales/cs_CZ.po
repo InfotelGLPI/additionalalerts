@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# David Stepan <stepand@tiscali.cz>, 2015
 # Ondrej Krejcik <ondra@tachec.org>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-30 10:44+0100\n"
-"PO-Revision-Date: 2015-10-30 09:49+0000\n"
+"POT-Creation-Date: 2016-03-28 19:08+0200\n"
+"PO-Revision-Date: 2016-03-28 17:12+0000\n"
 "Last-Translator: Xavier CAILLAUD <tsmr@thetsmr.fr>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/tsmr/GLPI_additionalalerts/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +29,7 @@ msgstr[2] "Dalších upozornění"
 
 #: setup.php:90
 msgid "This plugin requires GLPI >= 0.90"
-msgstr ""
+msgstr "Plugin vyžaduje verzi GLPI >= 0.90"
 
 #: inc/additionalalert.class.php:129
 msgid "No used alerts"
@@ -39,8 +40,8 @@ msgid "No computers with no buy date"
 msgstr "Žádné počítače bez data nákupu"
 
 #: inc/additionalalert.class.php:185 inc/config.class.php:88
-#: inc/notificationtargetocsalert.class.php:41 inc/ocsalert.class.php:317
-#: inc/ocsalert.class.php:423
+#: inc/notificationtargetocsalert.class.php:41 inc/ocsalert.class.php:328
+#: inc/ocsalert.class.php:434
 msgid "New imported computers from OCS-NG"
 msgstr "Nově naimportované počítače z OCS-NG"
 
@@ -77,50 +78,54 @@ msgstr "Žádný počítač, který by nebyl dlouhodobě synchronizován"
 
 #: inc/additionalalert.class.php:263 inc/config.class.php:101
 #: inc/inkalert.class.php:40 inc/inkalert.class.php:72
-#: inc/inkalert.class.php:213 inc/inkalert.class.php:316
+#: inc/inkalert.class.php:223 inc/inkalert.class.php:326
 #: inc/notificationtargetinkalert.class.php:38
 #: inc/notificationtargetinkalert.class.php:90
 msgid "Cartridges whose level is low"
-msgstr ""
+msgstr "Cartridge mající nízkou úroveň inkoustu"
 
 #: inc/additionalalert.class.php:269
 msgid "Ink level"
-msgstr ""
+msgstr "Úroveň inkoustu"
 
 #: inc/additionalalert.class.php:276
 msgid "No cartridge is below the threshold"
-msgstr ""
+msgstr "Žádná cartridge není pod hranicí"
 
 #: inc/additionalalert.class.php:280 inc/inkthreshold.class.php:48
 #: inc/inkthreshold.class.php:51
 msgid "Ink level alerts"
-msgstr ""
+msgstr "Upozornění úrovně inkoustu"
 
 #: inc/additionalalert.class.php:280 inc/config.class.php:108
-#: inc/inkalert.class.php:323 inc/inkthreshold.class.php:62
+#: inc/inkalert.class.php:333 inc/inkthreshold.class.php:62
 msgid "Fusioninventory plugin is not installed"
-msgstr ""
+msgstr "Plugin Fusioninventory není instalován"
 
 #: inc/additionalalert.class.php:297 inc/additionalalert.class.php:317
 msgid "Tickets unresolved since more"
+msgstr "Nevyřešené požadavky"
+
+#: inc/additionalalert.class.php:303
+msgid "Send to"
 msgstr ""
 
 #: inc/additionalalert.class.php:331
 msgid "No tickets unresolved since more"
-msgstr ""
+msgstr "Žádné nevyřešené požadavky"
 
 #: inc/config.class.php:39
 msgid "Plugin Setup"
-msgstr ""
+msgstr "Nastavení pluginu"
 
 #: inc/config.class.php:93 inc/ocsalert.class.php:69
-#: inc/ocsalert.class.php:430
+#: inc/ocsalert.class.php:441
 msgid "OCS-NG Synchronization alerts"
 msgstr "Upozornění na OCS-NG synchronizaci"
 
 #: inc/config.class.php:113
 msgid "Unresolved Ticket Alerts"
-msgstr ""
+msgstr "Nevyřešená upozornění požadavku"
 
 #: inc/infocomalert.class.php:40
 msgid "Computer with no buy date"
@@ -134,17 +139,17 @@ msgstr[2] "Počítačů bez data nákupu"
 msgid "Plugin setup"
 msgstr "Nastavení pluginu"
 
-#: inc/infocomalert.class.php:266 inc/ocsalert.class.php:365
+#: inc/infocomalert.class.php:276 inc/ocsalert.class.php:376
 msgid "Parameter"
 msgstr "Parametr"
 
-#: inc/infocomalert.class.php:267
+#: inc/infocomalert.class.php:277
 msgid "Type not used for check of buy date"
 msgstr "Typ, který se nepoužívá pro kontrolu data nákupu"
 
-#: inc/inkalert.class.php:259
+#: inc/inkalert.class.php:269
 msgid "Statutes used for the ink level"
-msgstr ""
+msgstr "Používaná pravidla pro hladinu inkoustu"
 
 #: inc/ocsalert.class.php:40
 msgid "OCSNG synchronization"
@@ -154,13 +159,13 @@ msgstr "OCSNG synchronizace"
 msgid "Alert for the new imported computers"
 msgstr "Upozornění na nově naimportované počítače"
 
-#: inc/ocsalert.class.php:366
+#: inc/ocsalert.class.php:377
 msgid "Status used by OCS-NG"
 msgstr "Stav užívaný systémem OCS-NG"
 
 #: inc/ticketunresolved.class.php:40
 msgid "Ticket unresolved"
 msgid_plural "Tickets unresolved"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Nevyřešený požadavek"
+msgstr[1] "Nevyřešené požadavky"
+msgstr[2] "Nevyřešené požadavky"
