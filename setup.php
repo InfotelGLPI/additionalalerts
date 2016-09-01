@@ -77,7 +77,7 @@ function plugin_version_additionalalerts() {
       'version' => '1.8.0',
       'license' => 'GPLv2+',
       'oldname' => 'alerting',
-      'author'  => "<a href='http://infotel.com/services/expertise-technique/glpi/'>Infotel / Konstantin Kabassanov</a>",
+      'author'  => "<a href='http://infotel.com/services/expertise-technique/glpi/'>Infotel</a> / Konstantin Kabassanov",
       'oldname' => 'alerting',
       'homepage'=>'https://forge.indepnet.net/projects/additionalalerts',
       'minGlpiVersion' => '0.90',// For compatibility / no install in version < 0.90
