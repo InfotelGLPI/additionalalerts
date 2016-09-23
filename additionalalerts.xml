@@ -14,8 +14,10 @@
          <en><![CDATA[This plugin enables you to send email supplementary alerts :<br />- New machines inventoried from OCS-NG (Having the status defined into setup module OCS-NG),<br />- Not inventoried computers from X days (Choice of supported status : for not taking into account the stock machines),<br />- Items with empty buy date (Choice of supported types : for not taking into account the equipment not purchased),<br />- Cartridges whose level is low (fusion Inventory).]]></en>
       </long>
    </description>
-      <homepage>https://github.com/InfotelGLPI/additionalalerts</homepage>
+   <homepage>https://github.com/InfotelGLPI/additionalalerts</homepage>
    <download>https://github.com/InfotelGLPI/additionalalerts/releases</download>
+   <issues>https://github.com/InfotelGLPI/additionalalerts/issues</issues>
+   <readme>https://raw.githubusercontent.com/InfotelGLPI/additionalalerts/master/README.md</readme>
    <authors>
       <author>Xavier Caillaud / Infotel</author>
    </authors>

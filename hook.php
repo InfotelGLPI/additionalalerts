@@ -37,13 +37,16 @@ function plugin_additionalalerts_install() {
    $update80=false;
    $update90=false;
    
+   //INSTALL
    if (!TableExists("glpi_plugin_additionalalerts_ticketunresolveds") 
          && !TableExists("glpi_plugin_additionalalerts_configs")) {
       
       $install=true;
       $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/empty-1.9.0.sql");
 
-   } else if (TableExists("glpi_plugin_alerting_profiles") 
+   } 
+   //UPDATE
+   if (TableExists("glpi_plugin_alerting_profiles") 
                   && FieldExists("glpi_plugin_alerting_profiles","interface")) {
       
       $update78=true;
@@ -51,13 +54,15 @@ function plugin_additionalalerts_install() {
       $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/update-1.2.0.sql");
       $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/update-1.3.0.sql");
     
-   } else if (!TableExists("glpi_plugin_additionalalerts_notificationstates")) {
+   } 
+   if (!TableExists("glpi_plugin_additionalalerts_notificationstates")) {
       
       $update78=true;
       $update80=true;
       $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/update-1.3.0.sql");
 
-   } else if (TableExists("glpi_plugin_additionalalerts_reminderalerts")) {
+   } 
+   if (TableExists("glpi_plugin_additionalalerts_reminderalerts")) {
       
       $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/update-1.5.0.sql");
       
@@ -88,7 +93,8 @@ function plugin_additionalalerts_install() {
       if($temp->getFromDBbyName('PluginAdditionalalertsReminderAlert','AdditionalalertsReminder')) {
          $temp->delete(array('id'=>$temp->fields["id"]));
       }
-   } else if (!TableExists("glpi_plugin_additionalalerts_inkalerts")) {
+   } 
+   if (!TableExists("glpi_plugin_additionalalerts_inkalerts")) {
       
       $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/update-1.7.1.sql");
       
@@ -124,9 +130,11 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert ink level', 0, 'PluginAdditionalalertsInkAlert', 'ink',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-20 10:36:46');";
       $result=$DB->query($query);
-   }  else if (!TableExists("glpi_plugin_additionalalerts_ticketunresolveds")) {
+   } 
+   //version 1.8.0
+   if (!TableExists("glpi_plugin_additionalalerts_ticketunresolveds")) {
 
       $update90 = true;
       $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.8.0.sql");
@@ -175,7 +183,7 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert infocoms', 0, 'PluginAdditionalalertsInfocomAlert', 'notinfocom',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-13 10:36:46', '2010-03-13 10:36:46');";
+                                          '', 1, 1, '2010-03-13 10:36:46', '2010-03-20 10:36:46');";
       $result=$DB->query($query);
       
       ////////////////////
@@ -226,13 +234,13 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert new machines ocs', 0, 'PluginAdditionalalertsOcsAlert', 'newocs',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-20 10:36:46');";
       $result=$DB->query($query);
       
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert ocs synchronization', 0, 'PluginAdditionalalertsOcsAlert', 'ocs',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-20 10:36:46');";
       $result=$DB->query($query);
       
       //////////////////////
@@ -268,7 +276,7 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert ink level', 0, 'PluginAdditionalalertsInkAlert', 'ink',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-20 10:36:46');";
       $result=$DB->query($query);
 
      
@@ -339,7 +347,7 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert Ticket Unresolved', 0, 'PluginAdditionalalertsTicketUnresolved', 'ticketunresolved',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-20 10:36:46');";
       $result=$DB->query($query);
          
     }
