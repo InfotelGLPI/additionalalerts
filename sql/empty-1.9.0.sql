@@ -73,7 +73,7 @@ CREATE TABLE `glpi_plugin_additionalalerts_inkprinterstates` (
    PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert infocoms', 'PluginAdditionalalertsInfocomAlert', '2010-03-13 10:44:46','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert machines ocs', 'PluginAdditionalalertsOcsAlert', '2010-03-13 10:44:46','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert ink level', 'PluginAdditionalalertsInkAlert', '2010-03-13 10:44:46','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert Ticket Unresolved', 'PluginAdditionalalertsTicketUnresolved', '2010-03-13 10:44:46','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert infocoms', 'PluginAdditionalalertsInfocomAlert', '2010-03-13 10:44:46','',NULL, '2010-03-13 10:44:46');
+INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert machines ocs', 'PluginAdditionalalertsOcsAlert', '2010-03-13 10:44:46','',NULL, '2010-03-13 10:44:46');
+INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert ink level', 'PluginAdditionalalertsInkAlert', '2010-03-13 10:44:46','',NULL, '2010-03-13 10:44:46');
+INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Alert Ticket Unresolved', 'PluginAdditionalalertsTicketUnresolved', '2010-03-13 10:44:46','',NULL, '2010-03-13 10:44:46');

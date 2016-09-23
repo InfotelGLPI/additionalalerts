@@ -2,22 +2,22 @@
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
- Additionalalerts plugin for GLPI
- Copyright (C) 2003-2011 by the Additionalalerts Development Team.
+ additionalalerts plugin for GLPI
+ Copyright (C) 2009-2016 by the additionalalerts Development Team.
 
- https://forge.indepnet.net/projects/additionalalerts
+ https://github.com/InfotelGLPI/additionalalerts
  -------------------------------------------------------------------------
 
  LICENSE
       
- This file is part of Additionalalerts.
+ This file is part of additionalalerts.
 
- Additionalalerts is free software; you can redistribute it and/or modify
+ additionalalerts is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- Additionalalerts is distributed in the hope that it will be useful,
+ additionalalerts is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
@@ -26,7 +26,7 @@
  along with additionalalerts. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-
+ 
 // Init the hooks of the plugins -Needed
 function plugin_init_additionalalerts() {
    global $PLUGIN_HOOKS;
@@ -74,19 +74,19 @@ function plugin_version_additionalalerts() {
 
    return array (
       'name' => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
-      'version' => '1.8.0',
+      'version' => '1.9.0',
       'license' => 'GPLv2+',
       'oldname' => 'alerting',
       'author'  => "<a href='http://infotel.com/services/expertise-technique/glpi/'>Infotel / Konstantin Kabassanov</a>",
       'oldname' => 'alerting',
-      'homepage'=>'https://forge.indepnet.net/projects/additionalalerts',
+      'homepage'=>'https://github.com/InfotelGLPI/additionalalerts',
       'minGlpiVersion' => '0.90',// For compatibility / no install in version < 0.90
    );
 }
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_additionalalerts_check_prerequisites() {
-   if (version_compare(GLPI_VERSION,'0.90','lt') || version_compare(GLPI_VERSION,'0.91','ge')) {
+   if (version_compare(GLPI_VERSION,'0.90','lt') || version_compare(GLPI_VERSION,'9.2','ge')) {
       _e('This plugin requires GLPI >= 0.90', 'additionalalerts');
       return false;
    }

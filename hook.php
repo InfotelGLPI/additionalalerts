@@ -2,22 +2,22 @@
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
- Additionalalerts plugin for GLPI
- Copyright (C) 2003-2011 by the Additionalalerts Development Team.
+ additionalalerts plugin for GLPI
+ Copyright (C) 2009-2016 by the additionalalerts Development Team.
 
- https://forge.indepnet.net/projects/additionalalerts
+ https://github.com/InfotelGLPI/additionalalerts
  -------------------------------------------------------------------------
 
  LICENSE
       
- This file is part of Additionalalerts.
+ This file is part of additionalalerts.
 
- Additionalalerts is free software; you can redistribute it and/or modify
+ additionalalerts is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- Additionalalerts is distributed in the hope that it will be useful,
+ additionalalerts is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
@@ -41,7 +41,7 @@ function plugin_additionalalerts_install() {
          && !TableExists("glpi_plugin_additionalalerts_configs")) {
       
       $install=true;
-      $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/empty-1.8.0.sql");
+      $DB->runFile(GLPI_ROOT ."/plugins/additionalalerts/sql/empty-1.9.0.sql");
 
    } else if (TableExists("glpi_plugin_alerting_profiles") 
                   && FieldExists("glpi_plugin_alerting_profiles","interface")) {
@@ -175,7 +175,7 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert infocoms', 0, 'PluginAdditionalalertsInfocomAlert', 'notinfocom',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-13 10:36:46');";
+                                          '', 1, 1, '2010-03-13 10:36:46', '2010-03-13 10:36:46');";
       $result=$DB->query($query);
       
       ////////////////////
@@ -226,13 +226,13 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert new machines ocs', 0, 'PluginAdditionalalertsOcsAlert', 'newocs',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
       $result=$DB->query($query);
       
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert ocs synchronization', 0, 'PluginAdditionalalertsOcsAlert', 'ocs',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
       $result=$DB->query($query);
       
       //////////////////////
@@ -268,7 +268,7 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert ink level', 0, 'PluginAdditionalalertsInkAlert', 'ink',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
       $result=$DB->query($query);
 
      
@@ -339,7 +339,7 @@ function plugin_additionalalerts_install() {
       $query = "INSERT INTO `glpi_notifications`
                                    VALUES (NULL, 'Alert Ticket Unresolved', 0, 'PluginAdditionalalertsTicketUnresolved', 'ticketunresolved',
                                           'mail',".$itemtype.",
-                                          '', 1, 1, '2010-03-20 10:36:46');";
+                                          '', 1, 1, '2010-03-20 10:36:46', '2010-03-13 10:36:46');";
       $result=$DB->query($query);
          
     }
