@@ -218,7 +218,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
    static function cronAdditionalalertsOcs($task=NULL) {
       global $DB,$CFG_GLPI;
       
-      if (!$CFG_GLPI["use_mailing"]) {
+      if (!$CFG_GLPI["use_mailing"] || !TableExists("glpi_plugin_ocsinventoryng_ocsservers")) {
          return 0;
       }
       
@@ -293,7 +293,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
    static function cronAdditionalalertsNewOcs($task=NULL) {
       global $DB,$CFG_GLPI;
       
-      if (!$CFG_GLPI["use_mailing"]) {
+      if (!$CFG_GLPI["use_mailing"] || !TableExists("glpi_plugin_ocsinventoryng_ocsservers")) {
          return 0;
       }
       

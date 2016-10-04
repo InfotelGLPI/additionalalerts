@@ -77,6 +77,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       $this->getFromDB(1);
       $options['colspan'] = 1;
       $this->showFormHeader($options);
+      $plugin = new Plugin();
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</td><td>";
@@ -86,20 +87,27 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td >" .  __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
-      Alert::dropdownYesNo(array('name'=>"use_newocs_alert",
-                              'value'=>$this->fields["use_newocs_alert"]));
+      if($plugin->isActivated('ocsinventorying')){
+         Alert::dropdownYesNo(array('name'=>"use_newocs_alert",
+                                 'value'=>$this->fields["use_newocs_alert"]));
+      } else {
+        echo "<div align='center'><b>".__('Ocsinventory plugin is not installed', 'additionalalerts')."</b></div>";
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . __('OCS-NG Synchronization alerts', 'additionalalerts') . "</td><td>";
-      Alert::dropdownIntegerNever('delay_ocs',
-                                  $this->fields["delay_ocs"],
-                                  array('max'=>99));
-      echo "&nbsp;"._n('Day','Days',2)."</td></tr>";
+      if($plugin->isActivated('ocsinventorying')){
+         Alert::dropdownIntegerNever('delay_ocs',
+                                     $this->fields["delay_ocs"],
+                                     array('max'=>99));
+         echo "&nbsp;"._n('Day','Days',2);
+      } else {
+         echo "<div align='center'><b>".__('Ocsinventory plugin is not installed', 'additionalalerts')."</b></div>";
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td >" . __('Cartridges whose level is low', 'additionalalerts') . "</td><td>";
-      $plugin = new Plugin();
       if ($plugin->isActivated("fusioninventory") && 
             TableExists("glpi_plugin_fusioninventory_printercartridges")) {
          Alert::dropdownYesNo(array('name'=>"use_ink_alert",
