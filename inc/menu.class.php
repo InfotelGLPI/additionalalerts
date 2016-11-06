@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
@@ -26,31 +27,43 @@
  along with additionalalerts. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
- 
-class PluginAdditionalalertsMenu extends CommonGLPI {
+
+/**
+ * Class PluginAdditionalalertsMenu
+ */
+class PluginAdditionalalertsMenu extends CommonGLPI
+{
    static $rightname = 'plugin_additionalalerts';
 
-   static function getMenuName() {
+   /**
+    * @return translated
+    */
+   static function getMenuName()
+   {
       return _n('Other alert', 'Others alerts', 2, 'additionalalerts');
    }
 
-   static function getMenuContent() {
-      global $CFG_GLPI;
+   /**
+    * @return array
+    */
+   static function getMenuContent()
+   {
 
-      $menu                                           = array();
-      $menu['title']                                  = self::getMenuName();
-      $menu['page']                                   = "/plugins/additionalalerts/front/additionalalert.form.php";
-      $menu['links']['search']                        = PluginAdditionalalertsAdditionalalert::getFormURL(false);
+      $menu = array();
+      $menu['title'] = self::getMenuName();
+      $menu['page'] = "/plugins/additionalalerts/front/additionalalert.form.php";
+      $menu['links']['search'] = PluginAdditionalalertsAdditionalalert::getFormURL(false);
 
       return $menu;
    }
 
-   static function removeRightsFromSession() {
+   static function removeRightsFromSession()
+   {
       if (isset($_SESSION['glpimenu']['plugins']['types']['PluginAdditionalalertsMenu'])) {
-         unset($_SESSION['glpimenu']['plugins']['types']['PluginAdditionalalertsMenu']); 
+         unset($_SESSION['glpimenu']['plugins']['types']['PluginAdditionalalertsMenu']);
       }
       if (isset($_SESSION['glpimenu']['plugins']['content']['pluginadditionalalertsmenu'])) {
-         unset($_SESSION['glpimenu']['plugins']['content']['pluginadditionalalertsmenu']); 
+         unset($_SESSION['glpimenu']['plugins']['content']['pluginadditionalalertsmenu']);
       }
    }
 }

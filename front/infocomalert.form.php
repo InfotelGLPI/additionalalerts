@@ -27,44 +27,42 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 $type = new PluginAdditionalalertsNotificationType();
 $infocom = new PluginAdditionalalertsInfocomAlert();
 
 if (isset($_POST["add"])) {
-   
+
    if ($infocom->canUpdate()) {
-      $newID=$infocom->add($_POST);
+      $newID = $infocom->add($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   
+
    if ($infocom->canUpdate()) {
       $infocom->update($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["add_type"])) {
-   
+
    if ($infocom->canUpdate()) {
-      $newID=$type->add($_POST);
+      $newID = $type->add($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["delete_type"])) {
-   
+
    if ($infocom->canUpdate()) {
-      $type->getFromDB($_POST["id"],-1);
+      $type->getFromDB($_POST["id"]);
       foreach ($_POST["item"] as $key => $val) {
-         if ($val==1) {
-            $type->delete(array('id'=>$key));
+         if ($val == 1) {
+            $type->delete(array('id' => $key));
          }
       }
    }
    Html::back();
-   
-}
 
-?>
+}

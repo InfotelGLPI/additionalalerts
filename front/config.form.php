@@ -27,17 +27,15 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 $config = new PluginAdditionalalertsConfig();
 if (isset($_POST["update"])) {
-      $config->update($_POST);
+   $config->update($_POST);
    Html::back();
 } else {
-   Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2),'',"plugins","pluginadditionalalertsmenu");
+   Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "plugins", "pluginadditionalalertsmenu");
    $config = new PluginAdditionalalertsConfig();
    $config->showForm();
    Html::footer();
 }
-
-?>

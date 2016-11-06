@@ -27,14 +27,15 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
-  
-Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2),'',"plugins","pluginadditionalalertsmenu");
+include('../../../inc/includes.php');
+
+Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "plugins", "pluginadditionalalertsmenu");
 
 $alert = new PluginAdditionalalertsAdditionalalert();
-if (Session::haveRight("plugin_additionalalerts",READ) 
-      || Session::haveRight("config",CREATE)) {
-   
+if (Session::haveRight("plugin_additionalalerts", READ)
+   || Session::haveRight("config", CREATE)
+) {
+
    PluginAdditionalalertsAdditionalalert::displayAlerts();
 
 } else {
@@ -42,5 +43,3 @@ if (Session::haveRight("plugin_additionalalerts",READ)
 }
 
 Html::footer();
-
-?>

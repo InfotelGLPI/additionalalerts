@@ -31,38 +31,61 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginAdditionalalertsConfig extends CommonDBTM {
-   
+/**
+ * Class PluginAdditionalalertsConfig
+ */
+class PluginAdditionalalertsConfig extends CommonDBTM
+{
+
    static $rightname = "plugin_additionalalerts";
 
-   static function getTypeName($nb=0) {
+   /**
+    * @param int $nb
+    * @return string|translated
+    */
+   static function getTypeName($nb = 0)
+   {
       return __('Plugin Setup', 'additionalalerts');
    }
-   
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+   /**
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return string|translated
+    */
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+   {
       global $CFG_GLPI;
 
-      if ($item->getType()=='NotificationMailSetting' 
-            && $item->getField('id') 
-               && $CFG_GLPI["use_mailing"]) {
-            return PluginAdditionalalertsAdditionalalert::getTypeName(2);
-      } else if ($item->getType()=='Entity') {
-            return PluginAdditionalalertsAdditionalalert::getTypeName(2);
+      if ($item->getType() == 'NotificationMailSetting'
+         && $item->getField('id')
+         && $CFG_GLPI["use_mailing"]
+      ) {
+         return PluginAdditionalalertsAdditionalalert::getTypeName(2);
+      } else if ($item->getType() == 'Entity') {
+         return PluginAdditionalalertsAdditionalalert::getTypeName(2);
       }
-         return '';
+      return '';
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   /**
+    * @param CommonGLPI $item
+    * @param int $tabnum
+    * @param int $withtemplate
+    * @return bool
+    */
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+   {
       global $CFG_GLPI;
 
-      if ($item->getType()=='NotificationMailSetting') {
+      if ($item->getType() == 'NotificationMailSetting') {
 
-         $target = $CFG_GLPI["root_doc"]."/plugins/additionalalerts/front/config.form.php";
+         $target = $CFG_GLPI["root_doc"] . "/plugins/additionalalerts/front/config.form.php";
          $conf = new PluginAdditionalalertsConfig;
-         $conf->showForm(array('target' =>$target));
-         
-      } else if ($item->getType()=='Entity') {
-         
+         $conf->showForm(array('target' => $target));
+
+      } else if ($item->getType() == 'Entity') {
+
          PluginAdditionalalertsInfocomAlert::showNotificationOptions($item);
          PluginAdditionalalertsOcsAlert::showNotificationOptions($item);
          PluginAdditionalalertsInkAlert::showNotificationOptions($item);
@@ -71,8 +94,13 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       }
       return true;
    }
-   
-   function showForm($options=array()) {
+
+   /**
+    * @param array $options
+    * @return bool
+    */
+   function showForm($options = array())
+   {
 
       $this->getFromDB(1);
       $options['colspan'] = 1;
@@ -80,53 +108,52 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</td><td>";
-      Alert::dropdownYesNo(array('name'=>"use_infocom_alert",
-                              'value'=>$this->fields["use_infocom_alert"]));
+      Alert::dropdownYesNo(array('name' => "use_infocom_alert",
+         'value' => $this->fields["use_infocom_alert"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td >" .  __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
-      Alert::dropdownYesNo(array('name'=>"use_newocs_alert",
-                              'value'=>$this->fields["use_newocs_alert"]));
+      echo "<td >" . __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
+      Alert::dropdownYesNo(array('name' => "use_newocs_alert",
+         'value' => $this->fields["use_newocs_alert"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . __('OCS-NG Synchronization alerts', 'additionalalerts') . "</td><td>";
       Alert::dropdownIntegerNever('delay_ocs',
-                                  $this->fields["delay_ocs"],
-                                  array('max'=>99));
-      echo "&nbsp;"._n('Day','Days',2)."</td></tr>";
+         $this->fields["delay_ocs"],
+         array('max' => 99));
+      echo "&nbsp;" . _n('Day', 'Days', 2) . "</td></tr>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td >" . __('Cartridges whose level is low', 'additionalalerts') . "</td><td>";
       $plugin = new Plugin();
-      if ($plugin->isActivated("fusioninventory") && 
-            TableExists("glpi_plugin_fusioninventory_printercartridges")) {
-         Alert::dropdownYesNo(array('name'=>"use_ink_alert",
-                                   'value'=>$this->fields["use_ink_alert"]));
+      if ($plugin->isActivated("fusioninventory") &&
+         TableExists("glpi_plugin_fusioninventory_printercartridges")
+      ) {
+         Alert::dropdownYesNo(array('name' => "use_ink_alert",
+            'value' => $this->fields["use_ink_alert"]));
       } else {
-        echo "<div align='center'><b>".__('Fusioninventory plugin is not installed', 'additionalalerts')."</b></div>";
+         echo "<div align='center'><b>" . __('Fusioninventory plugin is not installed', 'additionalalerts') . "</b></div>";
       }
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Unresolved Ticket Alerts', 'additionalalerts') . "</td><td>";
-     
+
       Alert::dropdownIntegerNever('delay_ticket_alert',
-                                  $this->fields["delay_ticket_alert"],
-                                  array('max'=>99));
-      echo "&nbsp;"._n('Day','Days',2)."</td></tr>";
+         $this->fields["delay_ticket_alert"],
+         array('max' => 99));
+      echo "&nbsp;" . _n('Day', 'Days', 2) . "</td></tr>";
       echo "</td></tr>";
-      
+
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "</td></tr>";
-      
+
       $this->showFormButtons($options);
-      
+
       return true;
    }
 }
-
-?>

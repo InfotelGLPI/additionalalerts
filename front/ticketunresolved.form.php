@@ -27,44 +27,42 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 $type = new PluginAdditionalalertsNotificationType();
 $ticket = new PluginAdditionalalertsTicketUnresolved();
 
 if (isset($_POST["add"])) {
-   
+
    if ($ticket->canUpdate()) {
-      $newID=$ticket->add($_POST);
+      $newID = $ticket->add($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   
+
    if ($ticket->canUpdate()) {
       $ticket->update($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["add_type"])) {
-   
+
    if ($ticket->canUpdate()) {
-      $newID=$type->add($_POST);
+      $newID = $type->add($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["delete_type"])) {
-   
+
    if ($ticket->canUpdate()) {
-      $type->getFromDB($_POST["id"],-1);
+      $type->getFromDB($_POST["id"]);
       foreach ($_POST["item"] as $key => $val) {
-         if ($val==1) {
-            $type->delete(array('id'=>$key));
+         if ($val == 1) {
+            $type->delete(array('id' => $key));
          }
       }
    }
    Html::back();
-   
-}
 
-?>
+}

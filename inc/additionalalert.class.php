@@ -31,133 +31,149 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
-   
+/**
+ * Class PluginAdditionalalertsAdditionalalert
+ */
+class PluginAdditionalalertsAdditionalalert extends CommonDBTM
+{
+
    static $rightname = "plugin_additionalalerts";
-   
-   static function getTypeName($nb=0) {
+
+   /**
+    * @param int $nb
+    * @return translated
+    */
+   static function getTypeName($nb = 0)
+   {
 
       return _n('Other alert', 'Others alerts', $nb, 'additionalalerts');
    }
 
-   
-   static function displayAlerts() {
+
+   static function displayAlerts()
+   {
       global $DB;
 
-      $CronTask=new CronTask();
-      
+      $CronTask = new CronTask();
+
       $config = new PluginAdditionalalertsConfig();
       $config->getFromDB('1');
-      
+
       $infocom = new PluginAdditionalalertsInfocomAlert();
       $infocom->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
-      if (isset($infocom->fields["use_infocom_alert"]) 
-         && $infocom->fields["use_infocom_alert"] > 0)
-         $use_infocom_alert=$infocom->fields["use_infocom_alert"];
+      if (isset($infocom->fields["use_infocom_alert"])
+         && $infocom->fields["use_infocom_alert"] > 0
+      )
+         $use_infocom_alert = $infocom->fields["use_infocom_alert"];
       else
-         $use_infocom_alert=$config->fields["use_infocom_alert"];
-      
+         $use_infocom_alert = $config->fields["use_infocom_alert"];
+
       $ocsalert = new PluginAdditionalalertsOcsAlert();
       $ocsalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
-      if (isset($ocsalert->fields["use_newocs_alert"]) 
-         && $ocsalert->fields["use_newocs_alert"] > 0)
-         $use_newocs_alert=$ocsalert->fields["use_newocs_alert"];
+      if (isset($ocsalert->fields["use_newocs_alert"])
+         && $ocsalert->fields["use_newocs_alert"] > 0
+      )
+         $use_newocs_alert = $ocsalert->fields["use_newocs_alert"];
       else
-         $use_newocs_alert=$config->fields["use_newocs_alert"];
+         $use_newocs_alert = $config->fields["use_newocs_alert"];
 
-      if (isset($ocsalert->fields["delay_ocs"]) 
-         && $ocsalert->fields["delay_ocs"] > 0)
-         $delay_ocs=$ocsalert->fields["delay_ocs"];
+      if (isset($ocsalert->fields["delay_ocs"])
+         && $ocsalert->fields["delay_ocs"] > 0
+      )
+         $delay_ocs = $ocsalert->fields["delay_ocs"];
       else
-         $delay_ocs=$config->fields["delay_ocs"];
-     $additionalalerts_ocs=0;
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert","AdditionalalertsOcs")) {
-         if ($CronTask->fields["state"]!=CronTask::STATE_DISABLE && $delay_ocs > 0) {
-            $additionalalerts_ocs=1;
+         $delay_ocs = $config->fields["delay_ocs"];
+      $additionalalerts_ocs = 0;
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert", "AdditionalalertsOcs")) {
+         if ($CronTask->fields["state"] != CronTask::STATE_DISABLE && $delay_ocs > 0) {
+            $additionalalerts_ocs = 1;
          }
       }
-      $additionalalerts_new_ocs=0;
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert","AdditionalalertsNewOcs")) {
-         if ($CronTask->fields["state"]!=CronTask::STATE_DISABLE && $use_newocs_alert > 0) {
-            $additionalalerts_new_ocs=1;
+      $additionalalerts_new_ocs = 0;
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert", "AdditionalalertsNewOcs")) {
+         if ($CronTask->fields["state"] != CronTask::STATE_DISABLE && $use_newocs_alert > 0) {
+            $additionalalerts_new_ocs = 1;
          }
       }
-      
+
       $ticketunresolved = new PluginAdditionalalertsTicketUnresolved();
       $ticketunresolved->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
-      if (isset($ticketunresolved->fields["delay_ticket_alert"]) 
-         && $ticketunresolved->fields["delay_ticket_alert"] > 0){
+      if (isset($ticketunresolved->fields["delay_ticket_alert"])
+         && $ticketunresolved->fields["delay_ticket_alert"] > 0
+      ) {
          $delay_ticket_alert = $ticketunresolved->fields["delay_ticket_alert"];
-      }else{
+      } else {
          $delay_ticket_alert = $config->fields["delay_ticket_alert"];
       }
-      
+
       $inkalert = new PluginAdditionalalertsInkAlert();
       $inkalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($inkalert->fields["use_ink_alert"])
-         && $inkalert->fields["use_ink_alert"] > 0)
-         $use_ink_alert=$inkalert->fields["use_ink_alert"];
+         && $inkalert->fields["use_ink_alert"] > 0
+      )
+         $use_ink_alert = $inkalert->fields["use_ink_alert"];
       else
-         $use_ink_alert=$config->fields["use_ink_alert"];
- 
-      $additionalalerts_ink=0;
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsInkAlert","AdditionalalertsInk")) {
-         if ($CronTask->fields["state"]!=CronTask::STATE_DISABLE && $use_ink_alert > 0) {
-            $additionalalerts_ink=1;
+         $use_ink_alert = $config->fields["use_ink_alert"];
+
+      $additionalalerts_ink = 0;
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsInkAlert", "AdditionalalertsInk")) {
+         if ($CronTask->fields["state"] != CronTask::STATE_DISABLE && $use_ink_alert > 0) {
+            $additionalalerts_ink = 1;
          }
       }
 
-      $additionalalerts_not_infocom=0;
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsInfocomAlert","AdditionalalertsNotInfocom")) {
-         if ($CronTask->fields["state"]!=CronTask::STATE_DISABLE && $use_infocom_alert > 0) {
-            $additionalalerts_not_infocom=1;
+      $additionalalerts_not_infocom = 0;
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsInfocomAlert", "AdditionalalertsNotInfocom")) {
+         if ($CronTask->fields["state"] != CronTask::STATE_DISABLE && $use_infocom_alert > 0) {
+            $additionalalerts_not_infocom = 1;
          }
       }
-      
-      $additionalalerts_ticket_unresolved=0;
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsTicketUnresolved","AdditionalalertsTicketUnresolved")) {
-         if ($CronTask->fields["state"]!=CronTask::STATE_DISABLE && $delay_ticket_alert > 0) {
-            $additionalalerts_ticket_unresolved=1;
-         }
-      }
-      
-      if ($additionalalerts_ocs==0 
-         && $additionalalerts_new_ocs==0 
-            && $additionalalerts_not_infocom==0
-               && $additionalalerts_ink==0
-                  && $additionalalerts_ticket_unresolved == 0) {
-         echo "<div align='center'><b>".__('No used alerts','additionalalerts')."</b></div>";
-      }
-      if ($additionalalerts_not_infocom!=0) {
-         if (Session::haveRight("infocom",READ)) {
 
-            $query=PluginAdditionalalertsInfocomAlert::query($_SESSION["glpiactive_entity"]);
+      $additionalalerts_ticket_unresolved = 0;
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsTicketUnresolved", "AdditionalalertsTicketUnresolved")) {
+         if ($CronTask->fields["state"] != CronTask::STATE_DISABLE && $delay_ticket_alert > 0) {
+            $additionalalerts_ticket_unresolved = 1;
+         }
+      }
+
+      if ($additionalalerts_ocs == 0
+         && $additionalalerts_new_ocs == 0
+         && $additionalalerts_not_infocom == 0
+         && $additionalalerts_ink == 0
+         && $additionalalerts_ticket_unresolved == 0
+      ) {
+         echo "<div align='center'><b>" . __('No used alerts', 'additionalalerts') . "</b></div>";
+      }
+      if ($additionalalerts_not_infocom != 0) {
+         if (Session::haveRight("infocom", READ)) {
+
+            $query = PluginAdditionalalertsInfocomAlert::query($_SESSION["glpiactive_entity"]);
             $result = $DB->query($query);
 
-            if ($DB->numrows($result)>0) {
+            if ($DB->numrows($result) > 0) {
 
                if (Session::isMultiEntitiesMode()) {
-                  $nbcol=7;
+                  $nbcol = 7;
                } else {
-                  $nbcol=6;
+                  $nbcol = 6;
                }
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-               echo PluginAdditionalalertsInfocomAlert::getTypeName(2)."</th></tr>";
-               echo "<tr><th>".__('Name')."</th>";
+               echo PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</th></tr>";
+               echo "<tr><th>" . __('Name') . "</th>";
                if (Session::isMultiEntitiesMode())
-                  echo "<th>".__('Entity')."</th>";
-               echo "<th>".__('Type')."</th>";
-               echo "<th>".__('Operating system')."</th>";
-               echo "<th>".__('Status')."</th>";
-               echo "<th>".__('Location')."</th>";
-               echo "<th>".__('User')." / ".__('Group')." / ".__('Alternate username')."</th></tr>";
-               while ($data=$DB->fetch_array($result)) {
+                  echo "<th>" . __('Entity') . "</th>";
+               echo "<th>" . __('Type') . "</th>";
+               echo "<th>" . __('Operating system') . "</th>";
+               echo "<th>" . __('Status') . "</th>";
+               echo "<th>" . __('Location') . "</th>";
+               echo "<th>" . __('User') . " / " . __('Group') . " / " . __('Alternate username') . "</th></tr>";
+               while ($data = $DB->fetch_array($result)) {
 
                   echo PluginAdditionalalertsInfocomAlert::displayBody($data);
                }
                echo "</table></div>";
             } else {
-               echo "<br><div align='center'><b>".__('No computers with no buy date', 'additionalalerts')."</b></div>";
+               echo "<br><div align='center'><b>" . __('No computers with no buy date', 'additionalalerts') . "</b></div>";
             }
             echo "<br>";
          }
@@ -283,18 +299,17 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
 
       if ($additionalalerts_ticket_unresolved != 0) {
          $entities = PluginAdditionalalertsTicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
-         
+
          foreach ($entities as $entity => $delay_ticket_alert) {
             $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $entity);
             $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $entity);
             $result = $DB->query($query_technician);
             $result_supervisor = $DB->query($query_supervisor);
-
+            $nbcol = 6;
             if ($DB->numrows($result) > 0) {
-               $nbcol = 6;
 
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".Dropdown::getDropdownName("glpi_entities",$entity).  "</th></tr>";
+               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</th></tr>";
                echo "<tr><th>" . __('Title') . "</th>";
                echo "<th>" . __('Entity') . "</th>";
                echo "<th>" . __('Status') . "</th>";
@@ -314,7 +329,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                echo "</table></div>";
             } elseif ($DB->numrows($result_supervisor) > 0) {
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".Dropdown::getDropdownName("glpi_entities",$entity). "</th></tr>";
+               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</th></tr>";
                echo "<tr><th>" . __('Title') . "</th>";
                echo "<th>" . __('Entity') . "</th>";
                echo "<th>" . __('Status') . "</th>";
@@ -328,7 +343,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                }
                echo "</table></div>";
             } else {
-               echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", ".__('Entity'). " : ".$entity['name']."</b></div>";
+               echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . $entity['name'] . "</b></div>";
             }
 
             echo "<br>";
@@ -337,5 +352,3 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
    }
 
 }
-
-?>

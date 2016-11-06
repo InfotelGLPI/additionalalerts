@@ -31,7 +31,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginAdditionalalertsInkPrinterState extends PluginAdditionalalertsNotificationState {
+/**
+ * Class PluginAdditionalalertsInkPrinterState
+ */
+class PluginAdditionalalertsInkPrinterState extends PluginAdditionalalertsNotificationState
+{
 }
-
-?>

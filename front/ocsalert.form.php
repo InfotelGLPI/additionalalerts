@@ -26,44 +26,42 @@
  along with additionalalerts. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
-$state=new PluginAdditionalalertsNotificationState();
-$ocsalert=new PluginAdditionalalertsOcsAlert();
+$state = new PluginAdditionalalertsNotificationState();
+$ocsalert = new PluginAdditionalalertsOcsAlert();
 
 if (isset($_POST["add"])) {
-   
+
    if ($ocsalert->canUpdate()) {
-      $newID=$ocsalert->add($_POST);
+      $newID = $ocsalert->add($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   
+
    if ($ocsalert->canUpdate()) {
       $ocsalert->update($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["add_state"])) {
-   
+
    if ($ocsalert->canUpdate()) {
-      $newID=$state->add($_POST);
+      $newID = $state->add($_POST);
    }
    Html::back();
 
 } else if (isset($_POST["delete_state"])) {
-   
+
    if ($ocsalert->canUpdate()) {
-      $state->getFromDB($_POST["id"],-1);
+      $state->getFromDB($_POST["id"]);
       foreach ($_POST["item"] as $key => $val) {
-         if ($val==1) {
-            $state->delete(array('id'=>$key));
+         if ($val == 1) {
+            $state->delete(array('id' => $key));
          }
       }
    }
    Html::back();
-   
-}
 
-?>
+}

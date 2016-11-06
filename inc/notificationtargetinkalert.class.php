@@ -27,32 +27,45 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
 // Class NotificationTarget
-class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarget {
+/**
+ * Class PluginAdditionalalertsNotificationTargetInkAlert
+ */
+class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarget
+{
 
-   function getEvents() {
-      return array ('ink' => __('Cartridges whose level is low', 'additionalalerts'));
+   /**
+    * @return array
+    */
+   function getEvents()
+   {
+      return array('ink' => __('Cartridges whose level is low', 'additionalalerts'));
    }
 
-   function getDatasForTemplate($event,$options=array()) {
+   /**
+    * @param $event
+    * @param array $options
+    */
+   function getDatasForTemplate($event, $options = array())
+   {
       global $CFG_GLPI;
 
       $this->datas['##ink.entity##'] = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
-      $this->datas['##lang.ink.entity##'] =__('Entity');
-  
+      $this->datas['##lang.ink.entity##'] = __('Entity');
+
       $events = $this->getAllEvents();
 
       $this->datas['##lang.ink.title##'] = $events[$event];
 
-      $this->datas['##lang.ink.printer##'] = __('Printers'); 
+      $this->datas['##lang.ink.printer##'] = __('Printers');
       $this->datas['##lang.ink.cartridge##'] = _n('Cartridge', 'Cartridges', 2);
       $this->datas['##lang.ink.state##'] = __('State');
 
-      foreach($options['ink'] as $id => $ink) {
+      foreach ($options['ink'] as $id => $ink) {
          $snmp = new PluginFusioninventoryPrinterCartridge();
          $snmp->getFromDB($ink["id"]);
 
@@ -61,39 +74,41 @@ class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarge
 
          $printer = new Printer();
          $printer->getFromDB($snmp->fields["printers_id"]);
- 
+
          $tmp = array();
- 
-         $tmp['##ink.urlprinter##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=printer_".$printer->fields['id']);
+
+         $tmp['##ink.urlprinter##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=printer_" . $printer->fields['id']);
          $tmp['##ink.printer##'] = $printer->fields['name'];
-         $tmp['##ink.urlcartridge##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=cartridgeitem_".$cartridge->fields['id']);
-         $tmp['##ink.cartridge##'] = $cartridge->fields['name']." (".$cartridge->fields['ref'].")";
+         $tmp['##ink.urlcartridge##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=cartridgeitem_" . $cartridge->fields['id']);
+         $tmp['##ink.cartridge##'] = $cartridge->fields['name'] . " (" . $cartridge->fields['ref'] . ")";
          $tmp['##ink.state##'] = $snmp->fields['state'];
-  
+
          $this->datas['inks'][] = $tmp;
       }
    }
-  
-   function getTags() {
+
+   /**
+    *
+    */
+   function getTags()
+   {
 
       $tags = array('ink.printer' => __('Printers'),
-                    'ink.printerurl' => 'URL '.__('Printers'),
-                    'ink.cartridge' => _n('Cartridge', 'Cartridges', 2),
-                    'ink.cartridgeurl' => 'URL '._n('Cartridge', 'Cartridges', 2),
-                    'ink.state' => __('State'));
+         'ink.printerurl' => 'URL ' . __('Printers'),
+         'ink.cartridge' => _n('Cartridge', 'Cartridges', 2),
+         'ink.cartridgeurl' => 'URL ' . _n('Cartridge', 'Cartridges', 2),
+         'ink.state' => __('State'));
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+         $this->addTagToList(array('tag' => $tag, 'label' => $label,
+            'value' => true));
       }
-  
-      $this->addTagToList(array('tag'=>'additionalalerts',
-                                'label'=>__('Cartridges whose level is low', 'additionalalerts'),
-                                'value'=>false,
-                                'foreach'=>true,
-                                'events'=>array('ink')));
-  
+
+      $this->addTagToList(array('tag' => 'additionalalerts',
+         'label' => __('Cartridges whose level is low', 'additionalalerts'),
+         'value' => false,
+         'foreach' => true,
+         'events' => array('ink')));
+
       asort($this->tag_descriptions);
    }
 }
-
-?>

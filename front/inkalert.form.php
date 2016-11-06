@@ -27,14 +27,14 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
-$state=new PluginAdditionalalertsInkPrinterState();
-$alert=new PluginAdditionalalertsInkAlert();
+$state = new PluginAdditionalalertsInkPrinterState();
+$alert = new PluginAdditionalalertsInkAlert();
 
 if (isset($_POST["add"])) {
    if ($alert->canUpdate()) {
-      $newID=$alert->add($_POST);
+      $newID = $alert->add($_POST);
    }
 } else if (isset($_POST["update"])) {
    if ($alert->canUpdate()) {
@@ -42,22 +42,22 @@ if (isset($_POST["add"])) {
    }
 } else if (isset($_POST["add_state"])) {
    if ($alert->canUpdate()) {
-      $newID=$state->add($_POST);
+      $newID = $state->add($_POST);
    }
 } else if (isset($_POST["delete_state"])) {
-      if ($alert->canUpdate()) {
-         $state->getFromDB($_POST["id"],-1);
+   if ($alert->canUpdate()) {
+      $state->getFromDB($_POST["id"]);
 
-         foreach ($_POST["item"] as $key => $val) {
-         if ($val==1) {
-            $state->delete(array('id'=>$key));
+      foreach ($_POST["item"] as $key => $val) {
+         if ($val == 1) {
+            $state->delete(array('id' => $key));
          }
       }
    }
 
 } else if (isset($_POST["update_threshold"])) {
 
-   $PluginAdditionalalertsInkThreshold=new PluginAdditionalalertsInkThreshold();
+   $PluginAdditionalalertsInkThreshold = new PluginAdditionalalertsInkThreshold();
    if ($alert->canUpdate()) {
       $PluginAdditionalalertsInkThreshold->update($_POST);
    } else {
@@ -65,5 +65,3 @@ if (isset($_POST["add"])) {
    }
 }
 Html::back();
-
-?>
