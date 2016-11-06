@@ -31,15 +31,27 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Class PluginAdditionalalertsOcsAlert
+ */
 class PluginAdditionalalertsOcsAlert extends CommonDBTM {
    
    static $rightname = "plugin_additionalalerts";
-   
+
+   /**
+    * @param int $nb
+    * @return translated
+    */
    static function getTypeName($nb=0) {
 
       return __('OCSNG synchronization', 'additionalalerts');
    }
-   
+
+   /**
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return string|translated
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType()=='CronTask' && $item->getField('name')=="AdditionalalertsOcs") {
@@ -49,6 +61,12 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
    }
 
 
+   /**
+    * @param CommonGLPI $item
+    * @param int $tabnum
+    * @param int $withtemplate
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
 
@@ -61,6 +79,10 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
    }
    
    // Cron action
+   /**
+    * @param $name
+    * @return array
+    */
    static function cronInfo($name) {
 
       switch ($name) {
@@ -75,8 +97,13 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       }
       return array();
    }
-   
-   static function queryNew($config,$entity) {
+
+   /**
+    * @param $config
+    * @param $entity
+    * @return string
+    */
+   static function queryNew($config, $entity) {
 
       $query = "SELECT `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update`,`glpi_plugin_ocsinventoryng_ocslinks`.`last_update`,`glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id`, `glpi_computers`.*
             FROM `glpi_plugin_ocsinventoryng_ocslinks`,`glpi_computers`
@@ -91,7 +118,13 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
    }
 
-   static function query($delay_ocs,$config,$entity) {
+   /**
+    * @param $delay_ocs
+    * @param $config
+    * @param $entity
+    * @return string
+    */
+   static function query($delay_ocs, $config, $entity) {
       global $DB;
 
       $delay_stamp_ocs= mktime(0, 0, 0, date("m"), date("d")-$delay_ocs, date("y"));
@@ -123,6 +156,10 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
    }
 
+   /**
+    * @param $data
+    * @return string
+    */
    static function displayBody($data) {
       global $CFG_GLPI;
 
@@ -169,8 +206,13 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
       return $body;
    }
-   
-   static function getEntitiesToNotify($field,$with_value=false) {
+
+   /**
+    * @param $field
+    * @param bool $with_value
+    * @return array
+    */
+   static function getEntitiesToNotify($field, $with_value=false) {
       global $DB;
 
       $query = "SELECT `entities_id` as `entity`,`$field`
@@ -196,6 +238,11 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       return $entities;
    }
 
+   /**
+    * @param $field
+    * @param $entities
+    * @param $entitydatas
+    */
    static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
       
       $config = new PluginAdditionalalertsConfig();
@@ -215,6 +262,10 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       }
    }
 
+   /**
+    * @param null $task
+    * @return int
+    */
    static function cronAdditionalalertsOcs($task=NULL) {
       global $DB,$CFG_GLPI;
       
@@ -289,7 +340,11 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       }
       return $cron_status;
    }
-   
+
+   /**
+    * @param null $task
+    * @return int
+    */
    static function cronAdditionalalertsNewOcs($task=NULL) {
       global $DB,$CFG_GLPI;
       
@@ -364,8 +419,12 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       }
       return $cron_status;
    }
-   
-   static function configCron($target,$ID) {
+
+   /**
+    * @param $target
+    * @param $ID
+    */
+   static function configCron($target, $ID) {
 
       echo "<div align='center'>";
       echo "<form method='post' action=\"$target\">";
@@ -387,7 +446,11 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       $state->showForm($target);
  
    }
-   
+
+   /**
+    * @param $entities_id
+    * @return bool
+    */
    function getFromDBbyEntity($entities_id) {
       global $DB;
 
@@ -407,7 +470,11 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       }
       return false;
    }
-   
+
+   /**
+    * @param Entity $entity
+    * @return bool
+    */
    static function showNotificationOptions(Entity $entity) {
 
       $con_spotted = false;

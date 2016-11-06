@@ -31,14 +31,26 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Class PluginAdditionalalertsConfig
+ */
 class PluginAdditionalalertsConfig extends CommonDBTM {
    
    static $rightname = "plugin_additionalalerts";
 
+   /**
+    * @param int $nb
+    * @return translated
+    */
    static function getTypeName($nb=0) {
       return __('Plugin Setup', 'additionalalerts');
    }
-   
+
+   /**
+    * @param CommonGLPI $item
+    * @param int $withtemplate
+    * @return string|translated
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $CFG_GLPI;
 
@@ -52,6 +64,12 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
          return '';
    }
 
+   /**
+    * @param CommonGLPI $item
+    * @param int $tabnum
+    * @param int $withtemplate
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
 
@@ -71,7 +89,11 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       }
       return true;
    }
-   
+
+   /**
+    * @param array $options
+    * @return bool
+    */
    function showForm($options=array()) {
 
       $this->getFromDB(1);
