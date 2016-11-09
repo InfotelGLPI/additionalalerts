@@ -301,7 +301,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
                $message = $data["name"];
                $ocs_infos[$type][$entity][] = $data;
 
-               if (!isset($ocsmachines_infos[$type][$entity])) {
+               if (!isset($ocs_messages[$type][$entity])) {
                   $ocs_messages[$type][$entity] = PluginAdditionalalertsOcsAlert::getTypeName(2)."<br />";
                }
                $ocs_messages[$type][$entity] .= $message;
@@ -379,7 +379,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
                $message = $data["name"];
                $newocsmachine_infos[$type][$entity][] = $data;
 
-               if (!isset($newocsmachines_infos[$type][$entity])) {
+               if (!isset($newocsmachine_messages[$type][$entity])) {
                   $newocsmachine_messages[$type][$entity] = __('New imported computers from OCS-NG', 'additionalalerts')."<br />";
                }
                $newocsmachine_messages[$type][$entity] .= $message;

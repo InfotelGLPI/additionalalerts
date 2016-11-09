@@ -280,7 +280,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
             $message = $data["name"];
             $notinfocom_infos[$type][$entity][] = $data;
 
-            if (!isset($notinfocoms_infos[$type][$entity])) {
+            if (!isset($notinfocom_messages[$type][$entity])) {
                $notinfocom_messages[$type][$entity] = PluginAdditionalalertsInfocomAlert::getTypeName(2) . "<br />";
             }
             $notinfocom_messages[$type][$entity] .= $message;
