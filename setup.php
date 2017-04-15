@@ -96,7 +96,7 @@ function plugin_version_additionalalerts()
 function plugin_additionalalerts_check_prerequisites()
 {
    if (version_compare(GLPI_VERSION, '0.90', 'lt') || version_compare(GLPI_VERSION, '9.2', 'ge')) {
-      _e('This plugin requires GLPI >= 0.90', 'additionalalerts');
+      echo __('This plugin requires GLPI >= 0.90', 'additionalalerts');
       return false;
    }
    return true;
