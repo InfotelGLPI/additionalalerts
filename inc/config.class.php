@@ -95,6 +95,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
     * @return bool
     */
    function showForm($options=array()) {
+      global $DB;
 
       $this->getFromDB(1);
       $options['colspan'] = 1;
@@ -131,7 +132,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td >" . __('Cartridges whose level is low', 'additionalalerts') . "</td><td>";
       if ($plugin->isActivated("fusioninventory") && 
-            TableExists("glpi_plugin_fusioninventory_printercartridges")) {
+            $DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
          Alert::dropdownYesNo(array('name'=>"use_ink_alert",
                                    'value'=>$this->fields["use_ink_alert"]));
       } else {

@@ -34,28 +34,27 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class PluginAdditionalalertsInkAlert
  */
-class PluginAdditionalalertsInkAlert extends CommonDBTM
-{
+class PluginAdditionalalertsInkAlert extends CommonDBTM {
 
    static $rightname = "plugin_additionalalerts";
 
    /**
     * @param int $nb
+    *
     * @return string|translated
     */
-   static function getTypeName($nb = 0)
-   {
+   static function getTypeName($nb = 0) {
 
       return __('Cartridges whose level is low', 'additionalalerts');
    }
 
    /**
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param int        $withtemplate
+    *
     * @return string|translated
     */
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == 'CronTask' && $item->getField('name') == "AdditionalalertsInk") {
          return __('Plugin setup', 'additionalalerts');
@@ -67,12 +66,12 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
 
    /**
     * @param CommonGLPI $item
-    * @param int $tabnum
-    * @param int $withtemplate
+    * @param int        $tabnum
+    * @param int        $withtemplate
+    *
     * @return bool
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if ($item->getType() == 'CronTask') {
@@ -88,10 +87,10 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
    // Cron action
    /**
     * @param $name
+    *
     * @return array
     */
-   static function cronInfo($name)
-   {
+   static function cronInfo($name) {
 
       switch ($name) {
          case 'AdditionalalertsInk':
@@ -104,13 +103,13 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
 
    /**
     * @param $entities
+    *
     * @return string
     */
-   static function query($entities)
-   {
+   static function query($entities) {
       global $DB;
 
-      $query = "SELECT DISTINCT(cartridges_id) FROM glpi_plugin_fusioninventory_printercartridges 
+      $query      = "SELECT DISTINCT(cartridges_id) FROM glpi_plugin_fusioninventory_printercartridges 
                   WHERE cartridges_id NOT IN (SELECT cartridges_id FROM glpi_plugin_additionalalerts_inkthresholds)";
       $cartridges = $DB->query($query);
       if ($DB->numrows($cartridges) > 0) {
@@ -138,10 +137,10 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
 
    /**
     * @param $data
+    *
     * @return string
     */
-   static function displayBody($data)
-   {
+   static function displayBody($data) {
       global $CFG_GLPI;
 
       $body = "";
@@ -175,12 +174,12 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
 
 
    /**
-    * @param $field
+    * @param      $field
     * @param bool $with_value
+    *
     * @return array
     */
-   static function getEntitiesToNotify($field, $with_value = false)
-   {
+   static function getEntitiesToNotify($field, $with_value = false) {
       global $DB;
 
       $query = "SELECT `entities_id` as `entity`,`$field`
@@ -188,7 +187,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
                   ORDER BY `entities_id` ASC";
 
       $entities = array();
-      $result = $DB->query($query);
+      $result   = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
          foreach ($DB->request($query) as $entitydatas) {
@@ -210,8 +209,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
     * @param $entities
     * @param $entitydatas
     */
-   static function getDefaultValueForNotification($field, &$entities, $entitydatas)
-   {
+   static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
 
       $config = new PluginAdditionalalertsConfig();
       $config->getFromDB(1);
@@ -237,11 +235,10 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
     *
     * @return int
     */
-   static function cronAdditionalalertsInk($task = NULL)
-   {
+   static function cronAdditionalalertsInk($task = NULL) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_mailing"] || !TableExists("glpi_plugin_fusioninventory_printercartridges")) {
+      if (!$CFG_GLPI["use_mailing"] || !$DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
          return 0;
       }
 
@@ -254,20 +251,20 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
          return 0;
       }
 
-      $message = array();
+      $message     = array();
       $cron_status = 0;
 
       foreach (PluginAdditionalalertsInkAlert::getEntitiesToNotify('use_ink_alert') as $entity => $repeat) {
          $query_ink = PluginAdditionalalertsInkAlert::query($entity);
 
-         $ink_infos = array();
+         $ink_infos    = array();
          $ink_messages = array();
 
-         $type = Alert::END;
+         $type             = Alert::END;
          $ink_infos[$type] = array();
          foreach ($DB->request($query_ink) as $data) {
-            $entity = $data['entities_id'];
-            $message = $data["name"];
+            $entity                      = $data['entities_id'];
+            $message                     = $data["name"];
             $ink_infos[$type][$entity][] = $data;
 
             if (!isset($ink_messages[$type][$entity])) {
@@ -280,28 +277,27 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
             Plugin::loadLang('additionalalerts');
 
             if (NotificationEvent::raiseEvent("ink",
-               new PluginAdditionalalertsInkAlert(),
-               array('entities_id' => $entity,
-                  'ink' => $ink))
-            ) {
-               $message = $ink_messages[$type][$entity];
+                                              new PluginAdditionalalertsInkAlert(),
+                                              array('entities_id' => $entity,
+                                                    'ink'         => $ink))) {
+               $message     = $ink_messages[$type][$entity];
                $cron_status = 1;
                if ($task) {
                   $task->log(Dropdown::getDropdownName("glpi_entities",
-                        $entity) . ":  $message\n");
+                                                       $entity) . ":  $message\n");
                   $task->addVolume(1);
                } else {
                   Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                        $entity) . ":  $message");
+                                                                             $entity) . ":  $message");
                }
 
             } else {
                if ($task) {
                   $task->log(Dropdown::getDropdownName("glpi_entities", $entity) .
-                     ":  Send ink alert failed\n");
+                             ":  Send ink alert failed\n");
                } else {
                   Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity) .
-                     ":  Send ink alert failed", false, ERROR);
+                                                   ":  Send ink alert failed", false, ERROR);
                }
             }
          }
@@ -314,8 +310,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
     * @param $target
     * @param $ID
     */
-   static function configCron($target, $ID)
-   {
+   static function configCron($target, $ID) {
 
       echo "<div align='center'>";
       echo "<form method='post' action=\"$target\">";
@@ -337,10 +332,10 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
 
    /**
     * @param $entities_id
+    *
     * @return bool
     */
-   function getFromDBbyEntity($entities_id)
-   {
+   function getFromDBbyEntity($entities_id) {
       global $DB;
 
       $query = "SELECT *
@@ -362,10 +357,11 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
 
    /**
     * @param Entity $entity
+    *
     * @return bool
     */
-   static function showNotificationOptions(Entity $entity)
-   {
+   static function showNotificationOptions(Entity $entity) {
+      global $DB;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
@@ -387,11 +383,11 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Cartridges whose level is low', 'additionalalerts') . "</td><td>";
-      if (TableExists("glpi_plugin_fusioninventory_printercartridges")) {
+      if ($DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
          $default_value = $entitynotification->fields['use_ink_alert'];
-         Alert::dropdownYesNo(array('name' => "use_ink_alert",
-            'value' => $default_value,
-            'inherit_global' => 1));
+         Alert::dropdownYesNo(array('name'           => "use_ink_alert",
+                                    'value'          => $default_value,
+                                    'inherit_global' => 1));
       } else {
          echo "<div align='center'><b>" . __('Fusioninventory plugin is not installed', 'additionalalerts') . "</b></div>";
       }

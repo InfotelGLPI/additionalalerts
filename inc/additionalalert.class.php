@@ -264,7 +264,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       }
 
       if ($additionalalerts_ink != 0) {
-         if (TableExists("glpi_plugin_fusioninventory_printercartridges")) {
+         if ($DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
             if (Session::haveRight("cartridge", READ)) {
                $query = PluginAdditionalalertsInkAlert::query($_SESSION["glpiactiveentities_string"]);
                $result = $DB->query($query);

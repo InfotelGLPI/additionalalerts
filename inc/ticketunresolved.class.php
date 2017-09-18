@@ -34,28 +34,27 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class PluginAdditionalalertsTicketUnresolved
  */
-class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
-{
+class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
 
    static $rightname = "plugin_additionalalerts";
 
    /**
     * @param int $nb
+    *
     * @return translated
     */
-   static function getTypeName($nb = 0)
-   {
+   static function getTypeName($nb = 0) {
 
       return _n('Ticket unresolved', 'Tickets unresolved', $nb, 'additionalalerts');
    }
 
    /**
     * @param CommonGLPI $item
-    * @param int $withtemplate
+    * @param int        $withtemplate
+    *
     * @return string|translated
     */
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == 'CronTask' && $item->getField('name') == "AdditionalalertsTicketUnresolved") {
          return __('Plugin setup', 'additionalalerts');
@@ -66,12 +65,12 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
 
    /**
     * @param CommonGLPI $item
-    * @param int $tabnum
-    * @param int $withtemplate
+    * @param int        $tabnum
+    * @param int        $withtemplate
+    *
     * @return bool
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if ($item->getType() == 'CronTask') {
@@ -85,10 +84,10 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
    // Cron action
    /**
     * @param $name
+    *
     * @return array
     */
-   static function cronInfo($name)
-   {
+   static function cronInfo($name) {
 
       switch ($name) {
          case 'AdditionalalertsTicketUnresolved':
@@ -102,14 +101,14 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
    /**
     * @param $delay_ticket_alert
     * @param $entity
+    *
     * @return string
     */
-   static function queryTechnician($delay_ticket_alert, $entity)
-   {
+   static function queryTechnician($delay_ticket_alert, $entity) {
 
       $delay_stamp = mktime(0, 0, 0, date("m"), date("d") - $delay_ticket_alert, date("y"));
-      $date = date("Y-m-d", $delay_stamp);
-      $date = $date . " 00:00:00";
+      $date        = date("Y-m-d", $delay_stamp);
+      $date        = $date . " 00:00:00";
 
       $querytechnician = "SELECT `glpi_tickets`.*, `glpi_tickets_users`.users_id
       FROM `glpi_tickets`
@@ -127,17 +126,17 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
    /**
     * @param $delay_ticket_alert
     * @param $entity
+    *
     * @return string
     */
-   static function querySupervisor($delay_ticket_alert, $entity)
-   {
+   static function querySupervisor($delay_ticket_alert, $entity) {
       global $DB;
 
       $delay_stamp = mktime(0, 0, 0, date("m"), date("d") - $delay_ticket_alert, date("y"));
-      $date = date("Y-m-d", $delay_stamp);
-      $date = $date . " 00:00:00";
+      $date        = date("Y-m-d", $delay_stamp);
+      $date        = $date . " 00:00:00";
 
-      $query_id_technician = "SELECT `glpi_tickets`.`id`, `glpi_tickets_users`.users_id
+      $query_id_technician  = "SELECT `glpi_tickets`.`id`, `glpi_tickets_users`.users_id
       FROM `glpi_tickets`
       LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` 
       WHERE `glpi_tickets`.`date` <= '" . $date . "'
@@ -172,10 +171,10 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
 
    /**
     * @param $data
+    *
     * @return string
     */
-   static function displayBody($data)
-   {
+   static function displayBody($data) {
       global $CFG_GLPI;
 
       $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . $data["id"] . "\">" . $data["name"];
@@ -213,19 +212,19 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
 
 
    /**
-    * @param $field
+    * @param      $field
     * @param bool $with_value
+    *
     * @return array
     */
-   static function getEntitiesToNotify($field, $with_value = false)
-   {
+   static function getEntitiesToNotify($field, $with_value = false) {
       global $DB;
       $query = "SELECT `entities_id` as `entity`,`$field`
                FROM `glpi_plugin_additionalalerts_ticketunresolveds`";
       $query .= " ORDER BY `entities_id` ASC";
 
       $entities = array();
-      $result = $DB->query($query);
+      $result   = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
          foreach ($result as $entitydatas) {
@@ -248,8 +247,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
     * @param $entities
     * @param $entitydatas
     */
-   static function getDefaultValueForNotification($field, &$entities, $entitydatas)
-   {
+   static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
 
       $config = new PluginAdditionalalertsConfig();
       $config->getFromDB(1);
@@ -260,8 +258,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
       //No configuration for this entity : if global config allows notification then add the entity
       //to the array of entities to be notified
       else if ((!isset($entitydatas[$field])
-            || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
-         && $config->fields[$field]
+                || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
+               && $config->fields[$field]
       ) {
 
          foreach (getAllDatasFromTable('glpi_entities') as $entity) {
@@ -278,8 +276,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
     *
     * @return int
     */
-   static function cronAdditionalalertsTicketUnresolved($task = NULL)
-   {
+   static function cronAdditionalalertsTicketUnresolved($task = NULL) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_mailing"]) {
@@ -294,7 +291,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
       } else {
          return 0;
       }
-      $entities = self::getEntitiesToNotify('delay_ticket_alert');
+      $entities    = self::getEntitiesToNotify('delay_ticket_alert');
       $cron_status = 0;
       foreach ($entities as $entity => $delay_ticket_alert) {
 
@@ -308,9 +305,11 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
 
          foreach ($ticket_technician as $tickets) {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
-            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
-               'items' => $tickets,
-               'notifType' => "TECH"))
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved',
+                                                                                           $ticket,
+                                                                                           array('entities_id' => $entity,
+                                                                                                 'items'       => $tickets,
+                                                                                                 'notifType'   => "TECH"))
             ) {
                $task->addVolume(1);
                $cron_status = 1;
@@ -324,9 +323,11 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
 
          foreach ($ticket_supervisor as $tickets) {
             $ticket = new PluginAdditionalalertsTicketUnresolved();
-            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved', $ticket, array('entities_id' => $entity,
-               'items' => $tickets,
-               'notifType' => "SUPERVISOR"))
+            if (PluginAdditionalalertsNotificationTargetTicketUnresolved::raiseEventTicket('ticketunresolved',
+                                                                                           $ticket,
+                                                                                           array('entities_id' => $entity,
+                                                                                                 'items'       => $tickets,
+                                                                                                 'notifType'   => "SUPERVISOR"))
             ) {
                $task->addVolume(1);
                $cron_status = 1;
@@ -341,18 +342,17 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
     * @param $target
     * @param $ID
     */
-   static function configCron($target, $ID)
-   {
+   static function configCron($target, $ID) {
 
 
    }
 
    /**
     * @param $entities_id
+    *
     * @return bool
     */
-   function getFromDBbyEntity($entities_id)
-   {
+   function getFromDBbyEntity($entities_id) {
       global $DB;
 
       $query = "SELECT *
@@ -374,10 +374,10 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
 
    /**
     * @param Entity $entity
+    *
     * @return bool
     */
-   static function showNotificationOptions(Entity $entity)
-   {
+   static function showNotificationOptions(Entity $entity) {
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
          return false;
@@ -402,8 +402,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM
 
       echo "<tr class='tab_bg_1'><td>" . PluginAdditionalalertsTicketUnresolved::getTypeName(2) . "</td><td>";
       Alert::dropdownIntegerNever('delay_ticket_alert',
-         $entitynotification->fields["delay_ticket_alert"],
-         array('max' => 99));
+                                  $entitynotification->fields["delay_ticket_alert"],
+                                  array('max' => 99));
 
       echo "</td></tr>";
 

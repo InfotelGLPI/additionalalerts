@@ -34,17 +34,15 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class PluginAdditionalalertsInkThreshold
  */
-class PluginAdditionalalertsInkThreshold extends CommonDBTM
-{
+class PluginAdditionalalertsInkThreshold extends CommonDBTM {
    /**
     * @param $target
     * @param $id
     */
-   function showForm($target, $id)
-   {
+   function showForm($target, $id) {
       global $DB;
 
-      $query = "SELECT * FROM " . $this->getTable() . " WHERE cartridges_id='" . $id . "'";
+      $query  = "SELECT * FROM " . $this->getTable() . " WHERE cartridges_id='" . $id . "'";
       $result = $DB->query($query);
       if ($DB->numrows($result) == "0") {
          $this->add(array("cartridges_id" => $id));
@@ -55,7 +53,7 @@ class PluginAdditionalalertsInkThreshold extends CommonDBTM
       echo "<form action='" . $target . "' method='post'>";
       echo "<table class='tab_cadre' cellpadding='5' width='950'>";
       echo "<tr><th colspan='2'>" . __('Ink level alerts', 'additionalalerts') . "</th></tr>";
-      if (TableExists("glpi_plugin_fusioninventory_printercartridges")) {
+      if ($DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Ink level alerts', 'additionalalerts') . "</td>";
          echo "<td>";
