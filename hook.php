@@ -80,6 +80,7 @@ function plugin_additionalalerts_install()
 
       $template = new NotificationTemplate();
       $translation = new NotificationTemplateTranslation();
+      $notif_template = new Notification_NotificationTemplate();
       $options = array('itemtype' => 'PluginAdditionalalertsReminderAlert',
          'FIELDS' => 'id');
       foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
@@ -90,6 +91,10 @@ function plugin_additionalalerts_install()
             $translation->delete($data_template);
          }
          $template->delete($data);
+
+         foreach ($DB->request('glpi_notifications_notificationtemplates', $options_template) as $data_template) {
+            $notif_template->delete($data_template);
+         }
       }
 
       $temp = new CronTask();
@@ -130,10 +135,18 @@ function plugin_additionalalerts_install()
 
       $DB->query($query);
 
-      $query = "INSERT INTO `glpi_notifications` 
-                (`name`, `entities_id`, `itemtype`, `event`, `notificationtemplates_id`, `is_recursive`, `is_active`) 
-                VALUES ('Alert ink level', 0, 'PluginAdditionalalertsInkAlert', 'ink'," . $itemtype . ", 1, 1);";
+      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
+                VALUES ('Alert ink level', 0, 'PluginAdditionalalertsInkAlert', 'ink', 1, 1);";
        $DB->query($query);
+
+      $query_id = "SELECT `id` FROM `glpi_notifications`
+               WHERE `name` = 'Alert ink level' AND `itemtype` = 'PluginAdditionalalertsInkAlert' AND `event` = 'ink'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $notification = $DB->result($result, 0, 'id');
+
+      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
+               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
+      $DB->query($query);
    }
    //version 1.8.0
    if (!$DB->tableExists("glpi_plugin_additionalalerts_ticketunresolveds")) {
@@ -182,9 +195,18 @@ function plugin_additionalalerts_install()
    &lt;/table&gt;');";
       $DB->query($query);
 
-      $query = "INSERT INTO `glpi_notifications`
-                (`name`, `entities_id`, `itemtype`, `event`, `notificationtemplates_id`, `is_recursive`, `is_active`) 
-                 VALUES ('Alert infocoms', 0, 'PluginAdditionalalertsInfocomAlert', 'notinfocom'," . $itemtype . ", 1, 1);";
+      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
+                 VALUES ('Alert infocoms', 0, 'PluginAdditionalalertsInfocomAlert', 'notinfocom', 1, 1);";
+      $DB->query($query);
+
+      //retrieve notification id
+      $query_id = "SELECT `id` FROM `glpi_notifications`
+               WHERE `name` = 'Alert infocoms' AND `itemtype` = 'PluginAdditionalalertsInfocomAlert' AND `event` = 'notinfocom'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $notification = $DB->result($result, 0, 'id');
+
+      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
+               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
       $DB->query($query);
 
       ////////////////////
@@ -232,15 +254,32 @@ function plugin_additionalalerts_install()
    &lt;/table&gt;');";
       $DB->query($query);
 
-      $query = "INSERT INTO `glpi_notifications` 
-                (`name`, `entities_id`, `itemtype`, `event`, `notificationtemplates_id`, `is_recursive`, `is_active`) 
-                VALUES ('Alert new machines ocs', 0, 'PluginAdditionalalertsOcsAlert', 'newocs',
-                         " . $itemtype . ", 1, 1);";
+      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
+                VALUES ('Alert new machines ocs', 0, 'PluginAdditionalalertsOcsAlert', 'newocs', 1, 1);";
       $DB->query($query);
 
-      $query = "INSERT INTO `glpi_notifications`
-                (`name`, `entities_id`, `itemtype`, `event`, `notificationtemplates_id`, `is_recursive`, `is_active`) 
-                  VALUES ('Alert ocs synchronization', 0, 'PluginAdditionalalertsOcsAlert', 'ocs', " . $itemtype . ", 1, 1);";
+      //retrieve notification id
+      $query_id = "SELECT `id` FROM `glpi_notifications`
+               WHERE `name` = 'Alert new machines ocs' AND `itemtype` = 'PluginAdditionalalertsOcsAlert' AND `event` = 'newocs'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $notification = $DB->result($result, 0, 'id');
+
+      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
+               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
+      $DB->query($query);
+
+      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
+                  VALUES ('Alert ocs synchronization', 0, 'PluginAdditionalalertsOcsAlert', 'ocs', 1, 1);";
+      $DB->query($query);
+
+      //retrieve notification id
+      $query_id = "SELECT `id` FROM `glpi_notifications`
+               WHERE `name` = 'Alert ocs synchronization' AND `itemtype` = 'PluginAdditionalalertsOcsAlert' AND `event` = 'ocs'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $notification = $DB->result($result, 0, 'id');
+
+      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
+               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
       $DB->query($query);
 
       //////////////////////
@@ -273,9 +312,18 @@ function plugin_additionalalerts_install()
 
       $DB->query($query);
 
-      $query = "INSERT INTO `glpi_notifications`
-                (`name`, `entities_id`, `itemtype`, `event`, `notificationtemplates_id`, `is_recursive`, `is_active`) 
-                 VALUES ('Alert ink level', 0, 'PluginAdditionalalertsInkAlert', 'ink'," . $itemtype . ", 1, 1);";
+      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
+                 VALUES ('Alert ink level', 0, 'PluginAdditionalalertsInkAlert', 'ink', 1, 1);";
+      $DB->query($query);
+
+      //retrieve notification id
+      $query_id = "SELECT `id` FROM `glpi_notifications`
+               WHERE `name` = 'Alert ink level' AND `itemtype` = 'PluginAdditionalalertsInkAlert' AND `event` = 'ink'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $notification = $DB->result($result, 0, 'id');
+
+      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
+               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
       $DB->query($query);
 
 
@@ -343,9 +391,18 @@ function plugin_additionalalerts_install()
 
       $DB->query($query);
 
-      $query = "INSERT INTO `glpi_notifications`
-              (`name`, `entities_id`, `itemtype`, `event`, `notificationtemplates_id`, `is_recursive`, `is_active`) 
-                VALUES ('Alert Ticket Unresolved', 0, 'PluginAdditionalalertsTicketUnresolved', 'ticketunresolved'," . $itemtype . ", 1, 1);";
+      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
+                VALUES ('Alert Ticket Unresolved', 0, 'PluginAdditionalalertsTicketUnresolved', 'ticketunresolved', 1, 1);";
+      $DB->query($query);
+
+      //retrieve notification id
+      $query_id = "SELECT `id` FROM `glpi_notifications`
+               WHERE `name` = 'Alert Ticket Unresolved' AND `itemtype` = 'PluginAdditionalalertsTicketUnresolved' AND `event` = 'ticketunresolved'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $notification = $DB->result($result, 0, 'id');
+
+      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
+               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
       $DB->query($query);
 
    }
@@ -448,6 +505,7 @@ function plugin_additionalalerts_uninstall()
    //templates
    $template = new NotificationTemplate();
    $translation = new NotificationTemplateTranslation();
+   $notif_template = new Notification_NotificationTemplate();
    $options = array('itemtype' => 'PluginAdditionalalertsOcsAlert',
       'FIELDS' => 'id');
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
@@ -458,6 +516,9 @@ function plugin_additionalalerts_uninstall()
          $translation->delete($data_template);
       }
       $template->delete($data);
+      foreach ($DB->request('glpi_notifications_notificationtemplates', $options_template) as $data_template) {
+         $notif_template->delete($data_template);
+      }
    }
 
    //templates
