@@ -215,7 +215,8 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(), $entity)
                   as $data) {
-            $targets = getAllDatasFromTable('glpi_notificationtargets',
+            $dbu = new DbUtils();
+            $targets = $dbu->getAllDataFromTable('glpi_notificationtargets',
                                             'notifications_id = ' . $data['id']);
 
             $notificationtarget->clearAddressesList();
