@@ -56,7 +56,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
 
       if ($item->getType()=='NotificationMailSetting' 
             && $item->getField('id') 
-               && $CFG_GLPI["use_mailing"]) {
+               && $CFG_GLPI["notifications_mailing"]) {
             return PluginAdditionalalertsAdditionalalert::getTypeName(2);
       } else if ($item->getType()=='Entity') {
             return PluginAdditionalalertsAdditionalalert::getTypeName(2);

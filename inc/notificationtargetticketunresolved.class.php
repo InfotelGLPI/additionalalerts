@@ -199,7 +199,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
       global $CFG_GLPI;
 
       //If notifications are enabled in GLPI's configuration
-      if ($CFG_GLPI["use_mailing"]) {
+      if ($CFG_GLPI["notifications_mailing"]) {
          $email_processed    = array();
          $email_notprocessed = array();
          //Get template's information

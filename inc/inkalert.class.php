@@ -239,7 +239,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
    static function cronAdditionalalertsInk($task = NULL) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_mailing"] || !$DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
+      if (!$CFG_GLPI["notifications_mailing"] || !$DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
          return 0;
       }
 

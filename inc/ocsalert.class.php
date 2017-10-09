@@ -272,7 +272,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       global $DB,$CFG_GLPI;
       
       $plugin = new Plugin();
-      if (!$CFG_GLPI["use_mailing"] || !$plugin->isActivated('ocsinventoryng')) {
+      if (!$CFG_GLPI["notifications_mailing"] || !$plugin->isActivated('ocsinventoryng')) {
          return 0;
       }
       
@@ -352,7 +352,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       global $DB,$CFG_GLPI;
       
       $plugin = new Plugin();
-      if (!$CFG_GLPI["use_mailing"] || !$plugin->isActivated('ocsinventoryng')) {
+      if (!$CFG_GLPI["notifications_mailing"] || !$plugin->isActivated('ocsinventoryng')) {
          return 0;
       }
       
