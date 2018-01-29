@@ -29,13 +29,23 @@
 
 include('../../../inc/includes.php');
 
-$config = new PluginAdditionalalertsConfig();
-if (isset($_POST["update"])) {
-   $config->update($_POST);
-   Html::back();
-} else {
-   Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "plugins", "pluginadditionalalertsmenu");
+$plugin = new Plugin();
+if ($plugin->isActivated("additionalalerts")) {
+
    $config = new PluginAdditionalalertsConfig();
-   $config->showForm();
+   if (isset($_POST["update"])) {
+      $config->update($_POST);
+      Html::back();
+   } else {
+      Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "plugins", "pluginadditionalalertsmenu");
+      $config = new PluginAdditionalalertsConfig();
+      $config->showForm();
+      Html::footer();
+   }
+} else {
+   Html::header(__('Setup'), '', "config", "plugins");
+   echo "<div align='center'><br><br>";
+   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt='warning'><br><br>";
+   echo "<b>" . __('Please activate the plugin', 'additionalalerts') . "</b></div>";
    Html::footer();
 }

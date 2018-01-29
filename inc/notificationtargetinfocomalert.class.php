@@ -52,29 +52,29 @@ class PluginAdditionalalertsNotificationTargetInfocomAlert extends NotificationT
     * @param $event
     * @param array $options
     */
-   function getDatasForTemplate($event, $options = array())
+   function addDataForTemplate($event, $options = array())
    {
       global $CFG_GLPI;
 
-      $this->datas['##notinfocom.entity##'] =
+      $this->data['##notinfocom.entity##'] =
          Dropdown::getDropdownName('glpi_entities',
             $options['entities_id']);
-      $this->datas['##lang.notinfocom.entity##'] = __('Entity');
+      $this->data['##lang.notinfocom.entity##'] = __('Entity');
 
       $events = $this->getAllEvents();
 
-      $this->datas['##lang.notinfocom.title##'] = $events[$event];
+      $this->data['##lang.notinfocom.title##'] = $events[$event];
 
-      $this->datas['##lang.notinfocom.name##'] = __('Name');
-      $this->datas['##lang.notinfocom.urlname##'] = __('URL');
-      $this->datas['##lang.notinfocom.computertype##'] = __('Type');
-      $this->datas['##lang.notinfocom.operatingsystem##'] = __('Operating system');
-      $this->datas['##lang.notinfocom.state##'] = __('Status');
-      $this->datas['##lang.notinfocom.location##'] = __('Location');
-      $this->datas['##lang.notinfocom.urluser##'] = __('URL');
-      $this->datas['##lang.notinfocom.urlgroup##'] = __('URL');
-      $this->datas['##lang.notinfocom.user##'] = __('User');
-      $this->datas['##lang.notinfocom.group##'] = __('Group');
+      $this->data['##lang.notinfocom.name##'] = __('Name');
+      $this->data['##lang.notinfocom.urlname##'] = __('URL');
+      $this->data['##lang.notinfocom.computertype##'] = __('Type');
+      $this->data['##lang.notinfocom.operatingsystem##'] = __('Operating system');
+      $this->data['##lang.notinfocom.state##'] = __('Status');
+      $this->data['##lang.notinfocom.location##'] = __('Location');
+      $this->data['##lang.notinfocom.urluser##'] = __('URL');
+      $this->data['##lang.notinfocom.urlgroup##'] = __('URL');
+      $this->data['##lang.notinfocom.user##'] = __('User');
+      $this->data['##lang.notinfocom.group##'] = __('Group');
 
       foreach ($options['notinfocoms'] as $id => $notinfocom) {
          $tmp = array();
@@ -97,7 +97,7 @@ class PluginAdditionalalertsNotificationTargetInfocomAlert extends NotificationT
          $tmp['##notinfocom.group##'] = Dropdown::getDropdownName("glpi_groups", $notinfocom['groups_id']);
          $tmp['##notinfocom.contact##'] = $notinfocom['contact'];
 
-         $this->datas['notinfocoms'][] = $tmp;
+         $this->data['notinfocoms'][] = $tmp;
       }
    }
 

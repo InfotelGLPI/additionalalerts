@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Additionalalerts Development Team
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the GLPI - Additionalalerts plugin package.
 # 
 # Translators:
 # Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2014-2015
@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-30 10:44+0100\n"
-"PO-Revision-Date: 2015-10-30 09:49+0000\n"
-"Last-Translator: Xavier CAILLAUD <tsmr@thetsmr.fr>\n"
+"POT-Creation-Date: 2018-01-29 16:18+0100\n"
+"PO-Revision-Date: 2018-01-29 15:19+0000\n"
+"Last-Translator: Amandine Manceau\n"
 "Language-Team: Romanian (Romania) (http://www.transifex.com/tsmr/GLPI_additionalalerts/language/ro_RO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,147 +19,156 @@ msgstr ""
 "Language: ro_RO\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
-#: setup.php:76 inc/additionalalert.class.php:40 inc/menu.class.php:34
-#: inc/profile.class.php:71
+#: setup.php:79 inc/additionalalert.class.php:49 inc/menu.class.php:43
+#: inc/profile.class.php:92
 msgid "Other alert"
 msgid_plural "Others alerts"
 msgstr[0] "Altă alertă"
 msgstr[1] "Alte alerte"
 msgstr[2] "Alte alerte"
 
-#: setup.php:90
-msgid "This plugin requires GLPI >= 0.90"
+#: front/config.form.php:49
+msgid "Please activate the plugin"
 msgstr ""
 
-#: inc/additionalalert.class.php:129
+#: inc/additionalalert.class.php:140
 msgid "No used alerts"
 msgstr "Nu utiliza alerte"
 
-#: inc/additionalalert.class.php:160
+#: inc/additionalalert.class.php:171
 msgid "No computers with no buy date"
 msgstr "Nici un calculator fără dată de cumpărare "
 
-#: inc/additionalalert.class.php:185 inc/config.class.php:88
-#: inc/notificationtargetocsalert.class.php:41 inc/ocsalert.class.php:317
-#: inc/ocsalert.class.php:423
+#: inc/additionalalert.class.php:196 inc/config.class.php:112
+#: inc/notificationtargetocsalert.class.php:47 inc/ocsalert.class.php:399
+#: inc/ocsalert.class.php:517
 msgid "New imported computers from OCS-NG"
 msgstr "Import nou calculatoare din OCS - NG"
 
-#: inc/additionalalert.class.php:193 inc/additionalalert.class.php:233
-#: inc/notificationtargetocsalert.class.php:68
-#: inc/notificationtargetocsalert.class.php:112
+#: inc/additionalalert.class.php:204 inc/additionalalert.class.php:244
+#: inc/notificationtargetocsalert.class.php:78
+#: inc/notificationtargetocsalert.class.php:125
 msgid "Last OCSNG inventory date"
 msgstr "Data ultimului inventar OCSNG"
 
-#: inc/additionalalert.class.php:194 inc/additionalalert.class.php:234
-#: inc/notificationtargetocsalert.class.php:69
-#: inc/notificationtargetocsalert.class.php:113
+#: inc/additionalalert.class.php:205 inc/additionalalert.class.php:245
+#: inc/notificationtargetocsalert.class.php:79
+#: inc/notificationtargetocsalert.class.php:126
 msgid "Import date in GLPI"
 msgstr "Data import in GLPI"
 
-#: inc/additionalalert.class.php:195 inc/additionalalert.class.php:235
-#: inc/notificationtargetocsalert.class.php:70
-#: inc/notificationtargetocsalert.class.php:114
+#: inc/additionalalert.class.php:206 inc/additionalalert.class.php:246
+#: inc/notificationtargetocsalert.class.php:80
+#: inc/notificationtargetocsalert.class.php:127
 msgid "OCSNG server"
 msgstr "Server OCSNG "
 
-#: inc/additionalalert.class.php:202
+#: inc/additionalalert.class.php:213
 msgid "No new imported computer from OCS-NG"
 msgstr "Niciun  import nou de calculatoare din OCS-NG"
 
-#: inc/additionalalert.class.php:225
-#: inc/notificationtargetocsalert.class.php:59
+#: inc/additionalalert.class.php:236
+#: inc/notificationtargetocsalert.class.php:69
 msgid "Computers not synchronized with OCS-NG since more"
 msgstr "Calculatoare nesincronizate cu OCS-NG incă din"
 
-#: inc/additionalalert.class.php:243
+#: inc/additionalalert.class.php:254
 msgid "No computer not synchronized since more"
 msgstr "Nici un calculator nesincronizat încă din"
 
-#: inc/additionalalert.class.php:263 inc/config.class.php:101
-#: inc/inkalert.class.php:40 inc/inkalert.class.php:72
-#: inc/inkalert.class.php:213 inc/inkalert.class.php:316
-#: inc/notificationtargetinkalert.class.php:38
-#: inc/notificationtargetinkalert.class.php:90
+#: inc/additionalalert.class.php:274 inc/config.class.php:133
+#: inc/inkalert.class.php:48 inc/inkalert.class.php:98
+#: inc/inkalert.class.php:272 inc/inkalert.class.php:386
+#: inc/notificationtargetinkalert.class.php:46
+#: inc/notificationtargetinkalert.class.php:107
 msgid "Cartridges whose level is low"
 msgstr "Cartușe al căror nivel este scăzut"
 
-#: inc/additionalalert.class.php:269
+#: inc/additionalalert.class.php:280
 msgid "Ink level"
 msgstr "Nivel Ink"
 
-#: inc/additionalalert.class.php:276
+#: inc/additionalalert.class.php:287
 msgid "No cartridge is below the threshold"
 msgstr "Niciun cartuș nu este sub prag"
 
-#: inc/additionalalert.class.php:280 inc/inkthreshold.class.php:48
-#: inc/inkthreshold.class.php:51
+#: inc/additionalalert.class.php:291 inc/inkthreshold.class.php:55
+#: inc/inkthreshold.class.php:58
 msgid "Ink level alerts"
 msgstr "Alerta nivel Ink"
 
-#: inc/additionalalert.class.php:280 inc/config.class.php:108
-#: inc/inkalert.class.php:323 inc/inkthreshold.class.php:62
+#: inc/additionalalert.class.php:291 inc/config.class.php:139
+#: inc/inkalert.class.php:393 inc/inkthreshold.class.php:69
 msgid "Fusioninventory plugin is not installed"
 msgstr "Fusioninventory plugin nu este instalat"
 
-#: inc/additionalalert.class.php:297 inc/additionalalert.class.php:317
+#: inc/additionalalert.class.php:307 inc/additionalalert.class.php:327
 msgid "Tickets unresolved since more"
 msgstr ""
 
-#: inc/additionalalert.class.php:331
+#: inc/additionalalert.class.php:313
+msgid "Send to"
+msgstr ""
+
+#: inc/additionalalert.class.php:341
 msgid "No tickets unresolved since more"
 msgstr ""
 
-#: inc/config.class.php:39
+#: inc/config.class.php:46
 msgid "Plugin Setup"
 msgstr "Setare plugin"
 
-#: inc/config.class.php:93 inc/ocsalert.class.php:69
-#: inc/ocsalert.class.php:430
+#: inc/config.class.php:117 inc/config.class.php:128
+msgid "Ocsinventory plugin is not installed"
+msgstr ""
+
+#: inc/config.class.php:121 inc/ocsalert.class.php:91
+#: inc/ocsalert.class.php:524
 msgid "OCS-NG Synchronization alerts"
 msgstr "Alerte Sincronizare OCS-NG"
 
-#: inc/config.class.php:113
+#: inc/config.class.php:144
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
-#: inc/infocomalert.class.php:40
+#: inc/infocomalert.class.php:49
 msgid "Computer with no buy date"
 msgid_plural "Computers with no buy date"
 msgstr[0] "Calculator fără dată de cumpărare"
 msgstr[1] "Calculatoare fără dată de cumpărare"
 msgstr[2] "Calculatoare fără dată de cumpărare"
 
-#: inc/infocomalert.class.php:46 inc/inkalert.class.php:46
-#: inc/ocsalert.class.php:46 inc/ticketunresolved.class.php:46
+#: inc/infocomalert.class.php:61 inc/inkalert.class.php:60
+#: inc/ocsalert.class.php:58
 msgid "Plugin setup"
 msgstr "Setare plugin"
 
-#: inc/infocomalert.class.php:266 inc/ocsalert.class.php:365
+#: inc/infocomalert.class.php:337 inc/inkalert.class.php:320
+#: inc/ocsalert.class.php:451
 msgid "Parameter"
 msgstr "Parametru"
 
-#: inc/infocomalert.class.php:267
+#: inc/infocomalert.class.php:338
 msgid "Type not used for check of buy date"
 msgstr "Tip nefolosit pentru verificarea datei de cumpărare"
 
-#: inc/inkalert.class.php:259
+#: inc/inkalert.class.php:321
 msgid "Statutes used for the ink level"
 msgstr "Statusuri folosite pentru nivelul ink"
 
-#: inc/ocsalert.class.php:40
+#: inc/ocsalert.class.php:47
 msgid "OCSNG synchronization"
 msgstr "Sincronizare OCSNG"
 
-#: inc/ocsalert.class.php:73
+#: inc/ocsalert.class.php:95
 msgid "Alert for the new imported computers"
 msgstr "Alertă pentru noile importuri de calculatoare"
 
-#: inc/ocsalert.class.php:366
+#: inc/ocsalert.class.php:452
 msgid "Status used by OCS-NG"
 msgstr "Status folosit de OCS-NG"
 
-#: inc/ticketunresolved.class.php:40
+#: inc/ticketunresolved.class.php:48
 msgid "Ticket unresolved"
 msgid_plural "Tickets unresolved"
 msgstr[0] ""

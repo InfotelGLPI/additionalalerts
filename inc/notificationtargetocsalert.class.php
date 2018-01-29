@@ -35,110 +35,106 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class PluginAdditionalalertsNotificationTargetOcsAlert
  */
-class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarget
-{
+class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarget {
 
    static $rightname = "plugin_additionalalerts";
 
    /**
     * @return array
     */
-   function getEvents()
-   {
-      return array('ocs' => PluginAdditionalalertsOcsAlert::getTypeName(2),
-         'newocs' => __('New imported computers from OCS-NG', 'additionalalerts'));
+   function getEvents() {
+      return array('ocs'    => PluginAdditionalalertsOcsAlert::getTypeName(2),
+                   'newocs' => __('New imported computers from OCS-NG', 'additionalalerts'));
    }
 
    /**
-    * @param $event
+    * @param       $event
     * @param array $options
     */
-   function getDatasForTemplate($event, $options = array())
-   {
+   function addDataForTemplate($event, $options = array()) {
       global $CFG_GLPI;
 
-      $this->datas['##ocsmachine.entity##'] =
+      $this->data['##ocsmachine.entity##']      =
          Dropdown::getDropdownName('glpi_entities',
-            $options['entities_id']);
-      $this->datas['##lang.ocsmachine.entity##'] = __('Entity');
+                                   $options['entities_id']);
+      $this->data['##lang.ocsmachine.entity##'] = __('Entity');
 
       $events = $this->getAllEvents();
 
       $delay_ocs = $options["delay_ocs"];
 
       if ($event == "newocs")
-         $this->datas['##lang.ocsmachine.title##'] = $events[$event];
+         $this->data['##lang.ocsmachine.title##'] = $events[$event];
       else
-         $this->datas['##lang.ocsmachine.title##'] = __('Computers not synchronized with OCS-NG since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2);
-      $this->datas['##lang.ocsmachine.name##'] = __('Name');
-      $this->datas['##lang.ocsmachine.urlname##'] = __('URL');
-      $this->datas['##lang.ocsmachine.operatingsystem##'] = __('Operating system');
-      $this->datas['##lang.ocsmachine.state##'] = __('Status');
-      $this->datas['##lang.ocsmachine.location##'] = __('Location');
-      $this->datas['##lang.ocsmachine.user##'] = __('User') . " / " . __('Group') . " / " . __('Alternate username');
-      $this->datas['##lang.ocsmachine.urluser##'] = __('URL');
-      $this->datas['##lang.ocsmachine.urlgroup##'] = __('URL');
-      $this->datas['##lang.ocsmachine.lastocsupdate##'] = __('Last OCSNG inventory date', 'additionalalerts');
-      $this->datas['##lang.ocsmachine.lastupdate##'] = __('Import date in GLPI', 'additionalalerts');
-      $this->datas['##lang.ocsmachine.ocsserver##'] = __('OCSNG server', 'additionalalerts');
+         $this->data['##lang.ocsmachine.title##'] = __('Computers not synchronized with OCS-NG since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2);
+      $this->data['##lang.ocsmachine.name##']            = __('Name');
+      $this->data['##lang.ocsmachine.urlname##']         = __('URL');
+      $this->data['##lang.ocsmachine.operatingsystem##'] = __('Operating system');
+      $this->data['##lang.ocsmachine.state##']           = __('Status');
+      $this->data['##lang.ocsmachine.location##']        = __('Location');
+      $this->data['##lang.ocsmachine.user##']            = __('User') . " / " . __('Group') . " / " . __('Alternate username');
+      $this->data['##lang.ocsmachine.urluser##']         = __('URL');
+      $this->data['##lang.ocsmachine.urlgroup##']        = __('URL');
+      $this->data['##lang.ocsmachine.lastocsupdate##']   = __('Last OCSNG inventory date', 'additionalalerts');
+      $this->data['##lang.ocsmachine.lastupdate##']      = __('Import date in GLPI', 'additionalalerts');
+      $this->data['##lang.ocsmachine.ocsserver##']       = __('OCSNG server', 'additionalalerts');
 
       foreach ($options['ocsmachines'] as $id => $ocsmachine) {
          $tmp = array();
 
-         $tmp['##ocsmachine.urlname##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=computer_" .
-            $ocsmachine['id']);
-         $tmp['##ocsmachine.name##'] = $ocsmachine['name'];
+         $tmp['##ocsmachine.urlname##']         = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=computer_" .
+                                                            $ocsmachine['id']);
+         $tmp['##ocsmachine.name##']            = $ocsmachine['name'];
          $tmp['##ocsmachine.operatingsystem##'] = Dropdown::getDropdownName("glpi_operatingsystems", $ocsmachine['operatingsystems_id']);
-         $tmp['##ocsmachine.state##'] = Dropdown::getDropdownName("glpi_states", $ocsmachine['states_id']);
-         $tmp['##ocsmachine.location##'] = Dropdown::getDropdownName("glpi_locations", $ocsmachine['locations_id']);
+         $tmp['##ocsmachine.state##']           = Dropdown::getDropdownName("glpi_states", $ocsmachine['states_id']);
+         $tmp['##ocsmachine.location##']        = Dropdown::getDropdownName("glpi_locations", $ocsmachine['locations_id']);
 
          $tmp['##ocsmachine.urluser##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=user_" .
-            $ocsmachine['users_id']);
+                                                    $ocsmachine['users_id']);
 
          $tmp['##ocsmachine.urlgroup##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=group_" .
-            $ocsmachine['groups_id']);
+                                                     $ocsmachine['groups_id']);
 
-         $tmp['##ocsmachine.user##'] = getUserName($ocsmachine['users_id']);
-         $tmp['##ocsmachine.group##'] = Dropdown::getDropdownName("glpi_groups", $ocsmachine['groups_id']);
+         $tmp['##ocsmachine.user##']    = getUserName($ocsmachine['users_id']);
+         $tmp['##ocsmachine.group##']   = Dropdown::getDropdownName("glpi_groups", $ocsmachine['groups_id']);
          $tmp['##ocsmachine.contact##'] = $ocsmachine['contact'];
 
          $tmp['##ocsmachine.lastocsupdate##'] = Html::convDateTime($ocsmachine['last_ocs_update']);
-         $tmp['##ocsmachine.lastupdate##'] = Html::convDateTime($ocsmachine['last_update']);
-         $tmp['##ocsmachine.ocsserver##'] = Dropdown::getDropdownName("glpi_plugin_ocsinventoryng_ocsservers", $ocsmachine['plugin_ocsinventoryng_ocsservers_id']);
+         $tmp['##ocsmachine.lastupdate##']    = Html::convDateTime($ocsmachine['last_update']);
+         $tmp['##ocsmachine.ocsserver##']     = Dropdown::getDropdownName("glpi_plugin_ocsinventoryng_ocsservers", $ocsmachine['plugin_ocsinventoryng_ocsservers_id']);
 
-         $this->datas['ocsmachines'][] = $tmp;
+         $this->data['ocsmachines'][] = $tmp;
       }
    }
 
    /**
     *
     */
-   function getTags()
-   {
+   function getTags() {
 
-      $tags = array('ocsmachine.name' => __('Name'),
-         'ocsmachine.urlname' => __('URL') . " " . __('Name'),
-         'ocsmachine.operatingsystem' => __('Operating system'),
-         'ocsmachine.state' => __('Status'),
-         'ocsmachine.location' => __('Location'),
-         'ocsmachine.user' => __('User'),
-         'ocsmachine.urluser' => __('URL') . " " . __('User'),
-         'ocsmachine.group' => __('Group'),
-         'ocsmachine.urlgroup' => __('URL') . " " . __('Group'),
-         'ocsmachine.contact' => __('Alternate username'),
-         'ocsmachine.lastocsupdate' => __('Last OCSNG inventory date', 'additionalalerts'),
-         'ocsmachine.lastupdate' => __('Import date in GLPI', 'additionalalerts'),
-         'ocsmachine.ocsserver' => __('OCSNG server', 'additionalalerts'));
+      $tags = array('ocsmachine.name'            => __('Name'),
+                    'ocsmachine.urlname'         => __('URL') . " " . __('Name'),
+                    'ocsmachine.operatingsystem' => __('Operating system'),
+                    'ocsmachine.state'           => __('Status'),
+                    'ocsmachine.location'        => __('Location'),
+                    'ocsmachine.user'            => __('User'),
+                    'ocsmachine.urluser'         => __('URL') . " " . __('User'),
+                    'ocsmachine.group'           => __('Group'),
+                    'ocsmachine.urlgroup'        => __('URL') . " " . __('Group'),
+                    'ocsmachine.contact'         => __('Alternate username'),
+                    'ocsmachine.lastocsupdate'   => __('Last OCSNG inventory date', 'additionalalerts'),
+                    'ocsmachine.lastupdate'      => __('Import date in GLPI', 'additionalalerts'),
+                    'ocsmachine.ocsserver'       => __('OCSNG server', 'additionalalerts'));
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag' => $tag, 'label' => $label,
-            'value' => true));
+         $this->addTagToList(array('tag'   => $tag, 'label' => $label,
+                                   'value' => true));
       }
 
-      $this->addTagToList(array('tag' => 'additionalalerts',
-         'label' => PluginAdditionalalertsOcsAlert::getTypeName(2),
-         'value' => false,
-         'foreach' => true,
-         'events' => array('ocs', 'newocs')));
+      $this->addTagToList(array('tag'     => 'additionalalerts',
+                                'label'   => PluginAdditionalalertsOcsAlert::getTypeName(2),
+                                'value'   => false,
+                                'foreach' => true,
+                                'events'  => array('ocs', 'newocs')));
 
       asort($this->tag_descriptions);
    }

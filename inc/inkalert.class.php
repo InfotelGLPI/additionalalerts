@@ -317,7 +317,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       echo "<form method='post' action=\"$target\">";
       echo "<table class='tab_cadre_fixe' cellpadding='5'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Parameter') . "</td>";
+      echo "<td>" . __('Parameter', 'additionalalerts') . "</td>";
       echo "<td>" . __('Statutes used for the ink level', 'additionalalerts') . " : ";
       Dropdown::show('State', array('name' => "states_id"));
       echo "&nbsp;<input type='submit' name='add_state' value=\"" . __('Update') . "\" class='submit' ></div></td>";

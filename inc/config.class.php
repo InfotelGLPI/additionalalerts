@@ -110,7 +110,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td >" .  __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
-      if($plugin->isActivated('ocsinventorying')){
+      if($plugin->isActivated('ocsinventoryng')){
          Alert::dropdownYesNo(array('name'=>"use_newocs_alert",
                                  'value'=>$this->fields["use_newocs_alert"]));
       } else {
@@ -119,7 +119,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . __('OCS-NG Synchronization alerts', 'additionalalerts') . "</td><td>";
-      if($plugin->isActivated('ocsinventorying')){
+      if($plugin->isActivated('ocsinventoryng')){
          Alert::dropdownIntegerNever('delay_ocs',
                                      $this->fields["delay_ocs"],
                                      array('max'=>99));

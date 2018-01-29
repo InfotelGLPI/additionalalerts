@@ -105,10 +105,16 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     */
    static function queryNew($config, $entity) {
 
-      $query = "SELECT `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update`,`glpi_plugin_ocsinventoryng_ocslinks`.`last_update`,`glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id`, `glpi_computers`.*
-            FROM `glpi_plugin_ocsinventoryng_ocslinks`,`glpi_computers`
-            WHERE `glpi_plugin_ocsinventoryng_ocslinks`.`computers_id` = `glpi_computers`.`id`
-            AND `glpi_computers`.`is_deleted` = 0
+      $query = "SELECT `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update`,
+                      `glpi_plugin_ocsinventoryng_ocslinks`.`last_update`,
+                      `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id`, 
+                      `glpi_computers`.*,
+                      `glpi_items_operatingsystems`.`operatingsystems_id`
+            FROM `glpi_plugin_ocsinventoryng_ocslinks`
+            LEFT JOIN `glpi_computers` ON `glpi_plugin_ocsinventoryng_ocslinks`.`computers_id` = `glpi_computers`.`id`
+            LEFT JOIN `glpi_items_operatingsystems` ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id` 
+                AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')
+            WHERE `glpi_computers`.`is_deleted` = 0
             AND `glpi_computers`.`is_template` = 0
             AND `glpi_computers`.`states_id` = '".$config["states_id_default"]."' AND `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id` = '".$config["id"]."' ";
       $query.= "AND `glpi_computers`.`entities_id` = '".$entity."' ";
@@ -131,10 +137,16 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       $date_ocs=date("Y-m-d",$delay_stamp_ocs);
       $date_ocs = $date_ocs." 00:00:00";
 
-      $query = "SELECT `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update`,`glpi_plugin_ocsinventoryng_ocslinks`.`last_update`,`glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id`, `glpi_computers`.*
-          FROM `glpi_plugin_ocsinventoryng_ocslinks`,`glpi_computers`
-          WHERE `glpi_plugin_ocsinventoryng_ocslinks`.`computers_id` = `glpi_computers`.`id`
-          AND `glpi_computers`.`is_deleted` = 0
+      $query = "SELECT `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update`,
+                        `glpi_plugin_ocsinventoryng_ocslinks`.`last_update`,
+                        `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id`, 
+                        `glpi_computers`.*,
+                        `glpi_items_operatingsystems`.`operatingsystems_id`
+          FROM `glpi_plugin_ocsinventoryng_ocslinks`
+            LEFT JOIN `glpi_computers` ON `glpi_plugin_ocsinventoryng_ocslinks`.`computers_id` = `glpi_computers`.`id`
+            LEFT JOIN `glpi_items_operatingsystems` ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id` 
+                AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')
+          WHERE `glpi_computers`.`is_deleted` = 0
           AND `glpi_computers`.`is_template` = 0
           AND `last_ocs_update` <= '".$date_ocs."' AND `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id` = '".$config["id"]."'";
       $query_state= "SELECT `states_id`

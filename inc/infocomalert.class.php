@@ -107,9 +107,11 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
    {
       global $DB;
 
-      $query = "SELECT `glpi_computers`.*
+      $query = "SELECT `glpi_computers`.*, `glpi_items_operatingsystems`.`operatingsystems_id`
       FROM `glpi_computers`
       LEFT JOIN `glpi_infocoms` ON (`glpi_computers`.`id` = `glpi_infocoms`.`items_id` AND `glpi_infocoms`.`itemtype` = 'Computer')
+      LEFT JOIN `glpi_items_operatingsystems` ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id` 
+                AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')
       WHERE `glpi_computers`.`is_deleted` = 0
       AND `glpi_computers`.`is_template` = 0
       AND `glpi_infocoms`.`buy_date` IS NULL ";
@@ -293,8 +295,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
             if (NotificationEvent::raiseEvent("notinfocom",
                new PluginAdditionalalertsInfocomAlert(),
                array('entities_id' => $entity,
-                  'notinfocoms' => $notinfocoms))
-            ) {
+                  'notinfocoms' => $notinfocoms))) {
                $message = $notinfocom_messages[$type][$entity];
                $cron_status = 1;
                if ($task) {

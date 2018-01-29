@@ -62,8 +62,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       $infocom = new PluginAdditionalalertsInfocomAlert();
       $infocom->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($infocom->fields["use_infocom_alert"])
-         && $infocom->fields["use_infocom_alert"] > 0
-      )
+         && $infocom->fields["use_infocom_alert"] > 0)
          $use_infocom_alert = $infocom->fields["use_infocom_alert"];
       else
          $use_infocom_alert = $config->fields["use_infocom_alert"];
@@ -71,15 +70,13 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       $ocsalert = new PluginAdditionalalertsOcsAlert();
       $ocsalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($ocsalert->fields["use_newocs_alert"])
-         && $ocsalert->fields["use_newocs_alert"] > 0
-      )
+         && $ocsalert->fields["use_newocs_alert"] > 0)
          $use_newocs_alert = $ocsalert->fields["use_newocs_alert"];
       else
          $use_newocs_alert = $config->fields["use_newocs_alert"];
 
       if (isset($ocsalert->fields["delay_ocs"])
-         && $ocsalert->fields["delay_ocs"] > 0
-      )
+         && $ocsalert->fields["delay_ocs"] > 0)
          $delay_ocs = $ocsalert->fields["delay_ocs"];
       else
          $delay_ocs = $config->fields["delay_ocs"];
@@ -99,8 +96,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       $ticketunresolved = new PluginAdditionalalertsTicketUnresolved();
       $ticketunresolved->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($ticketunresolved->fields["delay_ticket_alert"])
-         && $ticketunresolved->fields["delay_ticket_alert"] > 0
-      ) {
+         && $ticketunresolved->fields["delay_ticket_alert"] > 0) {
          $delay_ticket_alert = $ticketunresolved->fields["delay_ticket_alert"];
       } else {
          $delay_ticket_alert = $config->fields["delay_ticket_alert"];
@@ -109,8 +105,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       $inkalert = new PluginAdditionalalertsInkAlert();
       $inkalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($inkalert->fields["use_ink_alert"])
-         && $inkalert->fields["use_ink_alert"] > 0
-      )
+         && $inkalert->fields["use_ink_alert"] > 0)
          $use_ink_alert = $inkalert->fields["use_ink_alert"];
       else
          $use_ink_alert = $config->fields["use_ink_alert"];

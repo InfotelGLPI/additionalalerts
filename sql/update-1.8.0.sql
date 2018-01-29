@@ -1,4 +1,4 @@
-ALTER TABLE `glpi_plugin_additionalalerts_configs` ADD `delay_ticket_alert` int(11) NOT NULL DEFAULT '-1';
+ALTER TABLE `glpi_plugin_additionalalerts_configs` ADD `delay_ticket_alert` int(11) NOT NULL DEFAULT '0';
 
 DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_ticketunresolveds`;
 CREATE TABLE `glpi_plugin_additionalalerts_ticketunresolveds` (

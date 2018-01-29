@@ -50,20 +50,20 @@ class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarge
     * @param $event
     * @param array $options
     */
-   function getDatasForTemplate($event, $options = array())
+   function addDataForTemplate($event, $options = array())
    {
       global $CFG_GLPI;
 
-      $this->datas['##ink.entity##'] = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
-      $this->datas['##lang.ink.entity##'] = __('Entity');
+      $this->data['##ink.entity##'] = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
+      $this->data['##lang.ink.entity##'] = __('Entity');
 
       $events = $this->getAllEvents();
 
-      $this->datas['##lang.ink.title##'] = $events[$event];
+      $this->data['##lang.ink.title##'] = $events[$event];
 
-      $this->datas['##lang.ink.printer##'] = __('Printers');
-      $this->datas['##lang.ink.cartridge##'] = _n('Cartridge', 'Cartridges', 2);
-      $this->datas['##lang.ink.state##'] = __('State');
+      $this->data['##lang.ink.printer##'] = __('Printers');
+      $this->data['##lang.ink.cartridge##'] = _n('Cartridge', 'Cartridges', 2);
+      $this->data['##lang.ink.state##'] = __('State');
 
       foreach ($options['ink'] as $id => $ink) {
          $snmp = new PluginFusioninventoryPrinterCartridge();
@@ -83,7 +83,7 @@ class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarge
          $tmp['##ink.cartridge##'] = $cartridge->fields['name'] . " (" . $cartridge->fields['ref'] . ")";
          $tmp['##ink.state##'] = $snmp->fields['state'];
 
-         $this->datas['inks'][] = $tmp;
+         $this->data['inks'][] = $tmp;
       }
    }
 

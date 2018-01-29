@@ -5,11 +5,12 @@ CREATE TABLE `glpi_plugin_additionalalerts_configs` (
    `use_infocom_alert` TINYINT( 1 ) NOT NULL DEFAULT '-1',
    `use_newocs_alert` TINYINT( 1 ) NOT NULL DEFAULT '-1',
    `use_ink_alert` TINYINT( 1 ) NOT NULL DEFAULT '-1',
-   `delay_ticket_alert` int(11) NOT NULL default '-1',
+   `delay_ticket_alert` int(11) NOT NULL default '0',
    PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_plugin_additionalalerts_configs` ( `id`,`delay_ocs`,`use_infocom_alert`,`use_newocs_alert`,`use_ink_alert`, `delay_ticket_alert`) VALUES ('1','-1','-1','-1','-1', '-1');
+INSERT INTO `glpi_plugin_additionalalerts_configs` ( `id`,`delay_ocs`,`use_infocom_alert`,`use_newocs_alert`,`use_ink_alert`, `delay_ticket_alert`)
+VALUES ('1','-1','-1','-1','-1', '0');
 
 DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_ocsalerts`;
 CREATE TABLE `glpi_plugin_additionalalerts_ocsalerts` (
