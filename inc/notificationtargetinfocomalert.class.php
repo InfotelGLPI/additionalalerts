@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -43,17 +43,15 @@ class PluginAdditionalalertsNotificationTargetInfocomAlert extends NotificationT
    /**
     * @return array
     */
-   function getEvents()
-   {
-      return array('notinfocom' => PluginAdditionalalertsInfocomAlert::getTypeName(2));
+   function getEvents() {
+      return ['notinfocom' => PluginAdditionalalertsInfocomAlert::getTypeName(2)];
    }
 
    /**
     * @param $event
     * @param array $options
     */
-   function addDataForTemplate($event, $options = array())
-   {
+   function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $this->data['##notinfocom.entity##'] =
@@ -77,7 +75,7 @@ class PluginAdditionalalertsNotificationTargetInfocomAlert extends NotificationT
       $this->data['##lang.notinfocom.group##'] = __('Group');
 
       foreach ($options['notinfocoms'] as $id => $notinfocom) {
-         $tmp = array();
+         $tmp = [];
 
          $tmp['##notinfocom.urlname##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=computer_" .
             $notinfocom['id']);
@@ -104,10 +102,9 @@ class PluginAdditionalalertsNotificationTargetInfocomAlert extends NotificationT
    /**
     *
     */
-   function getTags()
-   {
+   function getTags() {
 
-      $tags = array('notinfocom.name' => __('Name'),
+      $tags = ['notinfocom.name' => __('Name'),
          'notinfocom.urlname' => __('URL') . " " . __('Name'),
          'notinfocom.computertype' => __('Type'),
          'notinfocom.operatingsystem' => __('Operating system'),
@@ -117,18 +114,17 @@ class PluginAdditionalalertsNotificationTargetInfocomAlert extends NotificationT
          'notinfocom.urluser' => __('URL') . " " . __('User'),
          'notinfocom.group' => __('Group'),
          'notinfocom.urlgroup' => __('URL') . " " . __('Group'),
-         'notinfocom.contact' => __('Alternate username'));
+         'notinfocom.contact' => __('Alternate username')];
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag' => $tag, 'label' => $label,
-            'value' => true));
+         $this->addTagToList(['tag' => $tag, 'label' => $label,
+            'value' => true]);
       }
 
-      $this->addTagToList(array('tag' => 'additionalalerts',
+      $this->addTagToList(['tag' => 'additionalalerts',
          'label' => PluginAdditionalalertsInfocomAlert::getTypeName(2),
          'value' => false,
          'foreach' => true,
-         'events' => array('notinfocom')));
-
+         'events' => ['notinfocom']]);
 
       asort($this->tag_descriptions);
    }

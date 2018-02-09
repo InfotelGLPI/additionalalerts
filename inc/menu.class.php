@@ -10,7 +10,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -38,18 +38,16 @@ class PluginAdditionalalertsMenu extends CommonGLPI
    /**
     * @return translated
     */
-   static function getMenuName()
-   {
+   static function getMenuName() {
       return _n('Other alert', 'Others alerts', 2, 'additionalalerts');
    }
 
    /**
     * @return array
     */
-   static function getMenuContent()
-   {
+   static function getMenuContent() {
 
-      $menu = array();
+      $menu = [];
       $menu['title'] = self::getMenuName();
       $menu['page'] = "/plugins/additionalalerts/front/additionalalert.form.php";
       $menu['links']['search'] = PluginAdditionalalertsAdditionalalert::getFormURL(false);
@@ -57,8 +55,7 @@ class PluginAdditionalalertsMenu extends CommonGLPI
       return $menu;
    }
 
-   static function removeRightsFromSession()
-   {
+   static function removeRightsFromSession() {
       if (isset($_SESSION['glpimenu']['plugins']['types']['PluginAdditionalalertsMenu'])) {
          unset($_SESSION['glpimenu']['plugins']['types']['PluginAdditionalalertsMenu']);
       }

@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -43,8 +43,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param int $nb
     * @return translated
     */
-   static function getTypeName($nb = 0)
-   {
+   static function getTypeName($nb = 0) {
 
       return _n('Computer with no buy date', 'Computers with no buy date', $nb, 'additionalalerts');
    }
@@ -54,8 +53,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param int $withtemplate
     * @return string|translated
     */
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == 'CronTask' && $item->getField('name') == "AdditionalalertsNotInfocom") {
          return __('Plugin setup', 'additionalalerts');
@@ -70,8 +68,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param int $withtemplate
     * @return bool
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if ($item->getType() == 'CronTask') {
@@ -87,24 +84,22 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param $name
     * @return array
     */
-   static function cronInfo($name)
-   {
+   static function cronInfo($name) {
 
       switch ($name) {
          case 'AdditionalalertsNotInfocom':
-            return array(
-               'description' => PluginAdditionalalertsInfocomAlert::getTypeName(2));   // Optional
+            return [
+               'description' => PluginAdditionalalertsInfocomAlert::getTypeName(2)];   // Optional
             break;
       }
-      return array();
+      return [];
    }
 
    /**
     * @param $entity
     * @return string
     */
-   static function query($entity)
-   {
+   static function query($entity) {
       global $DB;
 
       $query = "SELECT `glpi_computers`.*, `glpi_items_operatingsystems`.`operatingsystems_id`
@@ -139,8 +134,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param $data
     * @return string
     */
-   static function displayBody($data)
-   {
+   static function displayBody($data) {
       global $CFG_GLPI;
 
       $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/computer.form.php?id=" . $data["id"] . "\">" . $data["name"];
@@ -150,8 +144,9 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
          $body .= $data["id"] . ")";
       }
       $body .= "</a></td>";
-      if (Session::isMultiEntitiesMode())
+      if (Session::isMultiEntitiesMode()) {
          $body .= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data["entities_id"]) . "</td>";
+      }
       $body .= "<td>" . Dropdown::getDropdownName("glpi_computertypes", $data["computertypes_id"]) . "</td>";
       $body .= "<td>" . Dropdown::getDropdownName("glpi_operatingsystems", $data["operatingsystems_id"]) . "</td>";
       $body .= "<td>" . Dropdown::getDropdownName("glpi_states", $data["states_id"]) . "</td>";
@@ -173,8 +168,9 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
          }
          $body .= "</a>";
       }
-      if (!empty($data["contact"]))
+      if (!empty($data["contact"])) {
          $body .= " - " . $data["contact"];
+      }
 
       $body .= "</td>";
       $body .= "</tr>";
@@ -188,15 +184,14 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param bool $with_value
     * @return array
     */
-   static function getEntitiesToNotify($field, $with_value = false)
-   {
+   static function getEntitiesToNotify($field, $with_value = false) {
       global $DB;
 
       $query = "SELECT `entities_id` as `entity`,`$field`
                FROM `glpi_plugin_additionalalerts_infocomalerts`";
       $query .= " ORDER BY `entities_id` ASC";
 
-      $entities = array();
+      $entities = [];
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
@@ -220,16 +215,14 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param $entities
     * @param $entitydatas
     */
-   static function getDefaultValueForNotification($field, &$entities, $entitydatas)
-   {
+   static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
 
       $config = new PluginAdditionalalertsConfig();
       $config->getFromDB(1);
       //If there's a configuration for this entity & the value is not the one of the global config
       if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
          $entities[$entitydatas['entity']] = $entitydatas[$field];
-      }
-      //No configuration for this entity : if global config allows notification then add the entity
+      } //No configuration for this entity : if global config allows notification then add the entity
       //to the array of entities to be notified
       else if ((!isset($entitydatas[$field])
             || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
@@ -249,8 +242,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     *
     * @return int
     */
-   static function cronAdditionalalertsNotInfocom($task = NULL)
-   {
+   static function cronAdditionalalertsNotInfocom($task = null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["notifications_mailing"]) {
@@ -266,17 +258,17 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
          return 0;
       }
 
-      $message = array();
+      $message = [];
       $cron_status = 0;
 
       foreach (self::getEntitiesToNotify('use_infocom_alert') as $entity => $repeat) {
          $query_notinfocom = self::query($entity);
 
-         $notinfocom_infos = array();
-         $notinfocom_messages = array();
+         $notinfocom_infos = [];
+         $notinfocom_messages = [];
 
          $type = Alert::END;
-         $notinfocom_infos[$type] = array();
+         $notinfocom_infos[$type] = [];
          foreach ($DB->request($query_notinfocom) as $data) {
 
             $entity = $data['entities_id'];
@@ -294,8 +286,8 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
 
             if (NotificationEvent::raiseEvent("notinfocom",
                new PluginAdditionalalertsInfocomAlert(),
-               array('entities_id' => $entity,
-                  'notinfocoms' => $notinfocoms))) {
+               ['entities_id' => $entity,
+                  'notinfocoms' => $notinfocoms])) {
                $message = $notinfocom_messages[$type][$entity];
                $cron_status = 1;
                if ($task) {
@@ -326,8 +318,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param $target
     * @param $ID
     */
-   static function configCron($target, $ID)
-   {
+   static function configCron($target, $ID) {
 
       echo "<div align='center'>";
       echo "<form method='post' action=\"$target\">";
@@ -336,7 +327,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Parameter', 'additionalalerts') . "</td>";
       echo "<td>" . __('Type not used for check of buy date', 'additionalalerts');
-      Dropdown::show('ComputerType', array('name' => "types_id"));
+      Dropdown::show('ComputerType', ['name' => "types_id"]);
       echo "&nbsp;<input type='submit' name='add_type' value=\"" . _sx('button', 'Add') . "\" class='submit' ></div></td>";
       echo "</tr>";
 
@@ -354,8 +345,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param $entities_id
     * @return bool
     */
-   function getFromDBbyEntity($entities_id)
-   {
+   function getFromDBbyEntity($entities_id) {
       global $DB;
 
       $query = "SELECT *
@@ -379,8 +369,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
     * @param Entity $entity
     * @return bool
     */
-   static function showNotificationOptions(Entity $entity)
-   {
+   static function showNotificationOptions(Entity $entity) {
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
@@ -405,9 +394,9 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM
 
       echo "<tr class='tab_bg_1'><td>" . PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</td><td>";
       $default_value = $entitynotification->fields['use_infocom_alert'];
-      Alert::dropdownYesNo(array('name' => "use_infocom_alert",
+      Alert::dropdownYesNo(['name' => "use_infocom_alert",
          'value' => $default_value,
-         'inherit_global' => 1));
+         'inherit_global' => 1]);
       echo "</td></tr>";
 
       if ($canedit) {

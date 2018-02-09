@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -44,7 +44,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
     * @return array
     */
    function getEvents() {
-      return array('ticketunresolved' => PluginAdditionalalertsTicketUnresolved::getTypeName(2));
+      return ['ticketunresolved' => PluginAdditionalalertsTicketUnresolved::getTypeName(2)];
    }
 
    /**
@@ -53,10 +53,9 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
    function getTags() {
 
       // Get ticket tags
-      $notificationTargetTicket = NotificationTarget::getInstance(new Ticket(), 'alertnotclosed', array());
+      $notificationTargetTicket = NotificationTarget::getInstance(new Ticket(), 'alertnotclosed', []);
       $notificationTargetTicket->getTags();
       $this->tag_descriptions = $notificationTargetTicket->tag_descriptions;
-
 
       asort($this->tag_descriptions);
    }
@@ -67,7 +66,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
     * @param type       $event
     * @param array|type $options
     */
-   function addDataForTemplate($event, $options = array()) {
+   function addDataForTemplate($event, $options = []) {
 
       // Add ticket translation
       $ticket = new Ticket();
@@ -87,8 +86,8 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
     * @param $event (default '')
     **/
    function addAdditionalTargets($event = '') {
-      $this->notification_targets        = array();
-      $this->notification_targets_labels = array();
+      $this->notification_targets        = [];
+      $this->notification_targets_labels = [];
 
       $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                        __('Manager of the group in charge of the ticket'));
@@ -115,7 +114,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
    public function addUserByID($field, $items = []) {
       global $DB;
 
-      if(!empty($items[$field])) {
+      if (!empty($items[$field])) {
          //Look for the user by his id
          $query = $this->getDistinctUserSql() . "
                   FROM `glpi_users`" .

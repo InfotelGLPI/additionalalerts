@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
 
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
-            $state->delete(array('id' => $key));
+            $state->delete(['id' => $key]);
          }
       }
    }

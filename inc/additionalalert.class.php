@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -43,15 +43,13 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
     * @param int $nb
     * @return translated
     */
-   static function getTypeName($nb = 0)
-   {
+   static function getTypeName($nb = 0) {
 
       return _n('Other alert', 'Others alerts', $nb, 'additionalalerts');
    }
 
 
-   static function displayAlerts()
-   {
+   static function displayAlerts() {
       global $DB;
 
       $CronTask = new CronTask();
@@ -62,24 +60,27 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       $infocom = new PluginAdditionalalertsInfocomAlert();
       $infocom->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($infocom->fields["use_infocom_alert"])
-         && $infocom->fields["use_infocom_alert"] > 0)
+         && $infocom->fields["use_infocom_alert"] > 0) {
          $use_infocom_alert = $infocom->fields["use_infocom_alert"];
-      else
+      } else {
          $use_infocom_alert = $config->fields["use_infocom_alert"];
+      }
 
       $ocsalert = new PluginAdditionalalertsOcsAlert();
       $ocsalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($ocsalert->fields["use_newocs_alert"])
-         && $ocsalert->fields["use_newocs_alert"] > 0)
+         && $ocsalert->fields["use_newocs_alert"] > 0) {
          $use_newocs_alert = $ocsalert->fields["use_newocs_alert"];
-      else
+      } else {
          $use_newocs_alert = $config->fields["use_newocs_alert"];
+      }
 
       if (isset($ocsalert->fields["delay_ocs"])
-         && $ocsalert->fields["delay_ocs"] > 0)
+         && $ocsalert->fields["delay_ocs"] > 0) {
          $delay_ocs = $ocsalert->fields["delay_ocs"];
-      else
+      } else {
          $delay_ocs = $config->fields["delay_ocs"];
+      }
       $additionalalerts_ocs = 0;
       if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert", "AdditionalalertsOcs")) {
          if ($CronTask->fields["state"] != CronTask::STATE_DISABLE && $delay_ocs > 0) {
@@ -105,10 +106,11 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       $inkalert = new PluginAdditionalalertsInkAlert();
       $inkalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($inkalert->fields["use_ink_alert"])
-         && $inkalert->fields["use_ink_alert"] > 0)
+         && $inkalert->fields["use_ink_alert"] > 0) {
          $use_ink_alert = $inkalert->fields["use_ink_alert"];
-      else
+      } else {
          $use_ink_alert = $config->fields["use_ink_alert"];
+      }
 
       $additionalalerts_ink = 0;
       if ($CronTask->getFromDBbyName("PluginAdditionalalertsInkAlert", "AdditionalalertsInk")) {
@@ -155,8 +157,9 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
                echo PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</th></tr>";
                echo "<tr><th>" . __('Name') . "</th>";
-               if (Session::isMultiEntitiesMode())
+               if (Session::isMultiEntitiesMode()) {
                   echo "<th>" . __('Entity') . "</th>";
+               }
                echo "<th>" . __('Type') . "</th>";
                echo "<th>" . __('Operating system') . "</th>";
                echo "<th>" . __('Status') . "</th>";
@@ -195,8 +198,9 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                   echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
                   echo __('New imported computers from OCS-NG', 'additionalalerts') . "</th></tr>";
                   echo "<tr><th>" . __('Name') . "</th>";
-                  if (Session::isMultiEntitiesMode())
+                  if (Session::isMultiEntitiesMode()) {
                      echo "<th>" . __('Entity') . "</th>";
+                  }
                   echo "<th>" . __('Operating system') . "</th>";
                   echo "<th>" . __('Status') . "</th>";
                   echo "<th>" . __('Location') . "</th>";
@@ -235,8 +239,9 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                   echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
                   echo __('Computers not synchronized with OCS-NG since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2) . "</th></tr>";
                   echo "<tr><th>" . __('Name') . "</th>";
-                  if (Session::isMultiEntitiesMode())
+                  if (Session::isMultiEntitiesMode()) {
                      echo "<th>" . __('Entity') . "</th>";
+                  }
                   echo "<th>" . __('Operating system') . "</th>";
                   echo "<th>" . __('Status') . "</th>";
                   echo "<th>" . __('Location') . "</th>";
@@ -274,8 +279,9 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                   echo "<tr><th colspan='$nbcol'>" . __('Cartridges whose level is low', 'additionalalerts') . "</th></tr>";
                   echo "<tr>";
                   echo "<th>" . __('Printer') . "</th>";
-                  if (Session::isMultiEntitiesMode())
+                  if (Session::isMultiEntitiesMode()) {
                      echo "<th>" . __('Entity') . "</th>";
+                  }
                   echo "<th>" . __('Cartridge') . "</th>";
                   echo "<th>" . __('Ink level', 'additionalalerts') . "</th></tr>";
 
@@ -322,7 +328,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                   }
                }
                echo "</table></div>";
-            } elseif ($DB->numrows($result_supervisor) > 0) {
+            } else if ($DB->numrows($result_supervisor) > 0) {
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
                echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</th></tr>";
                echo "<tr><th>" . __('Title') . "</th>";

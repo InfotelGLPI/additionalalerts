@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -32,32 +32,32 @@ function plugin_init_additionalalerts() {
    global $PLUGIN_HOOKS;
 
    $PLUGIN_HOOKS['csrf_compliant']['additionalalerts'] = true;
-   $PLUGIN_HOOKS['change_profile']['additionalalerts'] = array('PluginAdditionalalertsProfile', 'initProfile');
+   $PLUGIN_HOOKS['change_profile']['additionalalerts'] = ['PluginAdditionalalertsProfile', 'initProfile'];
 
-   Plugin::registerClass('PluginAdditionalalertsInfocomAlert', array(
+   Plugin::registerClass('PluginAdditionalalertsInfocomAlert', [
       'notificationtemplates_types' => true,
       'addtabon'                    => 'CronTask'
-   ));
+   ]);
 
-   Plugin::registerClass('PluginAdditionalalertsTicketUnresolved', array(
+   Plugin::registerClass('PluginAdditionalalertsTicketUnresolved', [
       'notificationtemplates_types' => true
-   ));
+   ]);
 
-   Plugin::registerClass('PluginAdditionalalertsOcsAlert', array(
+   Plugin::registerClass('PluginAdditionalalertsOcsAlert', [
       'notificationtemplates_types' => true,
       'addtabon'                    => 'CronTask'
-   ));
+   ]);
 
-   Plugin::registerClass('PluginAdditionalalertsInkAlert', array(
+   Plugin::registerClass('PluginAdditionalalertsInkAlert', [
       'notificationtemplates_types' => true,
-      'addtabon'                    => array('CartridgeItem', 'CronTask')
-   ));
+      'addtabon'                    => ['CartridgeItem', 'CronTask']
+   ]);
 
    Plugin::registerClass('PluginAdditionalalertsProfile',
-                         array('addtabon' => 'Profile'));
+                         ['addtabon' => 'Profile']);
 
    Plugin::registerClass('PluginAdditionalalertsConfig',
-                         array('addtabon' => array('NotificationMailSetting', 'Entity')));
+                         ['addtabon' => ['NotificationMailSetting', 'Entity']]);
 
    if (Session::getLoginUserID()) {
       // Display a menu entry ?
@@ -75,7 +75,7 @@ function plugin_init_additionalalerts() {
  */
 function plugin_version_additionalalerts() {
 
-   return array(
+   return [
       'name'           => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
       'version'        => '2.0.0',
       'license'        => 'GPLv2+',
@@ -84,7 +84,7 @@ function plugin_version_additionalalerts() {
       'oldname'        => 'alerting',
       'homepage'       => 'https://github.com/InfotelGLPI/additionalalerts',
       'minGlpiVersion' => '9.2',// For compatibility / no install in version < 9.2
-   );
+   ];
 }
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect

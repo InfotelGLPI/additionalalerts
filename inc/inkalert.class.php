@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -94,11 +94,11 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
 
       switch ($name) {
          case 'AdditionalalertsInk':
-            return array(
-               'description' => __('Cartridges whose level is low', 'additionalalerts'));   // Optional
+            return [
+               'description' => __('Cartridges whose level is low', 'additionalalerts')];   // Optional
             break;
       }
-      return array();
+      return [];
    }
 
    /**
@@ -114,8 +114,9 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       $cartridges = $DB->query($query);
       if ($DB->numrows($cartridges) > 0) {
          $PluginAdditionalalertsInkThreshold = new PluginAdditionalalertsInkThreshold();
-         while ($cartridge = $DB->fetch_array($cartridges))
+         while ($cartridge = $DB->fetch_array($cartridges)) {
             $PluginAdditionalalertsInkThreshold->add($cartridge);
+         }
       }
 
       $query = "SELECT c.id, p.name, p.entities_id
@@ -161,8 +162,9 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
          $body .= $printer->fields["id"] . ")";
       }
       $body .= "</a></td>";
-      if (Session::isMultiEntitiesMode())
+      if (Session::isMultiEntitiesMode()) {
          $body .= "<td align='center'>" . Dropdown::getDropdownName("glpi_entities", $printer->fields["entities_id"]) . "</td>";
+      }
 
       $body .= "<td align='center'><a href=\"" . $CFG_GLPI["root_doc"] . "/front/cartridgeitem.form.php?id=" . $cartridge->fields["id"] . "\">" . $cartridge->fields["name"] . " (" . $cartridge->fields["ref"] . ")</a></td>";
 
@@ -186,7 +188,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
                   FROM `glpi_plugin_additionalalerts_inkalerts`
                   ORDER BY `entities_id` ASC";
 
-      $entities = array();
+      $entities = [];
       $result   = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
@@ -217,8 +219,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       //If there's a configuration for this entity & the value is not the one of the global config
       if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
          $entities[$entitydatas['entity']] = $entitydatas[$field];
-      }
-      //No configuration for this entity : if global config allows notification then add the entity
+      } //No configuration for this entity : if global config allows notification then add the entity
       //to the array of entities to be notified
       else if ((!isset($entitydatas[$field]) || (isset($entitydatas[$field]) && $entitydatas[$field] == -1)) && $config->fields[$field]) {
          $dbu = new DbUtils();
@@ -236,7 +237,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
     *
     * @return int
     */
-   static function cronAdditionalalertsInk($task = NULL) {
+   static function cronAdditionalalertsInk($task = null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["notifications_mailing"] || !$DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
@@ -252,17 +253,17 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
          return 0;
       }
 
-      $message     = array();
+      $message     = [];
       $cron_status = 0;
 
       foreach (PluginAdditionalalertsInkAlert::getEntitiesToNotify('use_ink_alert') as $entity => $repeat) {
          $query_ink = PluginAdditionalalertsInkAlert::query($entity);
 
-         $ink_infos    = array();
-         $ink_messages = array();
+         $ink_infos    = [];
+         $ink_messages = [];
 
          $type             = Alert::END;
-         $ink_infos[$type] = array();
+         $ink_infos[$type] = [];
          foreach ($DB->request($query_ink) as $data) {
             $entity                      = $data['entities_id'];
             $message                     = $data["name"];
@@ -279,8 +280,8 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
 
             if (NotificationEvent::raiseEvent("ink",
                                               new PluginAdditionalalertsInkAlert(),
-                                              array('entities_id' => $entity,
-                                                    'ink'         => $ink))) {
+                                              ['entities_id' => $entity,
+                                                    'ink'         => $ink])) {
                $message     = $ink_messages[$type][$entity];
                $cron_status = 1;
                if ($task) {
@@ -319,7 +320,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Parameter', 'additionalalerts') . "</td>";
       echo "<td>" . __('Statutes used for the ink level', 'additionalalerts') . " : ";
-      Dropdown::show('State', array('name' => "states_id"));
+      Dropdown::show('State', ['name' => "states_id"]);
       echo "&nbsp;<input type='submit' name='add_state' value=\"" . __('Update') . "\" class='submit' ></div></td>";
       echo "</tr>";
       echo "</table>";
@@ -386,9 +387,9 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __('Cartridges whose level is low', 'additionalalerts') . "</td><td>";
       if ($DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
          $default_value = $entitynotification->fields['use_ink_alert'];
-         Alert::dropdownYesNo(array('name'           => "use_ink_alert",
+         Alert::dropdownYesNo(['name'           => "use_ink_alert",
                                     'value'          => $default_value,
-                                    'inherit_global' => 1));
+                                    'inherit_global' => 1]);
       } else {
          echo "<div align='center'><b>" . __('Fusioninventory plugin is not installed', 'additionalalerts') . "</b></div>";
       }

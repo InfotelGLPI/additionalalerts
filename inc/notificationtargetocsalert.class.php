@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -43,15 +43,15 @@ class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarge
     * @return array
     */
    function getEvents() {
-      return array('ocs'    => PluginAdditionalalertsOcsAlert::getTypeName(2),
-                   'newocs' => __('New imported computers from OCS-NG', 'additionalalerts'));
+      return ['ocs'    => PluginAdditionalalertsOcsAlert::getTypeName(2),
+                   'newocs' => __('New imported computers from OCS-NG', 'additionalalerts')];
    }
 
    /**
     * @param       $event
     * @param array $options
     */
-   function addDataForTemplate($event, $options = array()) {
+   function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $this->data['##ocsmachine.entity##']      =
@@ -63,10 +63,11 @@ class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarge
 
       $delay_ocs = $options["delay_ocs"];
 
-      if ($event == "newocs")
+      if ($event == "newocs") {
          $this->data['##lang.ocsmachine.title##'] = $events[$event];
-      else
+      } else {
          $this->data['##lang.ocsmachine.title##'] = __('Computers not synchronized with OCS-NG since more', 'additionalalerts') . " " . $delay_ocs . " " . _n('Day', 'Days', 2);
+      }
       $this->data['##lang.ocsmachine.name##']            = __('Name');
       $this->data['##lang.ocsmachine.urlname##']         = __('URL');
       $this->data['##lang.ocsmachine.operatingsystem##'] = __('Operating system');
@@ -80,7 +81,7 @@ class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarge
       $this->data['##lang.ocsmachine.ocsserver##']       = __('OCSNG server', 'additionalalerts');
 
       foreach ($options['ocsmachines'] as $id => $ocsmachine) {
-         $tmp = array();
+         $tmp = [];
 
          $tmp['##ocsmachine.urlname##']         = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=computer_" .
                                                             $ocsmachine['id']);
@@ -112,7 +113,7 @@ class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarge
     */
    function getTags() {
 
-      $tags = array('ocsmachine.name'            => __('Name'),
+      $tags = ['ocsmachine.name'            => __('Name'),
                     'ocsmachine.urlname'         => __('URL') . " " . __('Name'),
                     'ocsmachine.operatingsystem' => __('Operating system'),
                     'ocsmachine.state'           => __('Status'),
@@ -124,17 +125,17 @@ class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarge
                     'ocsmachine.contact'         => __('Alternate username'),
                     'ocsmachine.lastocsupdate'   => __('Last OCSNG inventory date', 'additionalalerts'),
                     'ocsmachine.lastupdate'      => __('Import date in GLPI', 'additionalalerts'),
-                    'ocsmachine.ocsserver'       => __('OCSNG server', 'additionalalerts'));
+                    'ocsmachine.ocsserver'       => __('OCSNG server', 'additionalalerts')];
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag, 'label' => $label,
-                                   'value' => true));
+         $this->addTagToList(['tag'   => $tag, 'label' => $label,
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'additionalalerts',
+      $this->addTagToList(['tag'     => 'additionalalerts',
                                 'label'   => PluginAdditionalalertsOcsAlert::getTypeName(2),
                                 'value'   => false,
                                 'foreach' => true,
-                                'events'  => array('ocs', 'newocs')));
+                                'events'  => ['ocs', 'newocs']]);
 
       asort($this->tag_descriptions);
    }

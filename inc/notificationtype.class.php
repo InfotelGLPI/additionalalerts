@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -42,8 +42,7 @@ class PluginAdditionalalertsNotificationType extends CommonDBTM
    /**
     * @param $target
     */
-   function showForm($target)
-   {
+   function showForm($target) {
       global $DB;
 
       $rand = mt_rand();
@@ -72,7 +71,7 @@ class PluginAdditionalalertsNotificationType extends CommonDBTM
             }
 
             Html::openArrowMassives("massiveactiontype_form$rand", true);
-            Html::closeArrowMassives(array('delete_type' => __('Delete permanently')));
+            Html::closeArrowMassives(['delete_type' => __('Delete permanently')]);
             echo "</table>";
             Html::closeForm();
             echo "</div>";

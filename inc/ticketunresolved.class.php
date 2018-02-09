@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -58,11 +58,11 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
 
       switch ($name) {
          case 'AdditionalalertsTicketUnresolved':
-            return array(
-               'description' => PluginAdditionalalertsTicketUnresolved::getTypeName(2));   // Optional
+            return [
+               'description' => PluginAdditionalalertsTicketUnresolved::getTypeName(2)];   // Optional
             break;
       }
-      return array();
+      return [];
    }
 
    /**
@@ -102,7 +102,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       $date        = date("Y-m-d", $delay_stamp);
       $date        = $date . " 00:00:00";
 
-   $query = "SELECT `glpi_tickets`.*,`glpi_tickets_users`.users_id, `glpi_groups_users`.`users_id` as supervisor
+      $query = "SELECT `glpi_tickets`.*,`glpi_tickets_users`.users_id, `glpi_groups_users`.`users_id` as supervisor
          FROM `glpi_tickets`
          LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` AND `glpi_tickets_users`.`type` = 2 
          LEFT JOIN `glpi_groups_tickets` ON `glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id` AND `glpi_groups_tickets`.`type` = 2
@@ -149,8 +149,9 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          }
          $body .= "</a>";
       }
-      if (!empty($data["contact"]))
+      if (!empty($data["contact"])) {
          $body .= " - " . $data["contact"];
+      }
 
       $body .= "</td>";
       $body .= "</tr>";
@@ -171,7 +172,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
                FROM `glpi_plugin_additionalalerts_ticketunresolveds`";
       $query .= " ORDER BY `entities_id` ASC";
 
-      $entities = array();
+      $entities = [];
       $result   = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
@@ -202,8 +203,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       //If there's a configuration for this entity & the value is not the one of the global config
       if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
          $entities[$entitydatas['entity']] = $entitydatas[$field];
-      }
-      //No configuration for this entity : if global config allows notification then add the entity
+      } //No configuration for this entity : if global config allows notification then add the entity
       //to the array of entities to be notified
       else if ((!isset($entitydatas[$field])
                 || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
@@ -223,7 +223,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
     *
     * @return int
     */
-   static function cronAdditionalalertsTicketUnresolved($task = NULL) {
+   static function cronAdditionalalertsTicketUnresolved($task = null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["notifications_mailing"]) {
@@ -256,8 +256,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
                "notifications_id = {$notif['id']}"
             );
 
-
-            $list_ticket = array();
+            $list_ticket = [];
             foreach ($DB->request($query) as $tick) {
 
                foreach ($targets as $target) {
@@ -273,17 +272,17 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
                   }
                }
             }
-         }
-      }
-      foreach ($list_ticket as $tickets) {
-         if (NotificationEvent::raiseEvent('ticketunresolved',
-                                           $ticket,
-                                           array('entities_id' => $entity,
-                                                 'items'       => $tickets))) {
-            $task->addVolume(1);
-            $cron_status = 1;
-         }
+            foreach ($list_ticket as $tickets) {
+               if (NotificationEvent::raiseEvent('ticketunresolved',
+                                                 $ticket,
+                                                 ['entities_id' => $entity,
+                                                       'items'       => $tickets])) {
+                  $task->addVolume(1);
+                  $cron_status = 1;
+               }
 
+            }
+         }
       }
 
       return $cron_status;
@@ -345,10 +344,9 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . PluginAdditionalalertsTicketUnresolved::getTypeName(2) . "</td><td>";
       Alert::dropdownIntegerNever('delay_ticket_alert',
                                   $entitynotification->fields["delay_ticket_alert"],
-                                  array('max' => 99));
+                                  ['max' => 99]);
 
       echo "</td></tr>";
-
 
       if ($canedit) {
          echo "<tr>";

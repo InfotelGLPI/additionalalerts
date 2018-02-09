@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -30,8 +30,7 @@
 /**
  * @return bool
  */
-function plugin_additionalalerts_install()
-{
+function plugin_additionalalerts_install() {
    global $DB;
 
    include_once(GLPI_ROOT . "/plugins/additionalalerts/inc/profile.class.php");
@@ -71,9 +70,9 @@ function plugin_additionalalerts_install()
 
       $notif = new Notification();
 
-      $options = array('itemtype' => 'PluginAdditionalalertsReminderAlert',
+      $options = ['itemtype' => 'PluginAdditionalalertsReminderAlert',
          'event' => 'reminder',
-         'FIELDS' => 'id');
+         'FIELDS' => 'id'];
       foreach ($DB->request('glpi_notifications', $options) as $data) {
          $notif->delete($data);
       }
@@ -81,11 +80,11 @@ function plugin_additionalalerts_install()
       $template = new NotificationTemplate();
       $translation = new NotificationTemplateTranslation();
       $notif_template = new Notification_NotificationTemplate();
-      $options = array('itemtype' => 'PluginAdditionalalertsReminderAlert',
-         'FIELDS' => 'id');
+      $options = ['itemtype' => 'PluginAdditionalalertsReminderAlert',
+         'FIELDS' => 'id'];
       foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-         $options_template = array('notificationtemplates_id' => $data['id'],
-            'FIELDS' => 'id');
+         $options_template = ['notificationtemplates_id' => $data['id'],
+            'FIELDS' => 'id'];
 
          foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
             $translation->delete($data_template);
@@ -99,7 +98,7 @@ function plugin_additionalalerts_install()
 
       $temp = new CronTask();
       if ($temp->getFromDBbyName('PluginAdditionalalertsReminderAlert', 'AdditionalalertsReminder')) {
-         $temp->delete(array('id' => $temp->fields["id"]));
+         $temp->delete(['id' => $temp->fields["id"]]);
       }
    }
    if (!$DB->tableExists("glpi_plugin_additionalalerts_inkalerts")) {
@@ -326,7 +325,6 @@ function plugin_additionalalerts_install()
                VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
       $DB->query($query);
 
-
    }
    if ($update78) {
       //Do One time on 0.78
@@ -428,14 +426,13 @@ function plugin_additionalalerts_install()
 /**
  * @return bool
  */
-function plugin_additionalalerts_uninstall()
-{
+function plugin_additionalalerts_uninstall() {
    global $DB;
 
    include_once(GLPI_ROOT . "/plugins/additionalalerts/inc/profile.class.php");
    include_once(GLPI_ROOT . "/plugins/additionalalerts/inc/menu.class.php");
 
-   $tables = array(
+   $tables = [
       "glpi_plugin_additionalalerts_ocsalerts",
       "glpi_plugin_additionalalerts_infocomalerts",
       "glpi_plugin_additionalalerts_inkalerts",
@@ -444,14 +441,14 @@ function plugin_additionalalerts_uninstall()
       "glpi_plugin_additionalalerts_configs",
       "glpi_plugin_additionalalerts_inkthresholds",
       "glpi_plugin_additionalalerts_inkprinterstates",
-      "glpi_plugin_additionalalerts_ticketunresolveds");
+      "glpi_plugin_additionalalerts_ticketunresolveds"];
 
-
-   foreach ($tables as $table)
+   foreach ($tables as $table) {
       $DB->query("DROP TABLE IF EXISTS `$table`;");
+   }
 
-   //old versions	
-   $tables = array("glpi_plugin_additionalalerts_reminderalerts",
+   //old versions
+   $tables = ["glpi_plugin_additionalalerts_reminderalerts",
       "glpi_plugin_alerting_config",
       "glpi_plugin_alerting_state",
       "glpi_plugin_alerting_profiles",
@@ -460,44 +457,44 @@ function plugin_additionalalerts_uninstall()
       "glpi_plugin_additionalalerts_profiles",
       "glpi_plugin_alerting_cartridges",
       "glpi_plugin_alerting_cartridges_printer_state",
-      "glpi_plugin_additionalalerts_profiles");
+      "glpi_plugin_additionalalerts_profiles"];
 
-
-   foreach ($tables as $table)
+   foreach ($tables as $table) {
       $DB->query("DROP TABLE IF EXISTS `$table`;");
+   }
 
    $notif = new Notification();
 
-   $options = array('itemtype' => 'PluginAdditionalalertsOcsAlert',
+   $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
       'event' => 'ocs',
-      'FIELDS' => 'id');
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notifications', $options) as $data) {
       $notif->delete($data);
    }
-   $options = array('itemtype' => 'PluginAdditionalalertsOcsAlert',
+   $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
       'event' => 'newocs',
-      'FIELDS' => 'id');
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notifications', $options) as $data) {
       $notif->delete($data);
    }
 
-   $options = array('itemtype' => 'PluginAdditionalalertsInkAlert',
+   $options = ['itemtype' => 'PluginAdditionalalertsInkAlert',
       'event' => 'ink',
-      'FIELDS' => 'id');
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notifications', $options) as $data) {
       $notif->delete($data);
    }
 
-   $options = array('itemtype' => 'PluginAdditionalalertsInfocomAlert',
+   $options = ['itemtype' => 'PluginAdditionalalertsInfocomAlert',
       'event' => 'notinfocom',
-      'FIELDS' => 'id');
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notifications', $options) as $data) {
       $notif->delete($data);
    }
 
-   $options = array('itemtype' => 'PluginAdditionalalertsTicketUnresolved',
+   $options = ['itemtype' => 'PluginAdditionalalertsTicketUnresolved',
       'event' => 'ticketunresolved',
-      'FIELDS' => 'id');
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notifications', $options) as $data) {
       $notif->delete($data);
    }
@@ -506,11 +503,11 @@ function plugin_additionalalerts_uninstall()
    $template = new NotificationTemplate();
    $translation = new NotificationTemplateTranslation();
    $notif_template = new Notification_NotificationTemplate();
-   $options = array('itemtype' => 'PluginAdditionalalertsOcsAlert',
-      'FIELDS' => 'id');
+   $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'],
-         'FIELDS' => 'id');
+      $options_template = ['notificationtemplates_id' => $data['id'],
+         'FIELDS' => 'id'];
 
       foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
          $translation->delete($data_template);
@@ -524,11 +521,11 @@ function plugin_additionalalerts_uninstall()
    //templates
    $template = new NotificationTemplate();
    $translation = new NotificationTemplateTranslation();
-   $options = array('itemtype' => 'PluginAdditionalalertsInfocomAlert',
-      'FIELDS' => 'id');
+   $options = ['itemtype' => 'PluginAdditionalalertsInfocomAlert',
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'],
-         'FIELDS' => 'id');
+      $options_template = ['notificationtemplates_id' => $data['id'],
+         'FIELDS' => 'id'];
 
       foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
          $translation->delete($data_template);
@@ -539,11 +536,11 @@ function plugin_additionalalerts_uninstall()
    //templates
    $template = new NotificationTemplate();
    $translation = new NotificationTemplateTranslation();
-   $options = array('itemtype' => 'PluginAdditionalalertsInkAlert',
-      'FIELDS' => 'id');
+   $options = ['itemtype' => 'PluginAdditionalalertsInkAlert',
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'],
-         'FIELDS' => 'id');
+      $options_template = ['notificationtemplates_id' => $data['id'],
+         'FIELDS' => 'id'];
 
       foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
          $translation->delete($data_template);
@@ -554,11 +551,11 @@ function plugin_additionalalerts_uninstall()
    //templates
    $template = new NotificationTemplate();
    $translation = new NotificationTemplateTranslation();
-   $options = array('itemtype' => 'PluginAdditionalalertsTicketUnresolved',
-      'FIELDS' => 'id');
+   $options = ['itemtype' => 'PluginAdditionalalertsTicketUnresolved',
+      'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'],
-         'FIELDS' => 'id');
+      $options_template = ['notificationtemplates_id' => $data['id'],
+         'FIELDS' => 'id'];
 
       foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
          $translation->delete($data_template);
@@ -571,7 +568,7 @@ function plugin_additionalalerts_uninstall()
    //Delete rights associated with the plugin
    $profileRight = new ProfileRight();
    foreach (PluginAdditionalalertsProfile::getAllRights() as $right) {
-      $profileRight->deleteByCriteria(array('name' => $right['field']));
+      $profileRight->deleteByCriteria(['name' => $right['field']]);
    }
    PluginAdditionalalertsProfile::removeRightsFromSession();
 
@@ -586,24 +583,23 @@ function plugin_additionalalerts_uninstall()
 /**
  * @return array
  */
-function plugin_additionalalerts_getDatabaseRelations()
-{
+function plugin_additionalalerts_getDatabaseRelations() {
 
    $plugin = new Plugin();
-   $links = array();
+   $links = [];
    if ($plugin->isActivated("additionalalerts")) {
-      $links = array(
-         "glpi_states" => array(
+      $links = [
+         "glpi_states" => [
             "glpi_plugin_additionalalerts_notificationstates" => "states_id"
-         ),
-         "glpi_computertypes" => array(
+         ],
+         "glpi_computertypes" => [
             "glpi_plugin_additionalalerts_notificationtypes" => "types_id"
-         ));
+         ]];
    }
    if ($plugin->isActivated("fusioninventory")) {
-      $links[] = array("glpi_plugin_fusioninventory_printercartridges" => array(
+      $links[] = ["glpi_plugin_fusioninventory_printercartridges" => [
          "glpi_plugin_additionalalerts_ink" => "cartridges_id"
-      ));
+      ]];
    }
 
    return $links;

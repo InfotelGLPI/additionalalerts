@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -68,7 +68,7 @@ class PluginAdditionalalertsProfile extends Profile {
          $prof = new self();
 
          self::addDefaultProfileInfos($ID,
-                                      array('plugin_additionalalerts' => 0));
+                                      ['plugin_additionalalerts' => 0]);
          $prof->showForm($ID);
       }
       return true;
@@ -81,17 +81,17 @@ class PluginAdditionalalertsProfile extends Profile {
    static function createFirstAccess($ID) {
       //85
       self::addDefaultProfileInfos($ID,
-                                   array('plugin_additionalalerts' => READ + UPDATE), true);
+                                   ['plugin_additionalalerts' => READ + UPDATE], true);
    }
 
    /**
     * @return array
     */
    static function getAllRights() {
-      return array(array('itemtype' => 'PluginAdditionalalertsConfig',
+      return [['itemtype' => 'PluginAdditionalalertsConfig',
                          'label'    => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
                          'field'    => 'plugin_additionalalerts',
-                         'rights'   => array(READ => __('Read'), UPDATE => __('Update'))));
+                         'rights'   => [READ => __('Read'), UPDATE => __('Update')]]];
    }
 
    /**
@@ -137,7 +137,7 @@ class PluginAdditionalalertsProfile extends Profile {
       foreach ($DB->request('glpi_plugin_additionalalerts_profiles',
                             "`profiles_id`='$profiles_id'") as $profile_data) {
 
-         $matching       = array('manufacturersimports' => 'plugin_additionalalerts');
+         $matching       = ['manufacturersimports' => 'plugin_additionalalerts'];
          $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
          if (!isset($current_rights['plugin_additionalalerts'])) {
             foreach ($matching as $old => $new) {
@@ -163,7 +163,7 @@ class PluginAdditionalalertsProfile extends Profile {
       foreach ($profile->getAllRights() as $data) {
          if ($dbu->countElementsInTable("glpi_profilerights",
                                   "`name` = '" . $data['field'] . "'") == 0) {
-            ProfileRight::addProfileRights(array($data['field']));
+            ProfileRight::addProfileRights([$data['field']]);
          }
       }
 
@@ -200,7 +200,7 @@ class PluginAdditionalalertsProfile extends Profile {
       foreach ($rights as $right => $value) {
          if ($dbu->countElementsInTable('glpi_profilerights',
                                   "`profiles_id`='$profiles_id' AND `name`='$right'") && $drop_existing) {
-            $profileRight->deleteByCriteria(array('profiles_id' => $profiles_id, 'name' => $right));
+            $profileRight->deleteByCriteria(['profiles_id' => $profiles_id, 'name' => $right]);
          }
          if (!$dbu->countElementsInTable('glpi_profilerights',
                                    "`profiles_id`='$profiles_id' AND `name`='$right'")) {
@@ -226,10 +226,10 @@ class PluginAdditionalalertsProfile extends Profile {
     * @internal param int $items_id id of the profile
     * @internal param value $target url of target
     */
-   function showForm($profiles_id = 0, $openform = TRUE, $closeform = TRUE) {
+   function showForm($profiles_id = 0, $openform = true, $closeform = true) {
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
+      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          $profile = new Profile();
          echo "<form method='post' action='" . $profile->getFormURL() . "'>";
@@ -239,17 +239,16 @@ class PluginAdditionalalertsProfile extends Profile {
       $profile->getFromDB($profiles_id);
 
       $rights = $this->getAllRights();
-      $profile->displayRightsChoiceMatrix($rights, array('canedit'       => $canedit,
+      $profile->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
                                                          'default_class' => 'tab_bg_2',
-                                                         'title'         => __('General')));
-
+                                                         'title'         => __('General')]);
 
       if ($canedit
           && $closeform) {
          echo "<div class='center'>";
-         echo Html::hidden('id', array('value' => $profiles_id));
+         echo Html::hidden('id', ['value' => $profiles_id]);
          echo Html::submit(_sx('button', 'Save'),
-                           array('name' => 'update'));
+                           ['name' => 'update']);
          echo "</div>\n";
          Html::closeForm();
       }

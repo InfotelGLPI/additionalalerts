@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -35,14 +35,14 @@ if (!defined('GLPI_ROOT')) {
  * Class PluginAdditionalalertsOcsAlert
  */
 class PluginAdditionalalertsOcsAlert extends CommonDBTM {
-   
+
    static $rightname = "plugin_additionalalerts";
 
    /**
     * @param int $nb
     * @return translated
     */
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
 
       return __('OCSNG synchronization', 'additionalalerts');
    }
@@ -52,7 +52,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     * @param int $withtemplate
     * @return string|translated
     */
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType()=='CronTask' && $item->getField('name')=="AdditionalalertsOcs") {
             return __('Plugin setup', 'additionalalerts');
@@ -67,17 +67,17 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     * @param int $withtemplate
     * @return bool
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if ($item->getType()=='CronTask') {
 
          $target = $CFG_GLPI["root_doc"]."/plugins/additionalalerts/front/ocsalert.form.php";
-         self::configCron($target,$item->getField('id'));
+         self::configCron($target, $item->getField('id'));
       }
       return true;
    }
-   
+
    // Cron action
    /**
     * @param $name
@@ -87,15 +87,15 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
       switch ($name) {
          case 'AdditionalalertsOcs':
-            return array (
-            'description' => __('OCS-NG Synchronization alerts', 'additionalalerts'));   // Optional
+            return  [
+            'description' => __('OCS-NG Synchronization alerts', 'additionalalerts')];   // Optional
             break;
          case 'AdditionalalertsNewOcs':
-            return array (
-            'description' => __('Alert for the new imported computers', 'additionalalerts'));
+            return  [
+            'description' => __('Alert for the new imported computers', 'additionalalerts')];
             break;
       }
-      return array();
+      return [];
    }
 
    /**
@@ -134,7 +134,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       global $DB;
 
       $delay_stamp_ocs= mktime(0, 0, 0, date("m"), date("d")-$delay_ocs, date("y"));
-      $date_ocs=date("Y-m-d",$delay_stamp_ocs);
+      $date_ocs=date("Y-m-d", $delay_stamp_ocs);
       $date_ocs = $date_ocs." 00:00:00";
 
       $query = "SELECT `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update`,
@@ -185,11 +185,12 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
          $body.=$computer->fields["id"].")";
       }
       $body.="</a></td>";
-      if (Session::isMultiEntitiesMode())
-         $body.="<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_operatingsystems",$computer->fields["operatingsystems_id"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_states",$computer->fields["states_id"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_locations",$computer->fields["locations_id"])."</td>";
+      if (Session::isMultiEntitiesMode()) {
+         $body.="<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"])."</td>";
+      }
+      $body.="<td>".Dropdown::getDropdownName("glpi_operatingsystems", $computer->fields["operatingsystems_id"])."</td>";
+      $body.="<td>".Dropdown::getDropdownName("glpi_states", $computer->fields["states_id"])."</td>";
+      $body.="<td>".Dropdown::getDropdownName("glpi_locations", $computer->fields["locations_id"])."</td>";
       $body.="<td>";
       if (!empty($computer->fields["users_id"])) {
             $body.="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$computer->fields["users_id"]."\">".getUserName($computer->fields["users_id"])."</a>";
@@ -199,20 +200,21 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
          $body.=" - <a href=\"".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$computer->fields["groups_id"]."\">";
       }
 
-      $body.=Dropdown::getDropdownName("glpi_groups",$computer->fields["groups_id"]);
-      if ($_SESSION["glpiis_ids_visible"] == 1 ) {
+      $body.=Dropdown::getDropdownName("glpi_groups", $computer->fields["groups_id"]);
+      if ($_SESSION["glpiis_ids_visible"] == 1) {
          $body.=" (";
          $body.=$computer->fields["groups_id"].")";
       }
       $body.="</a>";
 
-      if (!empty($computer->fields["contact"]))
+      if (!empty($computer->fields["contact"])) {
          $body.=" - ".$computer->fields["contact"];
+      }
 
       $body.=" - </td>";
       $body.="<td>".Html::convdatetime($data["last_ocs_update"])."</td>";
       $body.="<td>".Html::convdatetime($data["last_update"])."</td>";
-      $body.="<td>".Dropdown::getDropdownName("glpi_plugin_ocsinventoryng_ocsservers",$data["plugin_ocsinventoryng_ocsservers_id"])."</td>";
+      $body.="<td>".Dropdown::getDropdownName("glpi_plugin_ocsinventoryng_ocsservers", $data["plugin_ocsinventoryng_ocsservers_id"])."</td>";
 
       $body.="</tr>";
 
@@ -224,19 +226,19 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     * @param bool $with_value
     * @return array
     */
-   static function getEntitiesToNotify($field, $with_value=false) {
+   static function getEntitiesToNotify($field, $with_value = false) {
       global $DB;
 
       $query = "SELECT `entities_id` as `entity`,`$field`
                FROM `glpi_plugin_additionalalerts_ocsalerts`";
       $query.= " ORDER BY `entities_id` ASC";
 
-      $entities = array();
+      $entities = [];
       $result = $DB->query($query);
- 
+
       if ($DB->numrows($result) > 0) {
          foreach ($DB->request($query) as $entitydatas) {
-            self::getDefaultValueForNotification($field,$entities, $entitydatas);
+            self::getDefaultValueForNotification($field, $entities, $entitydatas);
          }
       } else {
          $config = new PluginAdditionalalertsConfig();
@@ -246,7 +248,6 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
             $entities[$entity['id']] = $config->fields[$field];
          }
       }
-      
 
       return $entities;
    }
@@ -257,14 +258,13 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     * @param $entitydatas
     */
    static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
-      
+
       $config = new PluginAdditionalalertsConfig();
       $config->getFromDB(1);
       //If there's a configuration for this entity & the value is not the one of the global config
       if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
          $entities[$entitydatas['entity']] = $entitydatas[$field];
-      }
-      //No configuration for this entity : if global config allows notification then add the entity
+      } //No configuration for this entity : if global config allows notification then add the entity
       //to the array of entities to be notified
       else if ((!isset($entitydatas[$field])
                 || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
@@ -280,38 +280,38 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     * @param null $task
     * @return int
     */
-   static function cronAdditionalalertsOcs($task=NULL) {
+   static function cronAdditionalalertsOcs($task = null) {
       global $DB,$CFG_GLPI;
-      
+
       $plugin = new Plugin();
       if (!$CFG_GLPI["notifications_mailing"] || !$plugin->isActivated('ocsinventoryng')) {
          return 0;
       }
-      
+
       $CronTask=new CronTask();
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert","AdditionalalertsOcs")) {
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert", "AdditionalalertsOcs")) {
          if ($CronTask->fields["state"]==CronTask::STATE_DISABLE) {
             return 0;
          }
       } else {
          return 0;
       }
-         
-      $message=array();
+
+      $message=[];
       $cron_status = 0;
 
       foreach (self::getEntitiesToNotify('delay_ocs') as $entity => $delay_ocs) {
-         
-         foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers","`is_active` = 1") as $config) {
-            $query_ocs = self::query($delay_ocs,$config,$entity);
 
-            $ocs_infos = array();
-            $ocs_messages = array();
-            
+         foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers", "`is_active` = 1") as $config) {
+            $query_ocs = self::query($delay_ocs, $config, $entity);
+
+            $ocs_infos = [];
+            $ocs_messages = [];
+
             $type = Alert::END;
-            $ocs_infos[$type] = array();
+            $ocs_infos[$type] = [];
             foreach ($DB->request($query_ocs) as $data) {
-            
+
                $entity = $data['entities_id'];
                $message = $data["name"];
                $ocs_infos[$type][$entity][] = $data;
@@ -321,15 +321,15 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
                }
                $ocs_messages[$type][$entity] .= $message;
             }
-            
+
             foreach ($ocs_infos[$type] as $entity => $ocsmachines) {
                Plugin::loadLang('additionalalerts');
-               
+
                if (NotificationEvent::raiseEvent("ocs",
                                                  new PluginAdditionalalertsOcsAlert(),
-                                                 array('entities_id'=>$entity,
+                                                 ['entities_id'=>$entity,
                                                        'ocsmachines'=>$ocsmachines,
-                                                       'delay_ocs'=>$delay_ocs))) {
+                                                       'delay_ocs'=>$delay_ocs])) {
                   $message = $ocs_messages[$type][$entity];
                   $cron_status = 1;
                   if ($task) {
@@ -343,11 +343,11 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
                } else {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
+                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
                                 ":  Send ocsmachines alert failed\n");
                   } else {
-                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
-                                             ":  Send ocsmachines alert failed",false,ERROR);
+                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
+                                             ":  Send ocsmachines alert failed", false, ERROR);
                   }
                }
             }
@@ -360,37 +360,37 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     * @param null $task
     * @return int
     */
-   static function cronAdditionalalertsNewOcs($task=NULL) {
+   static function cronAdditionalalertsNewOcs($task = null) {
       global $DB,$CFG_GLPI;
-      
+
       $plugin = new Plugin();
       if (!$CFG_GLPI["notifications_mailing"] || !$plugin->isActivated('ocsinventoryng')) {
          return 0;
       }
-      
+
       $CronTask=new CronTask();
-      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert","AdditionalalertsNewOcs")) {
+      if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert", "AdditionalalertsNewOcs")) {
          if ($CronTask->fields["state"]==CronTask::STATE_DISABLE) {
             return 0;
          }
       } else {
          return 0;
       }
-         
-      $message=array();
-      $cron_status = 0;
-      
-      foreach (self::getEntitiesToNotify('use_newocs_alert') as $entity => $repeat) {
-         foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers","`is_active` = 1") as $config) {
-            $query_newocsmachine = self::queryNew($config,$entity);
 
-            $newocsmachine_infos = array();
-            $newocsmachine_messages = array();
-            
+      $message=[];
+      $cron_status = 0;
+
+      foreach (self::getEntitiesToNotify('use_newocs_alert') as $entity => $repeat) {
+         foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers", "`is_active` = 1") as $config) {
+            $query_newocsmachine = self::queryNew($config, $entity);
+
+            $newocsmachine_infos = [];
+            $newocsmachine_messages = [];
+
             $type = Alert::END;
-            $newocsmachine_infos[$type] = array();
+            $newocsmachine_infos[$type] = [];
             foreach ($DB->request($query_newocsmachine) as $data) {
-            
+
                $entity = $data['entities_id'];
                $message = $data["name"];
                $newocsmachine_infos[$type][$entity][] = $data;
@@ -400,16 +400,16 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
                }
                $newocsmachine_messages[$type][$entity] .= $message;
             }
-            
+
             $delay_ocs = 0;
             foreach ($newocsmachine_infos[$type] as $entity => $newocsmachines) {
                Plugin::loadLang('additionalalerts');
-               
+
                if (NotificationEvent::raiseEvent("newocs",
                                                  new PluginAdditionalalertsOcsAlert(),
-                                                 array('entities_id'=>$entity,
+                                                 ['entities_id'=>$entity,
                                                        'ocsmachines'=>$newocsmachines,
-                                                       'delay_ocs'=>$delay_ocs))) {
+                                                       'delay_ocs'=>$delay_ocs])) {
                   $message = $newocsmachine_messages[$type][$entity];
                   $cron_status = 1;
                   if ($task) {
@@ -423,11 +423,11 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
                } else {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
+                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
                                 ":  Send newocsmachines alert failed\n");
                   } else {
-                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
-                                             ":  Send newocsmachines alert failed",false,ERROR);
+                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
+                                             ":  Send newocsmachines alert failed", false, ERROR);
                   }
                }
             }
@@ -446,21 +446,21 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       echo "<form method='post' action=\"$target\">";
       echo "<table class='tab_cadre_fixe' cellpadding='5'>";
       $colspan=2;
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Parameter', 'additionalalerts')."</td>";
       echo "<td>".__('Status used by OCS-NG', 'additionalalerts');
-      Dropdown::show('State', array('name' => "states_id"));
-      echo "&nbsp;<input type='submit' name='add_state' value=\""._sx('button','Add')."\" class='submit' ></div></td>";
+      Dropdown::show('State', ['name' => "states_id"]);
+      echo "&nbsp;<input type='submit' name='add_state' value=\""._sx('button', 'Add')."\" class='submit' ></div></td>";
       echo "</tr>";
       echo "</table>";
       Html::closeForm();
 
       echo "</div>";
-         
+
       $state = new PluginAdditionalalertsNotificationState();
       $state->showForm($target);
- 
+
    }
 
    /**
@@ -496,12 +496,12 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       $con_spotted = false;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,READ)) {
+      if (!$entity->can($ID, READ)) {
          return false;
       }
 
       // Notification right applied
-      $canedit = Session::haveRight('notification',UPDATE) && Session::haveAccessToEntity($ID);
+      $canedit = Session::haveRight('notification', UPDATE) && Session::haveAccessToEntity($ID);
 
       // Get data
       $entitynotification=new PluginAdditionalalertsOcsAlert();
@@ -516,16 +516,16 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
       $default_value = $entitynotification->fields['use_newocs_alert'];
-      Alert::dropdownYesNo(array('name'           => "use_newocs_alert",
+      Alert::dropdownYesNo(['name'           => "use_newocs_alert",
                                  'value'          => $default_value,
-                                 'inherit_global' => 1));
+                                 'inherit_global' => 1]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td >" . __('OCS-NG Synchronization alerts', 'additionalalerts') . "</td><td>";
       Alert::dropdownIntegerNever('delay_ocs', $entitynotification->fields["delay_ocs"],
-                                  array('max'            => 99,
-                                        'inherit_global' => 1));
-      echo "&nbsp;"._n('Day','Days',2)."</td>";
+                                  ['max'            => 99,
+                                        'inherit_global' => 1]);
+      echo "&nbsp;"._n('Day', 'Days', 2)."</td>";
       echo "</tr>";
 
       if ($canedit) {
@@ -534,9 +534,9 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          if ($entitynotification->fields["id"]) {
             echo "<input type='hidden' name='id' value=\"".$entitynotification->fields["id"]."\">";
-            echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit' >";
+            echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit' >";
          } else {
-            echo "<input type='submit' name='add' value=\""._sx('button','Save')."\" class='submit' >";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Save')."\" class='submit' >";
          }
          echo "</td></tr>";
          echo "</table>";
@@ -547,4 +547,3 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
    }
 }
 
-?>

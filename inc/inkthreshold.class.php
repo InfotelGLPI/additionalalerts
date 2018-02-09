@@ -9,7 +9,7 @@
  -------------------------------------------------------------------------
 
  LICENSE
-      
+
  This file is part of additionalalerts.
 
  additionalalerts is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@ class PluginAdditionalalertsInkThreshold extends CommonDBTM {
       $query  = "SELECT * FROM " . $this->getTable() . " WHERE cartridges_id='" . $id . "'";
       $result = $DB->query($query);
       if ($DB->numrows($result) == "0") {
-         $this->add(array("cartridges_id" => $id));
+         $this->add(["cartridges_id" => $id]);
          $result = $DB->query($query);
       }
       $data = $DB->fetch_assoc($result);
