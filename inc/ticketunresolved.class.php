@@ -138,16 +138,11 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["users_id"] . "\">" . getUserName($data["users_id"]) . "</a>";
 
       }
-      if (!empty($data["groups_id"])) {
+      $body .= "</td>";
+      $body .= "<td>";
+      if (!empty($data["supervisor"])) {
 
-         $body .= " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/group.form.php?id=" . $data["groups_id"] . "\">";
-
-         $body .= Dropdown::getDropdownName("glpi_groups", $data["groups_id"]);
-         if ($_SESSION["glpiis_ids_visible"] == 1) {
-            $body .= " (";
-            $body .= $data["groups_id"] . ")";
-         }
-         $body .= "</a>";
+         $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["supervisor"] . "\">" . getUserName($data["supervisor"]) . "</a>";
       }
       if (!empty($data["contact"])) {
          $body .= " - " . $data["contact"];

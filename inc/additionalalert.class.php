@@ -302,11 +302,11 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
          $entities = PluginAdditionalalertsTicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
 
          foreach ($entities as $entity => $delay_ticket_alert) {
-            $query_technician = PluginAdditionalalertsTicketUnresolved::queryTechnician($delay_ticket_alert, $entity);
-            $query_supervisor = PluginAdditionalalertsTicketUnresolved::querySupervisor($delay_ticket_alert, $entity);
-            $result = $DB->query($query_technician);
-            $result_supervisor = $DB->query($query_supervisor);
-            $nbcol = 6;
+            $query = PluginAdditionalalertsTicketUnresolved::query($delay_ticket_alert, $entity);
+            $result = $DB->query($query);
+            $nbcol = 7;
+
+
             if ($DB->numrows($result) > 0) {
 
                echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
@@ -316,35 +316,18 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                echo "<th>" . __('Status') . "</th>";
                echo "<th>" . __('Opening date') . "</th>";
                echo "<th>" . __('Last update') . "</th>";
-               echo "<th>" . __('Send to', 'additionalalerts') . "</th>";
+               echo "<th>" . __('Technician') . "</th>";
+               echo "<th>" . __('Manager') . "</th>";
 
                while ($data = $DB->fetch_array($result)) {
                   echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
                }
 
-               if ($DB->numrows($result_supervisor) > 0) {
-                  while ($data_supevisor = $DB->fetch_array($result_supervisor)) {
-                     echo PluginAdditionalalertsTicketUnresolved::displayBody($data_supevisor);
-                  }
-               }
-               echo "</table></div>";
-            } else if ($DB->numrows($result_supervisor) > 0) {
-               echo "<div align='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-               echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</th></tr>";
-               echo "<tr><th>" . __('Title') . "</th>";
-               echo "<th>" . __('Entity') . "</th>";
-               echo "<th>" . __('Status') . "</th>";
-               echo "<th>" . __('Opening date') . "</th>";
-               echo "<th>" . __('Last update') . "</th>";
-               echo "<th>" . __('Assigned to') . "</th>";
 
-               while ($data = $DB->fetch_array($result_supervisor)) {
-
-                  echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
-               }
                echo "</table></div>";
             } else {
-               echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . $entity['name'] . "</b></div>";
+               echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " .
+                    $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</b></div>";
             }
 
             echo "<br>";
