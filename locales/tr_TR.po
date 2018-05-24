@@ -3,30 +3,31 @@
 # This file is distributed under the same license as the GLPI - Additionalalerts plugin package.
 # 
 # Translators:
-# Kaya Zeren <kayazeren@gmail.com>, 2014-2017
+# Kaya Zeren <kayazeren@gmail.com>, 2014-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-29 16:18+0100\n"
-"PO-Revision-Date: 2018-01-29 15:19+0000\n"
-"Last-Translator: Amandine Manceau\n"
+"PO-Revision-Date: 2018-01-30 05:59+0000\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/tsmr/GLPI_additionalalerts/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: tr_TR\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: setup.php:79 inc/additionalalert.class.php:49 inc/menu.class.php:43
 #: inc/profile.class.php:92
 msgid "Other alert"
 msgid_plural "Others alerts"
 msgstr[0] "Diğer uyarı"
+msgstr[1] "Diğer uyarı"
 
 #: front/config.form.php:49
 msgid "Please activate the plugin"
-msgstr ""
+msgstr "Lütfen uygulama ekini etkinleştirin"
 
 #: inc/additionalalert.class.php:140
 msgid "No used alerts"
@@ -117,7 +118,7 @@ msgstr "Uygulama Eki Yüklemesi"
 
 #: inc/config.class.php:117 inc/config.class.php:128
 msgid "Ocsinventory plugin is not installed"
-msgstr ""
+msgstr "Ocsinventory uygulama eki etkinleştirilmemiş"
 
 #: inc/config.class.php:121 inc/ocsalert.class.php:91
 #: inc/ocsalert.class.php:524
@@ -132,6 +133,7 @@ msgstr "Çözümlenmemiş Çağrı Uyarıları"
 msgid "Computer with no buy date"
 msgid_plural "Computers with no buy date"
 msgstr[0] "Satın alma tarihi olmayan bilgisayar"
+msgstr[1] "Satın alma tarihi olmayan bilgisayar"
 
 #: inc/infocomalert.class.php:61 inc/inkalert.class.php:60
 #: inc/ocsalert.class.php:58
@@ -167,3 +169,4 @@ msgstr "OCSNG tarafından kullanılacak durum"
 msgid "Ticket unresolved"
 msgid_plural "Tickets unresolved"
 msgstr[0] "çağrı çözümlenmemiş"
+msgstr[1] "çağrı çözümlenmemiş"
