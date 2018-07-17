@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class PluginAdditionalalertsInkPrinterState
  */
-class PluginAdditionalalertsInkPrinterState extends PluginAdditionalalertsNotificationState
-{
+class PluginAdditionalalertsInkPrinterState extends PluginAdditionalalertsNotificationState {
+   static $rightname = "plugin_additionalalerts";
+
 }

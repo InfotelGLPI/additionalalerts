@@ -37,7 +37,7 @@ if ($plugin->isActivated("additionalalerts")) {
       $config->update($_POST);
       Html::back();
    } else {
-      Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "plugins", "pluginadditionalalertsmenu");
+      Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "admin", "pluginadditionalalertsmenu");
       $config = new PluginAdditionalalertsConfig();
       $config->showForm();
       Html::footer();

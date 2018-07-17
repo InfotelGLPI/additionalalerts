@@ -76,7 +76,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
 
       if ($item->getType() == 'CronTask') {
          $target = $CFG_GLPI["root_doc"] . "/plugins/additionalalerts/front/inkalert.form.php";
-         self::configCron($target, $item->getField('id'));
+         self::configCron($target);
       } else if ($item->getType() == 'CartridgeItem') {
          $PluginAdditionalalertsInkThreshold = new PluginAdditionalalertsInkThreshold();
          $PluginAdditionalalertsInkThreshold->showForm($CFG_GLPI["root_doc"] . "/plugins/additionalalerts/front/inkalert.form.php", $item->getField('id'));
@@ -109,8 +109,10 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
    static function query($entities) {
       global $DB;
 
-      $query      = "SELECT DISTINCT(cartridges_id) FROM glpi_plugin_fusioninventory_printercartridges 
-                  WHERE cartridges_id NOT IN (SELECT cartridges_id FROM glpi_plugin_additionalalerts_inkthresholds)";
+      $query      = "SELECT DISTINCT(cartridges_id) 
+                     FROM glpi_plugin_fusioninventory_printercartridges 
+                     WHERE cartridges_id NOT IN 
+                      (SELECT cartridges_id FROM glpi_plugin_additionalalerts_inkthresholds)";
       $cartridges = $DB->query($query);
       if ($DB->numrows($cartridges) > 0) {
          $PluginAdditionalalertsInkThreshold = new PluginAdditionalalertsInkThreshold();
@@ -143,8 +145,6 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
     */
    static function displayBody($data) {
       global $CFG_GLPI;
-
-      $body = "";
 
       $snmp = new PluginFusioninventoryPrinterCartridge();
       $snmp->getFromDB($data["id"]);
@@ -244,9 +244,12 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
          return 0;
       }
 
+      $config = PluginAdditionalalertsConfig::getConfig();
+
       $CronTask = new CronTask();
       if ($CronTask->getFromDBbyName("PluginAdditionalalertsInkAlert", "AdditionalalertsInk")) {
-         if ($CronTask->fields["state"] == CronTask::STATE_DISABLE) {
+         if ($CronTask->fields["state"] == CronTask::STATE_DISABLE
+            || !$config->useInkAlert()) {
             return 0;
          }
       } else {
@@ -312,7 +315,14 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
     * @param $target
     * @param $ID
     */
-   static function configCron($target, $ID) {
+   static function configCron($target) {
+
+      $state = new PluginAdditionalalertsInkPrinterState();
+      $states = $state->find();
+      $used = [];
+      foreach ($states as $data) {
+         $used[] = $data['states_id'];
+      }
 
       echo "<div align='center'>";
       echo "<form method='post' action=\"$target\">";
@@ -320,15 +330,15 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Parameter', 'additionalalerts') . "</td>";
       echo "<td>" . __('Statutes used for the ink level', 'additionalalerts') . " : ";
-      Dropdown::show('State', ['name' => "states_id"]);
+      Dropdown::show('State', ['name' => "states_id",
+                               'used' => $used]);
       echo "&nbsp;<input type='submit' name='add_state' value=\"" . __('Update') . "\" class='submit' ></div></td>";
       echo "</tr>";
       echo "</table>";
       Html::closeForm();
       echo "</div>";
 
-      $state = new PluginAdditionalalertsInkPrinterState();
-      $state->showForm($target);
+      $state->configState();
 
    }
 

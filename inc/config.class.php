@@ -46,6 +46,17 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       return __('Plugin Setup', 'additionalalerts');
    }
 
+   public static function getConfig() {
+      static $config = null;
+
+      if (is_null($config)) {
+         $config = new self();
+      }
+      $config->getFromDB(1);
+
+      return $config;
+   }
+
    /**
     * @param CommonGLPI $item
     * @param int $withtemplate
@@ -156,6 +167,29 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       $this->showFormButtons($options);
 
       return true;
+   }
+
+
+   //----------------- Getters and setters -------------------//
+
+   public function useInfocomAlert() {
+      return $this->fields['use_infocom_alert'];
+   }
+
+   public function useNewocsAlert() {
+      return $this->fields['use_newocs_alert'];
+   }
+
+   public function getDelayOcs() {
+      return $this->fields['delay_ocs'];
+   }
+
+   public function useInkAlert() {
+      return $this->fields['use_ink_alert'];
+   }
+
+   public function getDelayTicketAlert() {
+      return $this->fields['delay_ticket_alert'];
    }
 }
 

@@ -32,11 +32,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class NotificationTarget
+
 /**
  * Class PluginAdditionalalertsNotificationTargetInkAlert
  */
-class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarget
-{
+class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarget {
 
    /**
     * @return array
@@ -46,22 +46,22 @@ class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarge
    }
 
    /**
-    * @param $event
+    * @param       $event
     * @param array $options
     */
    function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
-      $this->data['##ink.entity##'] = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
+      $this->data['##ink.entity##']      = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
       $this->data['##lang.ink.entity##'] = __('Entity');
 
       $events = $this->getAllEvents();
 
       $this->data['##lang.ink.title##'] = $events[$event];
 
-      $this->data['##lang.ink.printer##'] = __('Printers');
+      $this->data['##lang.ink.printer##']   = __('Printers');
       $this->data['##lang.ink.cartridge##'] = _n('Cartridge', 'Cartridges', 2);
-      $this->data['##lang.ink.state##'] = __('State');
+      $this->data['##lang.ink.state##']     = __('State');
 
       foreach ($options['ink'] as $id => $ink) {
          $snmp = new PluginFusioninventoryPrinterCartridge();
@@ -75,11 +75,11 @@ class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarge
 
          $tmp = [];
 
-         $tmp['##ink.urlprinter##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=printer_" . $printer->fields['id']);
-         $tmp['##ink.printer##'] = $printer->fields['name'];
+         $tmp['##ink.urlprinter##']   = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=printer_" . $printer->fields['id']);
+         $tmp['##ink.printer##']      = $printer->fields['name'];
          $tmp['##ink.urlcartridge##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=cartridgeitem_" . $cartridge->fields['id']);
-         $tmp['##ink.cartridge##'] = $cartridge->fields['name'] . " (" . $cartridge->fields['ref'] . ")";
-         $tmp['##ink.state##'] = $snmp->fields['state'];
+         $tmp['##ink.cartridge##']    = $cartridge->fields['name'] . " (" . $cartridge->fields['ref'] . ")";
+         $tmp['##ink.state##']        = $snmp->fields['state'];
 
          $this->data['inks'][] = $tmp;
       }
@@ -90,21 +90,21 @@ class PluginAdditionalalertsNotificationTargetInkAlert extends NotificationTarge
     */
    function getTags() {
 
-      $tags = ['ink.printer' => __('Printers'),
-         'ink.printerurl' => 'URL ' . __('Printers'),
-         'ink.cartridge' => _n('Cartridge', 'Cartridges', 2),
-         'ink.cartridgeurl' => 'URL ' . _n('Cartridge', 'Cartridges', 2),
-         'ink.state' => __('State')];
+      $tags = ['ink.printer'      => __('Printers'),
+               'ink.printerurl'   => 'URL ' . __('Printers'),
+               'ink.cartridge'    => _n('Cartridge', 'Cartridges', 2),
+               'ink.cartridgeurl' => 'URL ' . _n('Cartridge', 'Cartridges', 2),
+               'ink.state'        => __('State')];
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag' => $tag, 'label' => $label,
-            'value' => true]);
+         $this->addTagToList(['tag'   => $tag, 'label' => $label,
+                              'value' => true]);
       }
 
-      $this->addTagToList(['tag' => 'additionalalerts',
-         'label' => __('Cartridges whose level is low', 'additionalalerts'),
-         'value' => false,
-         'foreach' => true,
-         'events' => ['ink']]);
+      $this->addTagToList(['tag'     => 'additionalalerts',
+                           'label'   => __('Cartridges whose level is low', 'additionalalerts'),
+                           'value'   => false,
+                           'foreach' => true,
+                           'events'  => ['ink']]);
 
       asort($this->tag_descriptions);
    }

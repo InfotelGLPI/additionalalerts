@@ -34,13 +34,13 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class PluginAdditionalalertsAdditionalalert
  */
-class PluginAdditionalalertsAdditionalalert extends CommonDBTM
-{
+class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
 
    static $rightname = "plugin_additionalalerts";
 
    /**
     * @param int $nb
+    *
     * @return translated
     */
    static function getTypeName($nb = 0) {
@@ -54,32 +54,31 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
 
       $CronTask = new CronTask();
 
-      $config = new PluginAdditionalalertsConfig();
-      $config->getFromDB('1');
+      $config = PluginAdditionalalertsConfig::getConfig();
 
       $infocom = new PluginAdditionalalertsInfocomAlert();
       $infocom->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($infocom->fields["use_infocom_alert"])
-         && $infocom->fields["use_infocom_alert"] > 0) {
+          && $infocom->fields["use_infocom_alert"] > 0) {
          $use_infocom_alert = $infocom->fields["use_infocom_alert"];
       } else {
-         $use_infocom_alert = $config->fields["use_infocom_alert"];
+         $use_infocom_alert = $config->useInfocomAlert();
       }
 
       $ocsalert = new PluginAdditionalalertsOcsAlert();
       $ocsalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($ocsalert->fields["use_newocs_alert"])
-         && $ocsalert->fields["use_newocs_alert"] > 0) {
+          && $ocsalert->fields["use_newocs_alert"] > 0) {
          $use_newocs_alert = $ocsalert->fields["use_newocs_alert"];
       } else {
-         $use_newocs_alert = $config->fields["use_newocs_alert"];
+         $use_newocs_alert = $config->useNewocsAlert();
       }
 
       if (isset($ocsalert->fields["delay_ocs"])
-         && $ocsalert->fields["delay_ocs"] > 0) {
+          && $ocsalert->fields["delay_ocs"] > 0) {
          $delay_ocs = $ocsalert->fields["delay_ocs"];
       } else {
-         $delay_ocs = $config->fields["delay_ocs"];
+         $delay_ocs = $config->getDelayOcs();
       }
       $additionalalerts_ocs = 0;
       if ($CronTask->getFromDBbyName("PluginAdditionalalertsOcsAlert", "AdditionalalertsOcs")) {
@@ -97,19 +96,19 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       $ticketunresolved = new PluginAdditionalalertsTicketUnresolved();
       $ticketunresolved->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($ticketunresolved->fields["delay_ticket_alert"])
-         && $ticketunresolved->fields["delay_ticket_alert"] > 0) {
+          && $ticketunresolved->fields["delay_ticket_alert"] > 0) {
          $delay_ticket_alert = $ticketunresolved->fields["delay_ticket_alert"];
       } else {
-         $delay_ticket_alert = $config->fields["delay_ticket_alert"];
+         $delay_ticket_alert = $config->getDelayTicketAlert();
       }
 
       $inkalert = new PluginAdditionalalertsInkAlert();
       $inkalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
       if (isset($inkalert->fields["use_ink_alert"])
-         && $inkalert->fields["use_ink_alert"] > 0) {
+          && $inkalert->fields["use_ink_alert"] > 0) {
          $use_ink_alert = $inkalert->fields["use_ink_alert"];
       } else {
-         $use_ink_alert = $config->fields["use_ink_alert"];
+         $use_ink_alert = $config->useInkAlert();
       }
 
       $additionalalerts_ink = 0;
@@ -134,17 +133,16 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       }
 
       if ($additionalalerts_ocs == 0
-         && $additionalalerts_new_ocs == 0
-         && $additionalalerts_not_infocom == 0
-         && $additionalalerts_ink == 0
-         && $additionalalerts_ticket_unresolved == 0
-      ) {
+          && $additionalalerts_new_ocs == 0
+          && $additionalalerts_not_infocom == 0
+          && $additionalalerts_ink == 0
+          && $additionalalerts_ticket_unresolved == 0) {
          echo "<div align='center'><b>" . __('No used alerts', 'additionalalerts') . "</b></div>";
       }
       if ($additionalalerts_not_infocom != 0) {
          if (Session::haveRight("infocom", READ)) {
 
-            $query = PluginAdditionalalertsInfocomAlert::query($_SESSION["glpiactive_entity"]);
+            $query  = PluginAdditionalalertsInfocomAlert::query($_SESSION["glpiactive_entity"]);
             $result = $DB->query($query);
 
             if ($DB->numrows($result) > 0) {
@@ -180,11 +178,12 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
       if ($additionalalerts_new_ocs != 0) {
          $plugin = new Plugin();
 
-         if ($plugin->isActivated("ocsinventoryng")/* $CFG_GLPI["use_ocs_mode"] */ && Session::haveRight("plugin_ocsinventoryng_ocsng", READ)) {
+         if ($plugin->isActivated("ocsinventoryng")
+             && Session::haveRight("plugin_ocsinventoryng", READ)) {
 
             foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers", "`is_active` = 1") as $config) {
 
-               $query = PluginAdditionalalertsOcsAlert::queryNew($config, $_SESSION["glpiactive_entity"]);
+               $query  = PluginAdditionalalertsOcsAlert::queryNew($config, $_SESSION["glpiactive_entity"]);
                $result = $DB->query($query);
 
                if ($DB->numrows($result) > 0) {
@@ -218,16 +217,19 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                }
             }
             echo "<br>";
+         } else {
+            echo "<br><div align='center'><b>" . __('New imported computers from OCS-NG', 'additionalalerts') . " : " .__('Ocsinventory plugin is not installed', 'additionalalerts') . "</b></div>";
          }
       }
 
       if ($additionalalerts_ocs != 0) {
          $plugin = new Plugin();
 
-         if ($plugin->isActivated("ocsinventoryng")/* $CFG_GLPI["use_ocs_mode"] */ && Session::haveRight("plugin_ocsinventoryng_ocsng", READ)) {
+         if ($plugin->isActivated("ocsinventoryng")
+             && Session::haveRight("plugin_ocsinventoryng", READ)) {
 
             foreach ($DB->request("glpi_plugin_ocsinventoryng_ocsservers", "`is_active` = 1") as $config) {
-               $query = PluginAdditionalalertsOcsAlert::query($delay_ocs, $config, $_SESSION["glpiactive_entity"]);
+               $query  = PluginAdditionalalertsOcsAlert::query($delay_ocs, $config, $_SESSION["glpiactive_entity"]);
                $result = $DB->query($query);
                if ($DB->numrows($result) > 0) {
 
@@ -260,13 +262,17 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
                }
             }
             echo "<br>";
+         } else {
+            echo "<br><div align='center'><b>" . __('OCS-NG Synchronization alerts', 'additionalalerts') . " : " .__('Ocsinventory plugin is not installed', 'additionalalerts') . "</b></div>";
          }
       }
 
       if ($additionalalerts_ink != 0) {
-         if ($DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
+         $plugin = new Plugin();
+         if ($plugin->isActivated("fusioninventory")
+            && $DB->tableExists("glpi_plugin_fusioninventory_printercartridges")) {
             if (Session::haveRight("cartridge", READ)) {
-               $query = PluginAdditionalalertsInkAlert::query($_SESSION["glpiactiveentities_string"]);
+               $query  = PluginAdditionalalertsInkAlert::query($_SESSION["glpiactiveentities_string"]);
                $result = $DB->query($query);
 
                if ($DB->numrows($result) > 0) {
@@ -302,9 +308,9 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM
          $entities = PluginAdditionalalertsTicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
 
          foreach ($entities as $entity => $delay_ticket_alert) {
-            $query = PluginAdditionalalertsTicketUnresolved::query($delay_ticket_alert, $entity);
+            $query  = PluginAdditionalalertsTicketUnresolved::query($delay_ticket_alert, $entity);
             $result = $DB->query($query);
-            $nbcol = 7;
+            $nbcol  = 7;
 
 
             if ($DB->numrows($result) > 0) {

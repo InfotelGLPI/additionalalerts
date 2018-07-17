@@ -34,15 +34,14 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class PluginAdditionalalertsNotificationState
  */
-class PluginAdditionalalertsNotificationState extends CommonDBTM
-{
+class PluginAdditionalalertsNotificationState extends CommonDBTM {
 
    static $rightname = "plugin_additionalalerts";
 
    /**
-    * @param $target
+    *
     */
-   function showForm($target) {
+   function configState() {
       global $DB;
 
       $rand = mt_rand();
@@ -54,29 +53,118 @@ class PluginAdditionalalertsNotificationState extends CommonDBTM
          $number = $DB->numrows($result);
          if ($number != 0) {
 
-            echo "<div align='center'><form method='post' name='massiveaction_form$rand' id='massiveaction_form$rand'  action=\"$target\">";
+            echo "<div align='center'>";
+
+            Html::openMassiveActionsForm('mass' . $this->getType() . $rand);
+            $massiveactionparams = ['item'      => $this->getType(),
+                                    'container' => 'mass' . $this->getType() . $rand];
+            Html::showMassiveActions($massiveactionparams);
+
             echo "<table class='tab_cadre_fixe' cellpadding='5'>";
             echo "<tr>";
-            echo "<th></th><th>" . _n('Status', 'Statuses', 2) . "</th>";
+            echo "<th width='10'>";
+            echo Html::getCheckAllAsCheckbox('mass' . $this->getType() . $rand);
+            echo "</th>";
+            echo "<th>" . _n('Status', 'Statuses', 2) . "</th>";
             echo "</tr>";
             while ($ligne = $DB->fetch_array($result)) {
-               $ID = $ligne["id"];
                echo "<tr class='tab_bg_1'>";
                echo "<td width='10' class='center'>";
-               echo "<input type='hidden' name='id' value='$ID'>";
-               echo "<input type='checkbox' name='item[$ID]' value='1'>";
+               Html::showMassiveActionCheckBox($this->getType(), $ligne['id'], ['class' => $this]);
                echo "</td>";
                echo "<td>" . Dropdown::getDropdownName("glpi_states", $ligne["states_id"]) . "</td>";
                echo "</tr>";
             }
-
-            Html::openArrowMassives("massiveaction_form$rand", true);
-            Html::closeArrowMassives(['delete_state' => __('Delete permanently')]);
-
             echo "</table>";
+
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
             echo "</div>";
          }
+      }
+   }
+
+   /**
+    * Get the standard massive actions which are forbidden
+    *
+    * @since version 0.84
+    *
+    * @return array of massive actions
+    **/
+   public function getForbiddenStandardMassiveAction() {
+
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+
+   /**
+    * Get the specific massive actions
+    *
+    * @since version 0.84
+    *
+    * @param $checkitem link item to check right   (default NULL)
+    *
+    * @return an $array of massive actions
+    */
+   public function getSpecificMassiveActions($checkitem = null) {
+
+
+      $actions['PluginAdditionalalertsNotificationState' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge'] = __('Delete');
+
+      return $actions;
+   }
+
+   /**
+    * @param MassiveAction $ma
+    *
+    * @return bool|false
+    */
+   /**
+    * @param MassiveAction $ma
+    *
+    * @return bool|false
+    */
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'purge':
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+            return true;
+      }
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+    *
+    * @param MassiveAction $ma
+    * @param CommonDBTM    $item
+    * @param array         $ids
+    *
+    * @return nothing|void
+    */
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case "purge":
+            foreach ($ids as $key) {
+               if ($item->can($key, UPDATE)) {
+                  if ($item->delete(['id' => $key])) {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                  } else {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            break;
       }
    }
 }

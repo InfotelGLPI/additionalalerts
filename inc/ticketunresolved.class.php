@@ -104,9 +104,12 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
 
       $query = "SELECT `glpi_tickets`.*,`glpi_tickets_users`.users_id, `glpi_groups_users`.`users_id` as supervisor
          FROM `glpi_tickets`
-         LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` AND `glpi_tickets_users`.`type` = 2 
-         LEFT JOIN `glpi_groups_tickets` ON `glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id` AND `glpi_groups_tickets`.`type` = 2
-         LEFT JOIN `glpi_groups_users` ON `glpi_groups_users`.`groups_id` = `glpi_groups_tickets`.`groups_id` AND `glpi_groups_users`.`is_manager` = 1 
+         LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id` 
+          AND `glpi_tickets_users`.`type` = 2 
+         LEFT JOIN `glpi_groups_tickets` ON `glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id` 
+          AND `glpi_groups_tickets`.`type` = 2
+         LEFT JOIN `glpi_groups_users` ON `glpi_groups_users`.`groups_id` = `glpi_groups_tickets`.`groups_id` 
+          AND `glpi_groups_users`.`is_manager` = 1 
          WHERE `glpi_tickets`.`date` <= '" . $date . "'
          AND `glpi_tickets`.`status` <= 4
          AND `glpi_tickets`.`is_deleted` = 0
@@ -268,6 +271,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
                }
             }
             foreach ($list_ticket as $tickets) {
+               Plugin::loadLang('additionalalerts');
+
                if (NotificationEvent::raiseEvent('ticketunresolved',
                                                  $ticket,
                                                  ['entities_id' => $entity,

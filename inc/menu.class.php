@@ -31,8 +31,7 @@
 /**
  * Class PluginAdditionalalertsMenu
  */
-class PluginAdditionalalertsMenu extends CommonGLPI
-{
+class PluginAdditionalalertsMenu extends CommonGLPI {
    static $rightname = 'plugin_additionalalerts';
 
    /**
@@ -47,20 +46,22 @@ class PluginAdditionalalertsMenu extends CommonGLPI
     */
    static function getMenuContent() {
 
-      $menu = [];
-      $menu['title'] = self::getMenuName();
-      $menu['page'] = "/plugins/additionalalerts/front/additionalalert.form.php";
+      $menu                    = [];
+      $menu['title']           = self::getMenuName();
+      $menu['page']            = "/plugins/additionalalerts/front/additionalalert.form.php";
       $menu['links']['search'] = PluginAdditionalalertsAdditionalalert::getFormURL(false);
+
+      $menu['links']['config'] = '/plugins/additionalalerts/front/config.form.php';
 
       return $menu;
    }
 
    static function removeRightsFromSession() {
-      if (isset($_SESSION['glpimenu']['plugins']['types']['PluginAdditionalalertsMenu'])) {
-         unset($_SESSION['glpimenu']['plugins']['types']['PluginAdditionalalertsMenu']);
+      if (isset($_SESSION['glpimenu']['admin']['types']['PluginAdditionalalertsMenu'])) {
+         unset($_SESSION['glpimenu']['admin']['types']['PluginAdditionalalertsMenu']);
       }
-      if (isset($_SESSION['glpimenu']['plugins']['content']['pluginadditionalalertsmenu'])) {
-         unset($_SESSION['glpimenu']['plugins']['content']['pluginadditionalalertsmenu']);
+      if (isset($_SESSION['glpimenu']['admin']['content']['pluginadditionalalertsmenu'])) {
+         unset($_SESSION['glpimenu']['admin']['content']['pluginadditionalalertsmenu']);
       }
    }
 }

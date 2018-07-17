@@ -41,17 +41,15 @@ function plugin_additionalalerts_install() {
 
    //INSTALL
    if (!$DB->tableExists("glpi_plugin_additionalalerts_ticketunresolveds")
-      && !$DB->tableExists("glpi_plugin_additionalalerts_configs")
-   ) {
+      && !$DB->tableExists("glpi_plugin_additionalalerts_configs")) {
 
       $install = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/empty-1.9.0.sql");
+      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/empty-2.1.0.sql");
 
    }
    //UPDATE
    if ($DB->tableExists("glpi_plugin_alerting_profiles")
-      && $DB->fieldExists("glpi_plugin_alerting_profiles", "interface")
-   ) {
+      && $DB->fieldExists("glpi_plugin_alerting_profiles", "interface")) {
 
       $update78 = true;
       $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.2.0.sql");

@@ -73,7 +73,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       if ($item->getType()=='CronTask') {
 
          $target = $CFG_GLPI["root_doc"]."/plugins/additionalalerts/front/ocsalert.form.php";
-         self::configCron($target, $item->getField('id'));
+         self::configCron($target);
       }
       return true;
    }
@@ -116,7 +116,8 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
                 AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')
             WHERE `glpi_computers`.`is_deleted` = 0
             AND `glpi_computers`.`is_template` = 0
-            AND `glpi_computers`.`states_id` = '".$config["states_id_default"]."' AND `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id` = '".$config["id"]."' ";
+            AND `glpi_computers`.`states_id` = ".$config["states_id_default"]." 
+            AND `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id` = '".$config["id"]."' ";
       $query.= "AND `glpi_computers`.`entities_id` = '".$entity."' ";
       $query .= " ORDER BY `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update` ASC";
 
@@ -133,34 +134,40 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
    static function query($delay_ocs, $config, $entity) {
       global $DB;
 
-      $delay_stamp_ocs= mktime(0, 0, 0, date("m"), date("d")-$delay_ocs, date("y"));
-      $date_ocs=date("Y-m-d", $delay_stamp_ocs);
-      $date_ocs = $date_ocs." 00:00:00";
+      $delay_stamp_ocs = mktime(0, 0, 0, date("m"), date("d") - $delay_ocs, date("y"));
+      $date_ocs        = date("Y-m-d", $delay_stamp_ocs);
+      $date_ocs        = $date_ocs . " 00:00:00";
 
       $query = "SELECT `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update`,
                         `glpi_plugin_ocsinventoryng_ocslinks`.`last_update`,
                         `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id`, 
                         `glpi_computers`.*,
                         `glpi_items_operatingsystems`.`operatingsystems_id`
-          FROM `glpi_plugin_ocsinventoryng_ocslinks`
-            LEFT JOIN `glpi_computers` ON `glpi_plugin_ocsinventoryng_ocslinks`.`computers_id` = `glpi_computers`.`id`
-            LEFT JOIN `glpi_items_operatingsystems` ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id` 
-                AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')
-          WHERE `glpi_computers`.`is_deleted` = 0
-          AND `glpi_computers`.`is_template` = 0
-          AND `last_ocs_update` <= '".$date_ocs."' AND `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id` = '".$config["id"]."'";
+                FROM `glpi_plugin_ocsinventoryng_ocslinks`
+                  LEFT JOIN `glpi_computers` 
+                    ON `glpi_plugin_ocsinventoryng_ocslinks`.`computers_id` = `glpi_computers`.`id`
+                  LEFT JOIN `glpi_items_operatingsystems` 
+                    ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id` 
+                      AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')
+                WHERE `glpi_computers`.`is_deleted` = 0
+                AND `glpi_computers`.`is_template` = 0
+                AND `last_ocs_update` <= '".$date_ocs."' 
+                AND `glpi_plugin_ocsinventoryng_ocslinks`.`plugin_ocsinventoryng_ocsservers_id` = ".$config["id"];
+
       $query_state= "SELECT `states_id`
             FROM `glpi_plugin_additionalalerts_notificationstates` ";
+
+
       $result_state = $DB->query($query_state);
       if ($DB->numrows($result_state)>0) {
          $query .= " AND (`glpi_computers`.`states_id` = 999999 ";
          while ($data_state=$DB->fetch_array($result_state)) {
-            $type_where="OR `glpi_computers`.`states_id` = '".$data_state["states_id"]."' ";
+            $type_where="OR `glpi_computers`.`states_id` = ".$data_state["states_id"]." ";
             $query .= " $type_where ";
          }
          $query .= ") ";
       }
-      $query.= "AND `glpi_computers`.`entities_id` = '".$entity."' ";
+      $query.= " AND `glpi_computers`.`entities_id` = $entity";
 
       $query .= " ORDER BY `glpi_plugin_ocsinventoryng_ocslinks`.`last_ocs_update` ASC";
 
@@ -188,7 +195,12 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $body.="<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"])."</td>";
       }
-      $body.="<td>".Dropdown::getDropdownName("glpi_operatingsystems", $computer->fields["operatingsystems_id"])."</td>";
+      $item_operatingsystems = new Item_OperatingSystem();
+      if ($item_operatingsystems->getFromDBByCrit(['itemtype' => 'Computer',
+                                                 'items_id' => $computer->getID()])) {
+
+      }
+      $body.="<td>".Dropdown::getDropdownName("glpi_operatingsystems", $item_operatingsystems->getField("operatingsystems_id"))."</td>";
       $body.="<td>".Dropdown::getDropdownName("glpi_states", $computer->fields["states_id"])."</td>";
       $body.="<td>".Dropdown::getDropdownName("glpi_locations", $computer->fields["locations_id"])."</td>";
       $body.="<td>";
@@ -440,17 +452,24 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
     * @param $target
     * @param $ID
     */
-   static function configCron($target, $ID) {
+   static function configCron($target) {
+
+      $state = new PluginAdditionalalertsNotificationState();
+      $states = $state->find();
+      $used = [];
+      foreach ($states as $data) {
+         $used[] = $data['states_id'];
+      }
 
       echo "<div align='center'>";
       echo "<form method='post' action=\"$target\">";
       echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-      $colspan=2;
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Parameter', 'additionalalerts')."</td>";
       echo "<td>".__('Status used by OCS-NG', 'additionalalerts');
-      Dropdown::show('State', ['name' => "states_id"]);
+      Dropdown::show('State', ['name' => "states_id",
+                               'used' => $used]);
       echo "&nbsp;<input type='submit' name='add_state' value=\""._sx('button', 'Add')."\" class='submit' ></div></td>";
       echo "</tr>";
       echo "</table>";
@@ -458,8 +477,7 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
 
       echo "</div>";
 
-      $state = new PluginAdditionalalertsNotificationState();
-      $state->showForm($target);
+      $state->configState();
 
    }
 

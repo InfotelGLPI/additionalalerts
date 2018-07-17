@@ -29,12 +29,11 @@
 
 include('../../../inc/includes.php');
 
-Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "plugins", "pluginadditionalalertsmenu");
+Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "admin", "pluginadditionalalertsmenu");
 
 $alert = new PluginAdditionalalertsAdditionalalert();
 if (Session::haveRight("plugin_additionalalerts", READ)
-   || Session::haveRight("config", CREATE)
-) {
+    || Session::haveRight("config", CREATE)) {
 
    PluginAdditionalalertsAdditionalalert::displayAlerts();
 
