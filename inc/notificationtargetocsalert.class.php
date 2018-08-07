@@ -95,8 +95,8 @@ class PluginAdditionalalertsNotificationTargetOcsAlert extends NotificationTarge
 
          $tmp['##ocsmachine.urlgroup##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=group_" .
                                                      $ocsmachine['groups_id']);
-
-         $tmp['##ocsmachine.user##']    = getUserName($ocsmachine['users_id']);
+         $dbu = new DbUtils();
+         $tmp['##ocsmachine.user##']    = $dbu->getUserName($ocsmachine['users_id']);
          $tmp['##ocsmachine.group##']   = Dropdown::getDropdownName("glpi_groups", $ocsmachine['groups_id']);
          $tmp['##ocsmachine.contact##'] = $ocsmachine['contact'];
 

@@ -205,7 +205,9 @@ class PluginAdditionalalertsOcsAlert extends CommonDBTM {
       $body.="<td>".Dropdown::getDropdownName("glpi_locations", $computer->fields["locations_id"])."</td>";
       $body.="<td>";
       if (!empty($computer->fields["users_id"])) {
-            $body.="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$computer->fields["users_id"]."\">".getUserName($computer->fields["users_id"])."</a>";
+         $dbu = new DbUtils();
+            $body.="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$computer->fields["users_id"]."\">".
+                   $dbu->getUserName($computer->fields["users_id"])."</a>";
       }
 
       if (!empty($computer->fields["groups_id"])) {

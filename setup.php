@@ -77,7 +77,7 @@ function plugin_version_additionalalerts() {
 
    return [
       'name'           => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
-      'version'        => '2.1.0',
+      'version'        => '2.1.1',
       'license'        => 'GPLv2+',
       'oldname'        => 'alerting',
       'author'         => "<a href='http://infotel.com/services/expertise-technique/glpi/'>Infotel</a> / Konstantin Kabassanov",

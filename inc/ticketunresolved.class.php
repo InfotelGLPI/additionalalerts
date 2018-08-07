@@ -128,6 +128,8 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
    static function displayBody($data) {
       global $CFG_GLPI;
 
+      $dbu = new DbUtils();
+
       $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . $data["id"] . "\">" . $data["name"];
       $body .= "</a></td>";
 
@@ -138,14 +140,16 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
       $body .= "<td>";
       if (!empty($data["users_id"])) {
 
-         $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["users_id"] . "\">" . getUserName($data["users_id"]) . "</a>";
+         $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["users_id"] . "\">" .
+                  $dbu->getUserName($data["users_id"]) . "</a>";
 
       }
       $body .= "</td>";
       $body .= "<td>";
       if (!empty($data["supervisor"])) {
 
-         $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["supervisor"] . "\">" . getUserName($data["supervisor"]) . "</a>";
+         $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["supervisor"] . "\">" .
+                  $dbu->getUserName($data["supervisor"]) . "</a>";
       }
       if (!empty($data["contact"])) {
          $body .= " - " . $data["contact"];
@@ -248,8 +252,11 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          $notifications = Notification::getNotificationsByEventAndType('ticketunresolved',
                                                                        'PluginAdditionalalertsTicketUnresolved',
                                                                        $entity);
+
+         $dbu = new DbUtils();
+
          foreach ($notifications as $notif) {
-            $targets = getAllDatasFromTable(
+            $targets = $dbu->getAllDataFromTable(
                'glpi_notificationtargets',
                "notifications_id = {$notif['id']}"
             );

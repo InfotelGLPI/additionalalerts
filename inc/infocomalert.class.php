@@ -160,8 +160,9 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
       $body .= "<td>" . Dropdown::getDropdownName("glpi_locations", $data["locations_id"]) . "</td>";
       $body .= "<td>";
       if (!empty($data["users_id"])) {
-
-         $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["users_id"] . "\">" . getUserName($data["users_id"]) . "</a>";
+         $dbu = new DbUtils();
+         $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["users_id"] . "\">" .
+                  $dbu->getUserName($data["users_id"]) . "</a>";
 
       }
       if (!empty($data["groups_id"])) {

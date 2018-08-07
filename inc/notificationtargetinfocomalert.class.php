@@ -90,8 +90,8 @@ class PluginAdditionalalertsNotificationTargetInfocomAlert extends NotificationT
 
          $tmp['##notinfocom.urlgroup##'] = urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=group_" .
             $notinfocom['groups_id']);
-
-         $tmp['##notinfocom.user##'] = getUserName($notinfocom['users_id']);
+         $dbu = new DbUtils();
+         $tmp['##notinfocom.user##'] = $dbu->getUserName($notinfocom['users_id']);
          $tmp['##notinfocom.group##'] = Dropdown::getDropdownName("glpi_groups", $notinfocom['groups_id']);
          $tmp['##notinfocom.contact##'] = $notinfocom['contact'];
 
