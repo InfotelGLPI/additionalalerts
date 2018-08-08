@@ -258,7 +258,7 @@ class PluginAdditionalalertsTicketUnresolved extends CommonDBTM {
          foreach ($notifications as $notif) {
             $targets = $dbu->getAllDataFromTable(
                'glpi_notificationtargets',
-               "notifications_id = {$notif['id']}"
+               ["notifications_id" => $notif['id']]
             );
 
             $list_ticket = [];
