@@ -43,11 +43,6 @@ function plugin_init_additionalalerts() {
       'notificationtemplates_types' => true
    ]);
 
-   Plugin::registerClass('PluginAdditionalalertsOcsAlert', [
-      'notificationtemplates_types' => true,
-      'addtabon'                    => 'CronTask'
-   ]);
-
    Plugin::registerClass('PluginAdditionalalertsInkAlert', [
       'notificationtemplates_types' => true,
       'addtabon'                    => ['CartridgeItem', 'CronTask']
@@ -77,7 +72,7 @@ function plugin_version_additionalalerts() {
 
    return [
       'name'           => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
-      'version'        => '2.1.1',
+      'version'        => '2.1.2',
       'license'        => 'GPLv2+',
       'oldname'        => 'alerting',
       'author'         => "<a href='http://infotel.com/services/expertise-technique/glpi/'>Infotel</a> / Konstantin Kabassanov",

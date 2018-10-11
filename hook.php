@@ -44,7 +44,7 @@ function plugin_additionalalerts_install() {
       && !$DB->tableExists("glpi_plugin_additionalalerts_configs")) {
 
       $install = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/empty-2.1.0.sql");
+      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/empty-2.1.2.sql");
 
    }
    //UPDATE
@@ -56,7 +56,7 @@ function plugin_additionalalerts_install() {
       $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.3.0.sql");
 
    }
-   if (!$DB->tableExists("glpi_plugin_additionalalerts_notificationstates")) {
+   if (!$DB->tableExists("glpi_plugin_additionalalerts_infocomalerts")) {
 
       $update78 = true;
       $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.3.0.sql");
@@ -152,9 +152,64 @@ function plugin_additionalalerts_install() {
       $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.8.0.sql");
    }
 
+   //version 2.1.2
+   if ($DB->tableExists("glpi_plugin_additionalalerts_ocsalerts")) {
+      //ocsalert migrated to the ocsinventoryng plugin
+      $notif = new Notification();
+
+      $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
+                  'event' => 'ocs',
+                  'FIELDS' => 'id'];
+      foreach ($DB->request('glpi_notifications', $options) as $data) {
+         $notif->delete($data);
+      }
+      $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
+                  'event' => 'newocs',
+                  'FIELDS' => 'id'];
+      foreach ($DB->request('glpi_notifications', $options) as $data) {
+         $notif->delete($data);
+      }
+
+      //templates
+      $template = new NotificationTemplate();
+      $translation = new NotificationTemplateTranslation();
+      $notif_template = new Notification_NotificationTemplate();
+      $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
+                  'FIELDS' => 'id'];
+      foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
+         $options_template = ['notificationtemplates_id' => $data['id'],
+                              'FIELDS' => 'id'];
+
+         foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
+            $translation->delete($data_template);
+         }
+         $template->delete($data);
+         foreach ($DB->request('glpi_notifications_notificationtemplates', $options_template) as $data_template) {
+            $notif_template->delete($data_template);
+         }
+      }
+      //delete tables
+      $tables = [
+         "glpi_plugin_additionalalerts_ocsalerts",
+         "glpi_plugin_additionalalerts_notificationstates"];
+
+      foreach ($tables as $table) {
+         $DB->query("DROP TABLE IF EXISTS `$table`;");
+      }
+      //delete fields
+      $DB->query("ALTER TABLE `glpi_plugin_additionalalerts_configs`
+                 DROP `delay_ocs`,
+                 DROP `use_newocs_alert`;");
+
+      CronTask::Unregister('PluginAdditionalalertsOcsAlert');
+
+   }
+
    if ($install || $update78) {
       //Do One time on 0.78
-      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginAdditionalalertsInfocomAlert' AND `name` = 'Alert infocoms'";
+      $query_id = "SELECT `id` 
+                  FROM `glpi_notificationtemplates` 
+                  WHERE `itemtype`='PluginAdditionalalertsInfocomAlert' AND `name` = 'Alert infocoms'";
       $result = $DB->query($query_id) or die ($DB->error());
       $itemtype = $DB->result($result, 0, 'id');
 
@@ -206,81 +261,10 @@ function plugin_additionalalerts_install() {
                VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
       $DB->query($query);
 
-      ////////////////////
-      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginAdditionalalertsOcsAlert' AND `name` = 'Alert machines ocs'";
-      $result = $DB->query($query_id) or die ($DB->error());
-      $itemtype = $DB->result($result, 0, 'id');
-
-      $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                                 VALUES(NULL, " . $itemtype . ", '','##lang.ocsmachine.title## : ##ocsmachine.entity##',
-                        '##FOREACHocsmachines##
-   ##lang.ocsmachine.name## : ##ocsmachine.name##
-   ##lang.ocsmachine.operatingsystem## : ##ocsmachine.operatingsystem##
-   ##lang.ocsmachine.state## : ##ocsmachine.state##
-   ##lang.ocsmachine.location## : ##ocsmachine.location##
-   ##lang.ocsmachine.user## : ##ocsmachine.user## / ##lang.ocsmachine.group## : ##ocsmachine.group## / ##lang.ocsmachine.contact## : ##ocsmachine.contact##
-   ##lang.ocsmachine.lastocsupdate## : ##ocsmachine.lastocsupdate##
-   ##lang.ocsmachine.lastupdate## : ##ocsmachine.lastupdate##
-   ##lang.ocsmachine.ocsserver## : ##ocsmachine.ocsserver##
-   ##ENDFOREACHocsmachines##',
-                        '&lt;table class=\"tab_cadre\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&gt;
-   &lt;tbody&gt;
-   &lt;tr&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.name##&lt;/span&gt;&lt;/td&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.operatingsystem##&lt;/span&gt;&lt;/td&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.state##&lt;/span&gt;&lt;/td&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.location##&lt;/span&gt;&lt;/td&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.user##&lt;/span&gt;&lt;/td&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.lastocsupdate##&lt;/span&gt;&lt;/td&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.lastupdate##&lt;/span&gt;&lt;/td&gt;
-   &lt;td style=\"text-align: left;\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ocsmachine.ocsserver##&lt;/span&gt;&lt;/td&gt;
-   &lt;/tr&gt;
-   ##FOREACHocsmachines##
-   &lt;tr&gt;
-   &lt;td&gt;&lt;a href=\"##ocsmachine.urlname##\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.name##&lt;/span&gt;&lt;/a&gt;&lt;/td&gt;
-   &lt;td&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.operatingsystem##&lt;/span&gt;&lt;/td&gt;
-   &lt;td&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.state##&lt;/span&gt;&lt;/td&gt;
-   &lt;td&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.location##&lt;/span&gt;&lt;/td&gt;
-   &lt;td&gt;##IFocsmachine.user##&lt;a href=\"##ocsmachine.urluser##\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.user##&lt;/span&gt;&lt;/a&gt; / ##ENDIFocsmachine.user####IFocsmachine.group##&lt;a href=\"##ocsmachine.urlgroup##\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.group##&lt;/span&gt;&lt;/a&gt; / ##ENDIFocsmachine.group####IFocsmachine.contact##&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.contact####ENDIFocsmachine.contact##&lt;/span&gt;&lt;/td&gt;
-   &lt;td&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.lastocsupdate##&lt;/span&gt;&lt;/td&gt;
-   &lt;td&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.lastupdate##&lt;/span&gt;&lt;/td&gt;
-   &lt;td&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##ocsmachine.ocsserver##&lt;/span&gt;&lt;/td&gt;
-   &lt;/tr&gt;
-   ##ENDFOREACHocsmachines##
-   &lt;/tbody&gt;
-   &lt;/table&gt;');";
-      $DB->query($query);
-
-      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
-                VALUES ('Alert new machines ocs', 0, 'PluginAdditionalalertsOcsAlert', 'newocs', 1, 1);";
-      $DB->query($query);
-
-      //retrieve notification id
-      $query_id = "SELECT `id` FROM `glpi_notifications`
-               WHERE `name` = 'Alert new machines ocs' AND `itemtype` = 'PluginAdditionalalertsOcsAlert' AND `event` = 'newocs'";
-      $result = $DB->query($query_id) or die ($DB->error());
-      $notification = $DB->result($result, 0, 'id');
-
-      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
-               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
-      $DB->query($query);
-
-      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`, `event`, `is_recursive`, `is_active`) 
-                  VALUES ('Alert ocs synchronization', 0, 'PluginAdditionalalertsOcsAlert', 'ocs', 1, 1);";
-      $DB->query($query);
-
-      //retrieve notification id
-      $query_id = "SELECT `id` FROM `glpi_notifications`
-               WHERE `name` = 'Alert ocs synchronization' AND `itemtype` = 'PluginAdditionalalertsOcsAlert' AND `event` = 'ocs'";
-      $result = $DB->query($query_id) or die ($DB->error());
-      $notification = $DB->result($result, 0, 'id');
-
-      $query = "INSERT INTO `glpi_notifications_notificationtemplates` (`notifications_id`, `mode`, `notificationtemplates_id`) 
-               VALUES (" . $notification . ", 'mailing', " . $itemtype . ");";
-      $DB->query($query);
-
       //////////////////////
-      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginAdditionalalertsInkAlert' AND `name` = 'Alert ink level'";
+      $query_id = "SELECT `id` 
+                  FROM `glpi_notificationtemplates` 
+                  WHERE `itemtype`='PluginAdditionalalertsInkAlert' AND `name` = 'Alert ink level'";
       $result = $DB->query($query_id) or die ($DB->error());
       $itemtype = $DB->result($result, 0, 'id');
 
@@ -347,7 +331,9 @@ function plugin_additionalalerts_install() {
 
    if ($install || $update90) {
       ////////////////
-      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginAdditionalalertsTicketUnresolved' AND `name` = 'Alert Ticket Unresolved'";
+      $query_id = "SELECT `id` 
+                  FROM `glpi_notificationtemplates` 
+                  WHERE `itemtype`='PluginAdditionalalertsTicketUnresolved' AND `name` = 'Alert Ticket Unresolved'";
       $result = $DB->query($query_id) or die ($DB->error());
       $itemtype = $DB->result($result, 0, 'id');
 
@@ -393,7 +379,9 @@ function plugin_additionalalerts_install() {
 
       //retrieve notification id
       $query_id = "SELECT `id` FROM `glpi_notifications`
-               WHERE `name` = 'Alert Ticket Unresolved' AND `itemtype` = 'PluginAdditionalalertsTicketUnresolved' AND `event` = 'ticketunresolved'";
+               WHERE `name` = 'Alert Ticket Unresolved' 
+               AND `itemtype` = 'PluginAdditionalalertsTicketUnresolved' 
+               AND `event` = 'ticketunresolved'";
       $result = $DB->query($query_id) or die ($DB->error());
       $notification = $DB->result($result, 0, 'id');
 
@@ -404,8 +392,6 @@ function plugin_additionalalerts_install() {
    }
 
    // To be called for each task the plugin manage
-   CronTask::Register('PluginAdditionalalertsOcsAlert', 'AdditionalalertsOcs', DAY_TIMESTAMP);
-   CronTask::Register('PluginAdditionalalertsOcsAlert', 'AdditionalalertsNewOcs', HOUR_TIMESTAMP);
    CronTask::Register('PluginAdditionalalertsInfocomAlert', 'AdditionalalertsNotInfocom', HOUR_TIMESTAMP);
    CronTask::Register('PluginAdditionalalertsInkAlert', 'AdditionalalertsInk', DAY_TIMESTAMP);
    CronTask::Register('PluginAdditionalalertsTicketUnresolved', 'AdditionalalertsTicketUnresolved', DAY_TIMESTAMP);
@@ -431,10 +417,8 @@ function plugin_additionalalerts_uninstall() {
    include_once(GLPI_ROOT . "/plugins/additionalalerts/inc/menu.class.php");
 
    $tables = [
-      "glpi_plugin_additionalalerts_ocsalerts",
       "glpi_plugin_additionalalerts_infocomalerts",
       "glpi_plugin_additionalalerts_inkalerts",
-      "glpi_plugin_additionalalerts_notificationstates",
       "glpi_plugin_additionalalerts_notificationtypes",
       "glpi_plugin_additionalalerts_configs",
       "glpi_plugin_additionalalerts_inkthresholds",
@@ -455,26 +439,15 @@ function plugin_additionalalerts_uninstall() {
       "glpi_plugin_additionalalerts_profiles",
       "glpi_plugin_alerting_cartridges",
       "glpi_plugin_alerting_cartridges_printer_state",
-      "glpi_plugin_additionalalerts_profiles"];
+      "glpi_plugin_additionalalerts_profiles",
+      "glpi_plugin_additionalalerts_ocsalerts",
+      "glpi_plugin_additionalalerts_notificationstates"];
 
    foreach ($tables as $table) {
       $DB->query("DROP TABLE IF EXISTS `$table`;");
    }
 
    $notif = new Notification();
-
-   $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
-      'event' => 'ocs',
-      'FIELDS' => 'id'];
-   foreach ($DB->request('glpi_notifications', $options) as $data) {
-      $notif->delete($data);
-   }
-   $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
-      'event' => 'newocs',
-      'FIELDS' => 'id'];
-   foreach ($DB->request('glpi_notifications', $options) as $data) {
-      $notif->delete($data);
-   }
 
    $options = ['itemtype' => 'PluginAdditionalalertsInkAlert',
       'event' => 'ink',
@@ -495,25 +468,6 @@ function plugin_additionalalerts_uninstall() {
       'FIELDS' => 'id'];
    foreach ($DB->request('glpi_notifications', $options) as $data) {
       $notif->delete($data);
-   }
-
-   //templates
-   $template = new NotificationTemplate();
-   $translation = new NotificationTemplateTranslation();
-   $notif_template = new Notification_NotificationTemplate();
-   $options = ['itemtype' => 'PluginAdditionalalertsOcsAlert',
-      'FIELDS' => 'id'];
-   foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = ['notificationtemplates_id' => $data['id'],
-         'FIELDS' => 'id'];
-
-      foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
-         $translation->delete($data_template);
-      }
-      $template->delete($data);
-      foreach ($DB->request('glpi_notifications_notificationtemplates', $options_template) as $data_template) {
-         $notif_template->delete($data_template);
-      }
    }
 
    //templates

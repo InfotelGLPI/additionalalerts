@@ -43,7 +43,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
     * @return translated
     */
    static function getTypeName($nb = 0) {
-      return __('Plugin Setup', 'additionalalerts');
+      return __('Plugin setup', 'additionalalerts');
    }
 
    public static function getConfig() {
@@ -93,7 +93,6 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       } else if ($item->getType()=='Entity') {
 
          PluginAdditionalalertsInfocomAlert::showNotificationOptions($item);
-         PluginAdditionalalertsOcsAlert::showNotificationOptions($item);
          PluginAdditionalalertsInkAlert::showNotificationOptions($item);
          PluginAdditionalalertsTicketUnresolved::showNotificationOptions($item);
 
@@ -117,27 +116,6 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       echo "<td>" . PluginAdditionalalertsInfocomAlert::getTypeName(2) . "</td><td>";
       Alert::dropdownYesNo(['name'=>"use_infocom_alert",
                               'value'=>$this->fields["use_infocom_alert"]]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td >" .  __('New imported computers from OCS-NG', 'additionalalerts') . "</td><td>";
-      if ($plugin->isActivated('ocsinventoryng')) {
-         Alert::dropdownYesNo(['name'=>"use_newocs_alert",
-                                 'value'=>$this->fields["use_newocs_alert"]]);
-      } else {
-         echo "<div align='center'><b>".__('Ocsinventory plugin is not installed', 'additionalalerts')."</b></div>";
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td >" . __('OCS-NG Synchronization alerts', 'additionalalerts') . "</td><td>";
-      if ($plugin->isActivated('ocsinventoryng')) {
-         Alert::dropdownIntegerNever('delay_ocs',
-                                     $this->fields["delay_ocs"],
-                                     ['max'=>99]);
-         echo "&nbsp;"._n('Day', 'Days', 2);
-      } else {
-         echo "<div align='center'><b>".__('Ocsinventory plugin is not installed', 'additionalalerts')."</b></div>";
-      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -174,14 +152,6 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
 
    public function useInfocomAlert() {
       return $this->fields['use_infocom_alert'];
-   }
-
-   public function useNewocsAlert() {
-      return $this->fields['use_newocs_alert'];
-   }
-
-   public function getDelayOcs() {
-      return $this->fields['delay_ocs'];
    }
 
    public function useInkAlert() {

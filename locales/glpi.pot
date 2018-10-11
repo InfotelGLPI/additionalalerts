@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin 1.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-17 12:05+0200\n"
+"POT-Creation-Date: 2018-10-11 12:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: setup.php:79 inc/additionalalert.class.php:48 inc/menu.class.php:41
+#: setup.php:74 inc/additionalalert.class.php:48 inc/menu.class.php:41
 #: inc/profile.class.php:92
 msgid "Other alert"
 msgid_plural "Others alerts"
@@ -29,62 +29,15 @@ msgstr[1] ""
 msgid "Please activate the plugin"
 msgstr ""
 
-#: inc/additionalalert.class.php:140
+#: inc/additionalalert.class.php:110
 msgid "No used alerts"
 msgstr ""
 
-#: inc/additionalalert.class.php:172
+#: inc/additionalalert.class.php:142
 msgid "No computers with no buy date"
 msgstr ""
 
-#: inc/additionalalert.class.php:198 inc/additionalalert.class.php:221
-#: inc/config.class.php:123 inc/notificationtargetocsalert.class.php:47
-#: inc/ocsalert.class.php:411 inc/ocsalert.class.php:535
-msgid "New imported computers from OCS-NG"
-msgstr ""
-
-#: inc/additionalalert.class.php:207 inc/additionalalert.class.php:251
-#: inc/notificationtargetocsalert.class.php:79
-#: inc/notificationtargetocsalert.class.php:126
-msgid "Last OCSNG inventory date"
-msgstr ""
-
-#: inc/additionalalert.class.php:208 inc/additionalalert.class.php:252
-#: inc/notificationtargetocsalert.class.php:80
-#: inc/notificationtargetocsalert.class.php:127
-msgid "Import date in GLPI"
-msgstr ""
-
-#: inc/additionalalert.class.php:209 inc/additionalalert.class.php:253
-#: inc/notificationtargetocsalert.class.php:81
-#: inc/notificationtargetocsalert.class.php:128
-msgid "OCSNG server"
-msgstr ""
-
-#: inc/additionalalert.class.php:216
-msgid "No new imported computer from OCS-NG"
-msgstr ""
-
-#: inc/additionalalert.class.php:221 inc/additionalalert.class.php:266
-#: inc/config.class.php:128 inc/config.class.php:139
-msgid "Ocsinventory plugin is not installed"
-msgstr ""
-
-#: inc/additionalalert.class.php:242
-#: inc/notificationtargetocsalert.class.php:69
-msgid "Computers not synchronized with OCS-NG since more"
-msgstr ""
-
-#: inc/additionalalert.class.php:261
-msgid "No computer not synchronized since more"
-msgstr ""
-
-#: inc/additionalalert.class.php:266 inc/config.class.php:132
-#: inc/ocsalert.class.php:91 inc/ocsalert.class.php:542
-msgid "OCS-NG Synchronization alerts"
-msgstr ""
-
-#: inc/additionalalert.class.php:285 inc/config.class.php:144
+#: inc/additionalalert.class.php:163 inc/config.class.php:122
 #: inc/inkalert.class.php:48 inc/inkalert.class.php:98
 #: inc/inkalert.class.php:276 inc/inkalert.class.php:397
 #: inc/notificationtargetinkalert.class.php:45
@@ -92,37 +45,38 @@ msgstr ""
 msgid "Cartridges whose level is low"
 msgstr ""
 
-#: inc/additionalalert.class.php:292
+#: inc/additionalalert.class.php:170
 msgid "Ink level"
 msgstr ""
 
-#: inc/additionalalert.class.php:299
+#: inc/additionalalert.class.php:177
 msgid "No cartridge is below the threshold"
 msgstr ""
 
-#: inc/additionalalert.class.php:303 inc/inkthreshold.class.php:55
+#: inc/additionalalert.class.php:181 inc/inkthreshold.class.php:55
 #: inc/inkthreshold.class.php:58
 msgid "Ink level alerts"
 msgstr ""
 
-#: inc/additionalalert.class.php:303 inc/config.class.php:150
+#: inc/additionalalert.class.php:181 inc/config.class.php:128
 #: inc/inkalert.class.php:404 inc/inkthreshold.class.php:69
 msgid "Fusioninventory plugin is not installed"
 msgstr ""
 
-#: inc/additionalalert.class.php:319
+#: inc/additionalalert.class.php:197
 msgid "Tickets unresolved since more"
 msgstr ""
 
-#: inc/additionalalert.class.php:335
+#: inc/additionalalert.class.php:213
 msgid "No tickets unresolved since more"
 msgstr ""
 
-#: inc/config.class.php:46
-msgid "Plugin Setup"
+#: inc/config.class.php:46 inc/infocomalert.class.php:60
+#: inc/inkalert.class.php:60
+msgid "Plugin setup"
 msgstr ""
 
-#: inc/config.class.php:155
+#: inc/config.class.php:133
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
@@ -132,34 +86,16 @@ msgid_plural "Computers with no buy date"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/infocomalert.class.php:60 inc/inkalert.class.php:60
-#: inc/ocsalert.class.php:58
-msgid "Plugin setup"
-msgstr ""
-
-#: inc/infocomalert.class.php:350 inc/inkalert.class.php:331
-#: inc/ocsalert.class.php:469
+#: inc/infocomalert.class.php:351 inc/inkalert.class.php:331
 msgid "Parameter"
 msgstr ""
 
-#: inc/infocomalert.class.php:351
+#: inc/infocomalert.class.php:352
 msgid "Type not used for check of buy date"
 msgstr ""
 
 #: inc/inkalert.class.php:332
 msgid "Statutes used for the ink level"
-msgstr ""
-
-#: inc/ocsalert.class.php:47
-msgid "OCSNG synchronization"
-msgstr ""
-
-#: inc/ocsalert.class.php:95
-msgid "Alert for the new imported computers"
-msgstr ""
-
-#: inc/ocsalert.class.php:470
-msgid "Status used by OCS-NG"
 msgstr ""
 
 #: inc/ticketunresolved.class.php:48

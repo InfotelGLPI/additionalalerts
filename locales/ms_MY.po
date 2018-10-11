@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-17 12:05+0200\n"
-"PO-Revision-Date: 2018-07-17 10:06+0000\n"
+"POT-Creation-Date: 2018-10-11 12:28+0200\n"
+"PO-Revision-Date: 2018-10-11 10:30+0000\n"
 "Last-Translator: Amandine Manceau\n"
 "Language-Team: Malay (Malaysia) (http://www.transifex.com/tsmr/GLPI_additionalalerts/language/ms_MY/)\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Language: ms_MY\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: setup.php:79 inc/additionalalert.class.php:48 inc/menu.class.php:41
+#: setup.php:74 inc/additionalalert.class.php:48 inc/menu.class.php:41
 #: inc/profile.class.php:92
 msgid "Other alert"
 msgid_plural "Others alerts"
@@ -28,62 +28,15 @@ msgstr[0] "Amaran lain"
 msgid "Please activate the plugin"
 msgstr ""
 
-#: inc/additionalalert.class.php:140
+#: inc/additionalalert.class.php:110
 msgid "No used alerts"
 msgstr ""
 
-#: inc/additionalalert.class.php:172
+#: inc/additionalalert.class.php:142
 msgid "No computers with no buy date"
 msgstr "Tiada komputer dengan tarikh pembelian"
 
-#: inc/additionalalert.class.php:198 inc/additionalalert.class.php:221
-#: inc/config.class.php:123 inc/notificationtargetocsalert.class.php:47
-#: inc/ocsalert.class.php:411 inc/ocsalert.class.php:535
-msgid "New imported computers from OCS-NG"
-msgstr ""
-
-#: inc/additionalalert.class.php:207 inc/additionalalert.class.php:251
-#: inc/notificationtargetocsalert.class.php:79
-#: inc/notificationtargetocsalert.class.php:126
-msgid "Last OCSNG inventory date"
-msgstr "Tarikh akhir inventori OCSNG"
-
-#: inc/additionalalert.class.php:208 inc/additionalalert.class.php:252
-#: inc/notificationtargetocsalert.class.php:80
-#: inc/notificationtargetocsalert.class.php:127
-msgid "Import date in GLPI"
-msgstr "Import tarikh ke dalam GLPI"
-
-#: inc/additionalalert.class.php:209 inc/additionalalert.class.php:253
-#: inc/notificationtargetocsalert.class.php:81
-#: inc/notificationtargetocsalert.class.php:128
-msgid "OCSNG server"
-msgstr "Pelayan OCSNG"
-
-#: inc/additionalalert.class.php:216
-msgid "No new imported computer from OCS-NG"
-msgstr "Tiada pembaharuan komputer dibuat dari OCS-NG"
-
-#: inc/additionalalert.class.php:221 inc/additionalalert.class.php:266
-#: inc/config.class.php:128 inc/config.class.php:139
-msgid "Ocsinventory plugin is not installed"
-msgstr ""
-
-#: inc/additionalalert.class.php:242
-#: inc/notificationtargetocsalert.class.php:69
-msgid "Computers not synchronized with OCS-NG since more"
-msgstr "Komputer tidak diselaraskan dengan OCS-NG sejak lebih"
-
-#: inc/additionalalert.class.php:261
-msgid "No computer not synchronized since more"
-msgstr "Tiada komputer yang tidak selaras sejak"
-
-#: inc/additionalalert.class.php:266 inc/config.class.php:132
-#: inc/ocsalert.class.php:91 inc/ocsalert.class.php:542
-msgid "OCS-NG Synchronization alerts"
-msgstr "Amaran penyelerasan OCS-NG"
-
-#: inc/additionalalert.class.php:285 inc/config.class.php:144
+#: inc/additionalalert.class.php:163 inc/config.class.php:122
 #: inc/inkalert.class.php:48 inc/inkalert.class.php:98
 #: inc/inkalert.class.php:276 inc/inkalert.class.php:397
 #: inc/notificationtargetinkalert.class.php:45
@@ -91,37 +44,38 @@ msgstr "Amaran penyelerasan OCS-NG"
 msgid "Cartridges whose level is low"
 msgstr "Katrij yang ukuranya rendah"
 
-#: inc/additionalalert.class.php:292
+#: inc/additionalalert.class.php:170
 msgid "Ink level"
 msgstr "Ukuran dakwat"
 
-#: inc/additionalalert.class.php:299
+#: inc/additionalalert.class.php:177
 msgid "No cartridge is below the threshold"
 msgstr "Tiada katrij di bawah ukuruan"
 
-#: inc/additionalalert.class.php:303 inc/inkthreshold.class.php:55
+#: inc/additionalalert.class.php:181 inc/inkthreshold.class.php:55
 #: inc/inkthreshold.class.php:58
 msgid "Ink level alerts"
 msgstr "Amaran ukuran dakwat"
 
-#: inc/additionalalert.class.php:303 inc/config.class.php:150
+#: inc/additionalalert.class.php:181 inc/config.class.php:128
 #: inc/inkalert.class.php:404 inc/inkthreshold.class.php:69
 msgid "Fusioninventory plugin is not installed"
 msgstr ""
 
-#: inc/additionalalert.class.php:319
+#: inc/additionalalert.class.php:197
 msgid "Tickets unresolved since more"
 msgstr "Tiket tiada penyelesaian sejak lebih"
 
-#: inc/additionalalert.class.php:335
+#: inc/additionalalert.class.php:213
 msgid "No tickets unresolved since more"
 msgstr ""
 
-#: inc/config.class.php:46
-msgid "Plugin Setup"
+#: inc/config.class.php:46 inc/infocomalert.class.php:60
+#: inc/inkalert.class.php:60
+msgid "Plugin setup"
 msgstr ""
 
-#: inc/config.class.php:155
+#: inc/config.class.php:133
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
@@ -130,35 +84,17 @@ msgid "Computer with no buy date"
 msgid_plural "Computers with no buy date"
 msgstr[0] "Komputer dengan tiada tarikh beli"
 
-#: inc/infocomalert.class.php:60 inc/inkalert.class.php:60
-#: inc/ocsalert.class.php:58
-msgid "Plugin setup"
-msgstr ""
-
-#: inc/infocomalert.class.php:350 inc/inkalert.class.php:331
-#: inc/ocsalert.class.php:469
+#: inc/infocomalert.class.php:351 inc/inkalert.class.php:331
 msgid "Parameter"
 msgstr ""
 
-#: inc/infocomalert.class.php:351
+#: inc/infocomalert.class.php:352
 msgid "Type not used for check of buy date"
 msgstr "Jenis tidak digunakan untuk periksa tarikh beli"
 
 #: inc/inkalert.class.php:332
 msgid "Statutes used for the ink level"
 msgstr ""
-
-#: inc/ocsalert.class.php:47
-msgid "OCSNG synchronization"
-msgstr "Penyelarasan OCSNG"
-
-#: inc/ocsalert.class.php:95
-msgid "Alert for the new imported computers"
-msgstr "Amaran untuk komputer yang baru diimport"
-
-#: inc/ocsalert.class.php:470
-msgid "Status used by OCS-NG"
-msgstr "status yang digunakan oleh OCS-NG"
 
 #: inc/ticketunresolved.class.php:48
 msgid "Ticket unresolved"
