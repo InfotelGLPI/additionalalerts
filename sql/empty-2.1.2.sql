@@ -8,7 +8,7 @@ CREATE TABLE `glpi_plugin_additionalalerts_configs` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_plugin_additionalalerts_configs` ( `id`, `use_infocom_alert`, `use_ink_alert`, `delay_ticket_alert`)
-VALUES ('1','-1','-1','-1','-1', '0');
+VALUES ('1','-1','-1','-1');
 
 DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_infocomalerts`;
 CREATE TABLE `glpi_plugin_additionalalerts_infocomalerts` (

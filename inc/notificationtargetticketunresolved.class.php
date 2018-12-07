@@ -116,12 +116,12 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
 
       if (!empty($items[$field])) {
          //Look for the user by his id
-         $query = $this->getDistinctUserSql() . "
-                  FROM `glpi_users`" .
-                  $this->getProfileJoinSql() . "
-                  WHERE `glpi_users`.`id` = " . $items[$field];
+         $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+         $criteria['FROM'] = User::getTable();
+         $criteria['WHERE'][User::getTable() . '.id'] = $items[$field];
+         $iterator = $DB->request($criteria);
 
-         foreach ($DB->request($query) as $data) {
+         while ($data = $iterator->next()) {
             //Add the user email and language in the notified users list
             $this->addToRecipientsList($data);
          }
