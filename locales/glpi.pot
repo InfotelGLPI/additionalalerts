@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GLPI - Additionalalerts plugin 1.6.0\n"
+"Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:30+0200\n"
+"POT-Creation-Date: 2020-11-02 15:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: setup.php:74 inc/additionalalert.class.php:48 inc/menu.class.php:41
+#: setup.php:76 inc/additionalalert.class.php:48 inc/menu.class.php:41
 #: inc/profile.class.php:92
 msgid "Other alert"
 msgid_plural "Others alerts"
