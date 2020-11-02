@@ -1,17 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Additionalalerts Development Team
 # This file is distributed under the same license as the GLPI - Additionalalerts plugin package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Emperium EmperiuM <real.emperium@gmail.com>, 2018
+# Xavier CAILLAUD <thetsmr@gmail.com>, 2020
+# 
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GLPI Project - additionalalerts plugin\n"
+"Project-Id-Version: GLPI - Additionalalerts plugin 1.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:28+0200\n"
-"PO-Revision-Date: 2018-10-11 10:30+0000\n"
-"Last-Translator: Amandine Manceau\n"
-"Language-Team: Portuguese (Portugal) (http://www.transifex.com/tsmr/GLPI_additionalalerts/language/pt_PT/)\n"
+"POT-Creation-Date: 2018-10-11 12:30+0200\n"
+"PO-Revision-Date: 2020-11-02 12:50+0000\n"
+"Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2020\n"
+"Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/teams/12353/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
