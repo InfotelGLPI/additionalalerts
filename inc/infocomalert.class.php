@@ -122,7 +122,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
 
       if ($DB->numrows($result_type) > 0) {
          $query .= " AND (`glpi_computers`.`computertypes_id` != 0 ";
-         while ($data_type = $DB->fetch_array($result_type)) {
+         while ($data_type = $DB->fetchArray($result_type)) {
             $type_where = "AND `glpi_computers`.`computertypes_id` != '" . $data_type["types_id"] . "' ";
             $query      .= " $type_where ";
          }
@@ -381,7 +381,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
          if ($DB->numrows($result) != 1) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
+         $this->fields = $DB->fetchAssoc($result);
          if (is_array($this->fields) && count($this->fields)) {
             return true;
          }

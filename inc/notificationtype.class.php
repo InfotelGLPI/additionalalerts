@@ -80,7 +80,7 @@ class PluginAdditionalalertsNotificationType extends CommonDBTM {
             echo "</th>";
             echo "<th>" . __('Type') . "</th>";
             echo "</tr>";
-            while ($ligne = $DB->fetch_array($result)) {
+            while ($ligne = $DB->fetchArray($result)) {
                echo "<tr class='tab_bg_1'>";
                echo "<td width='10' class='center'>";
                Html::showMassiveActionCheckBox(__CLASS__, $ligne['id']);

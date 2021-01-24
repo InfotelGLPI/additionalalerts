@@ -48,7 +48,7 @@ class PluginAdditionalalertsInkThreshold extends CommonDBTM {
          $this->add(["cartridges_id" => $id]);
          $result = $DB->query($query);
       }
-      $data = $DB->fetch_assoc($result);
+      $data = $DB->fetchAssoc($result);
 
       echo "<form action='" . $target . "' method='post'>";
       echo "<table class='tab_cadre' cellpadding='5' width='950'>";

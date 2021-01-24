@@ -19,9 +19,13 @@
     <issues>https://github.com/InfotelGLPI/additionalalerts/issues</issues>
     <readme>https://raw.githubusercontent.com/InfotelGLPI/additionalalerts/master/README.md</readme>
     <authors>
-        <author>Xavier Caillaud / Infotel</author>
+        <author>Xavier Caillaud / Infotel / Konstantin Kabassanov </author>
     </authors>
     <versions>
+        <version>
+            <num>2.3.0</num>
+            <compatibility>9.3</compatibility>
+        </version>
         <version>
             <num>2.1.2</num>
             <compatibility>9.3</compatibility>

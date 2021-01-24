@@ -161,5 +161,9 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
    public function getDelayTicketAlert() {
       return $this->fields['delay_ticket_alert'];
    }
+
+   static function getIcon() {
+      return "fas fa-random";
+   }
 }
 
