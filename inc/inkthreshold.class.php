@@ -57,19 +57,20 @@ class PluginAdditionalalertsInkThreshold extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Ink level alerts', 'additionalalerts') . "</td>";
          echo "<td>";
-         echo "<input type='text' name='threshold' size='3' value='" . $data["threshold"] . "'> %";
+         echo Html::input('text', ['value' => $data["threshold"], 'size' => 3]);
+         echo " %";
          echo "</td>";
          echo "</tr>";
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' align='center'>";
-         echo "<input type='submit' name='update_threshold' class='submit' value='" . _sx('button', 'Save') . "'>";
+         echo Html::submit(_sx('button', 'Save'), ['name' => 'update_threshold', 'class' => 'btn btn-primary']);
          echo "</td/>";
          echo "</tr>";
       } else {
          echo "<tr><td><div align='center'><b>" . __('Fusioninventory plugin is not installed', 'additionalalerts') . "</b></div></td></tr>";
       }
       echo "</table>";
-      echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
+      echo Html::hidden('id', ['value' => $data["id"]]);
       Html::closeForm();
    }
 }

@@ -33,7 +33,7 @@
 function plugin_additionalalerts_install() {
    global $DB;
 
-   include_once(GLPI_ROOT . "/plugins/additionalalerts/inc/profile.class.php");
+   include_once(PLUGIN_ADDITIONALALERTS_DIR. "/inc/profile.class.php");
 
    $install = false;
    $update78 = false;
@@ -44,7 +44,7 @@ function plugin_additionalalerts_install() {
       && !$DB->tableExists("glpi_plugin_additionalalerts_configs")) {
 
       $install = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/empty-2.1.2.sql");
+      $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR. "/sql/empty-2.4.0.sql");
 
    }
    //UPDATE
@@ -52,19 +52,19 @@ function plugin_additionalalerts_install() {
       && $DB->fieldExists("glpi_plugin_alerting_profiles", "interface")) {
 
       $update78 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.2.0.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.3.0.sql");
+      $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR. "/sql/update-1.2.0.sql");
+      $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR. "/sql/update-1.3.0.sql");
 
    }
    if (!$DB->tableExists("glpi_plugin_additionalalerts_infocomalerts")) {
 
       $update78 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.3.0.sql");
+      $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR. "/sql/update-1.3.0.sql");
 
    }
    if ($DB->tableExists("glpi_plugin_additionalalerts_reminderalerts")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.5.0.sql");
+      $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR. "/sql/update-1.5.0.sql");
 
       $notif = new Notification();
 
@@ -101,7 +101,7 @@ function plugin_additionalalerts_install() {
    }
    if (!$DB->tableExists("glpi_plugin_additionalalerts_inkalerts")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.7.1.sql");
+      $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR. "/sql/update-1.7.1.sql");
 
       $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginAdditionalalertsInkAlert' AND `name` = 'Alert ink level'";
       $result = $DB->query($query_id) or die ($DB->error());
@@ -149,7 +149,7 @@ function plugin_additionalalerts_install() {
    if (!$DB->tableExists("glpi_plugin_additionalalerts_ticketunresolveds")) {
 
       $update90 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/additionalalerts/sql/update-1.8.0.sql");
+      $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR. "/sql/update-1.8.0.sql");
    }
 
    //version 2.1.2
@@ -413,8 +413,8 @@ function plugin_additionalalerts_install() {
 function plugin_additionalalerts_uninstall() {
    global $DB;
 
-   include_once(GLPI_ROOT . "/plugins/additionalalerts/inc/profile.class.php");
-   include_once(GLPI_ROOT . "/plugins/additionalalerts/inc/menu.class.php");
+   include_once(PLUGIN_ADDITIONALALERTS_DIR. "/inc/profile.class.php");
+   include_once(PLUGIN_ADDITIONALALERTS_DIR. "/inc/menu.class.php");
 
    $tables = [
       "glpi_plugin_additionalalerts_infocomalerts",

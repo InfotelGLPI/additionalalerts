@@ -39,13 +39,12 @@ if ($plugin->isActivated("additionalalerts")) {
    } else {
       Html::header(PluginAdditionalalertsAdditionalalert::getTypeName(2), '', "admin", "pluginadditionalalertsmenu");
       $config = new PluginAdditionalalertsConfig();
-      $config->showForm();
+      $config->showConfigForm();
       Html::footer();
    }
 } else {
    Html::header(__('Setup'), '', "config", "plugins");
-   echo "<div align='center'><br><br>";
-   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt='warning'><br><br>";
+   echo "<div class='alert alert-important alert-warning d-flex'>";
    echo "<b>" . __('Please activate the plugin', 'additionalalerts') . "</b></div>";
    Html::footer();
 }

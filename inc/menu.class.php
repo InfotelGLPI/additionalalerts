@@ -48,10 +48,10 @@ class PluginAdditionalalertsMenu extends CommonGLPI {
 
       $menu                    = [];
       $menu['title']           = self::getMenuName();
-      $menu['page']            = "/plugins/additionalalerts/front/additionalalert.form.php";
+      $menu['page']            = PLUGIN_ADDITIONALALERTS_DIR_NOFULL."/front/additionalalert.form.php";
       $menu['links']['search'] = PluginAdditionalalertsAdditionalalert::getFormURL(false);
 
-      $menu['links']['config'] = '/plugins/additionalalerts/front/config.form.php';
+      $menu['links']['config'] = PLUGIN_ADDITIONALALERTS_DIR_NOFULL.'/front/config.form.php';
 
       return $menu;
    }

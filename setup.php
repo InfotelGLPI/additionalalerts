@@ -27,7 +27,13 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_ADDITIONALALERTS_VERSION', '2.3.0');
+define('PLUGIN_ADDITIONALALERTS_VERSION', '2.4.0-rc1');
+
+if (!defined("PLUGIN_ADDITIONALALERTS_DIR")) {
+   define("PLUGIN_ADDITIONALALERTS_DIR", Plugin::getPhpDir("additionalalerts"));
+   define("PLUGIN_ADDITIONALALERTS_DIR_NOFULL", Plugin::getPhpDir("additionalalerts",false));
+   define("PLUGIN_ADDITIONALALERTS_WEBDIR", Plugin::getWebDir("additionalalerts"));
+}
 
 // Init the hooks of the plugins -Needed
 function plugin_init_additionalalerts() {
@@ -82,32 +88,10 @@ function plugin_version_additionalalerts() {
       'homepage'       => 'https://github.com/InfotelGLPI/additionalalerts',
       'requirements'   => [
          'glpi' => [
-            'min' => '9.5',
+            'min' => '10.0',
+            'max' => '11.0',
             'dev' => false
          ]
       ]
    ];
-}
-
-// Optional : check prerequisites before install : may print errors or add to message after redirect
-/**
- * @return bool
- */
-function plugin_additionalalerts_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '9.5', 'lt')
-       || version_compare(GLPI_VERSION, '9.6', 'ge')) {
-      if (method_exists('Plugin', 'messageIncompatible')) {
-         echo Plugin::messageIncompatible('core', '9.5');
-      }
-      return false;
-   }
-   return true;
-}
-
-// Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
-/**
- * @return bool
- */
-function plugin_additionalalerts_check_config() {
-   return true;
 }

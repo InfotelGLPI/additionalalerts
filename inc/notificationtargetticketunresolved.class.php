@@ -121,9 +121,10 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
          $criteria['WHERE'][User::getTable() . '.id'] = $items[$field];
          $iterator = $DB->request($criteria);
 
-         while ($data = $iterator->next()) {
+         foreach ($iterator as $data) {
             //Add the user email and language in the notified users list
             $this->addToRecipientsList($data);
+            $iterator->next();
          }
       }
    }

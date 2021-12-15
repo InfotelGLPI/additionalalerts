@@ -86,7 +86,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
 
       if ($item->getType()=='NotificationMailSetting') {
 
-         $target = $CFG_GLPI["root_doc"]."/plugins/additionalalerts/front/config.form.php";
+         $target = PLUGIN_ADDITIONALALERTS_WEBDIR."/front/config.form.php";
          $conf = new PluginAdditionalalertsConfig;
          $conf->showForm(['target' =>$target]);
 
@@ -104,7 +104,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
     * @param array $options
     * @return bool
     */
-   function showForm($options = []) {
+   function showConfigForm() {
       global $DB;
 
       $this->getFromDB(1);
@@ -139,7 +139,7 @@ class PluginAdditionalalertsConfig extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-      echo "<input type='hidden' name='id' value='1'>";
+      echo Html::hidden('id', ['value' => 1]);
       echo "</td></tr>";
 
       $this->showFormButtons($options);

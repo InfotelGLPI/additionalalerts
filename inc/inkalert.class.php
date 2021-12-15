@@ -75,11 +75,11 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($item->getType() == 'CronTask') {
-         $target = $CFG_GLPI["root_doc"] . "/plugins/additionalalerts/front/inkalert.form.php";
+         $target = PLUGIN_ADDITIONALALERTS_WEBDIR . "/front/inkalert.form.php";
          self::configCron($target);
       } else if ($item->getType() == 'CartridgeItem') {
          $PluginAdditionalalertsInkThreshold = new PluginAdditionalalertsInkThreshold();
-         $PluginAdditionalalertsInkThreshold->showForm($CFG_GLPI["root_doc"] . "/plugins/additionalalerts/front/inkalert.form.php", $item->getField('id'));
+         $PluginAdditionalalertsInkThreshold->showForm(PLUGIN_ADDITIONALALERTS_WEBDIR . "/front/inkalert.form.php", $item->getField('id'));
       }
       return true;
    }
@@ -332,7 +332,8 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       echo "<td>" . __('Statutes used for the ink level', 'additionalalerts') . " : ";
       Dropdown::show('State', ['name' => "states_id",
                                'used' => $used]);
-      echo "&nbsp;<input type='submit' name='add_state' value=\"" . __('Update') . "\" class='submit' ></div></td>";
+      echo Html::submit(_sx('button', 'Update'), ['name' => 'add_state', 'class' => 'btn btn-primary']);
+      echo "</div></td>";
       echo "</tr>";
       echo "</table>";
       Html::closeForm();
@@ -408,12 +409,12 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='hidden' name='entities_id' value='$ID'>";
+         echo Html::hidden('entities_id', ['value' => $ID]);
          if ($entitynotification->fields["id"]) {
-            echo "<input type='hidden' name='id' value=\"" . $entitynotification->fields["id"] . "\">";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='submit' >";
+            echo Html::hidden('entities_id', ['value' => $entitynotification->fields["id"]]);
+            echo Html::submit(_sx('button', 'Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
          } else {
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Save') . "\" class='submit' >";
+            echo Html::submit(_sx('button', 'Save'), ['name' => 'add', 'class' => 'btn btn-primary']);
          }
          echo "</td></tr>";
          echo "</table>";

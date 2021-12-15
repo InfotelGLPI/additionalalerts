@@ -75,7 +75,7 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
 
       if ($item->getType() == 'CronTask') {
 
-         $target = $CFG_GLPI["root_doc"] . "/plugins/additionalalerts/front/infocomalert.form.php";
+         $target = PLUGIN_ADDITIONALALERTS_WEBDIR . "/front/infocomalert.form.php";
          self::configCron($target, $item->getField('id'));
       }
       return true;
@@ -352,7 +352,8 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
       echo "<td>" . __('Type not used for check of buy date', 'additionalalerts');
       Dropdown::show('ComputerType', ['name' => "types_id",
                                       'used' => $used]);
-      echo "&nbsp;<input type='submit' name='add_type' value=\"" . _sx('button', 'Add') . "\" class='submit' ></div></td>";
+      echo Html::submit(_sx('button', 'Add'), ['name' => 'add_type', 'class' => 'btn btn-primary']);
+      echo "</div></td>";
       echo "</tr>";
 
       echo "</table>";
@@ -428,12 +429,12 @@ class PluginAdditionalalertsInfocomAlert extends CommonDBTM {
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='hidden' name='entities_id' value='$ID'>";
+         echo Html::hidden('entities_id', ['value' => $ID]);
          if ($entitynotification->fields["id"]) {
-            echo "<input type='hidden' name='id' value=\"" . $entitynotification->fields["id"] . "\">";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='submit' >";
+            echo Html::hidden('entities_id', ['value' => $entitynotification->fields["id"]]);
+            echo Html::submit(_sx('button', 'Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
          } else {
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Save') . "\" class='submit' >";
+            echo Html::submit(_sx('button', 'Save'), ['name' => 'add', 'class' => 'btn btn-primary']);
          }
          echo "</td></tr>";
          echo "</table>";
