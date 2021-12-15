@@ -48,7 +48,6 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
       return _n('Other alert', 'Others alerts', $nb, 'additionalalerts');
    }
 
-
    static function displayAlerts() {
       global $DB;
 

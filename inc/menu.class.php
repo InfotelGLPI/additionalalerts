@@ -52,8 +52,12 @@ class PluginAdditionalalertsMenu extends CommonGLPI {
       $menu['links']['search'] = PluginAdditionalalertsAdditionalalert::getFormURL(false);
 
       $menu['links']['config'] = PLUGIN_ADDITIONALALERTS_DIR_NOFULL.'/front/config.form.php';
-
+      $menu['icon']                                       = self::getIcon();
       return $menu;
+   }
+
+   static function getIcon() {
+      return "ti ti-bell-ringing";
    }
 
    static function removeRightsFromSession() {
