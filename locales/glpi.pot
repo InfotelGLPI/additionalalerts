@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-15 14:11+0000\n"
+"POT-Creation-Date: 2021-12-15 14:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: setup.php:76 inc/additionalalert.class.php:48 inc/menu.class.php:41
+#: setup.php:82 inc/additionalalert.class.php:48 inc/menu.class.php:41
 #: inc/profile.class.php:92
 msgid "Other alert"
 msgid_plural "Others alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/config.form.php:49
+#: front/config.form.php:48
 msgid "Please activate the plugin"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgstr ""
 
 #: inc/additionalalert.class.php:163 inc/config.class.php:122
 #: inc/inkalert.class.php:48 inc/inkalert.class.php:98
-#: inc/inkalert.class.php:276 inc/inkalert.class.php:397
+#: inc/inkalert.class.php:276 inc/inkalert.class.php:398
 #: inc/notificationtargetinkalert.class.php:45
 #: inc/notificationtargetinkalert.class.php:104
 msgid "Cartridges whose level is low"
@@ -59,7 +59,7 @@ msgid "Ink level alerts"
 msgstr ""
 
 #: inc/additionalalert.class.php:181 inc/config.class.php:128
-#: inc/inkalert.class.php:404 inc/inkthreshold.class.php:69
+#: inc/inkalert.class.php:405 inc/inkthreshold.class.php:70
 msgid "Fusioninventory plugin is not installed"
 msgstr ""
 
