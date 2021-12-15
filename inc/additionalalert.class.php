@@ -133,7 +133,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                echo "<th>" . __('Status') . "</th>";
                echo "<th>" . __('Location') . "</th>";
                echo "<th>" . __('User') . " / " . __('Group') . " / " . __('Alternate username') . "</th></tr>";
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetchArray($result)) {
 
                   echo PluginAdditionalalertsInfocomAlert::displayBody($data);
                }
@@ -169,7 +169,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                   echo "<th>" . __('Cartridge') . "</th>";
                   echo "<th>" . __('Ink level', 'additionalalerts') . "</th></tr>";
 
-                  while ($data = $DB->fetch_array($result)) {
+                  while ($data = $DB->fetchArray($result)) {
                      echo PluginAdditionalalertsInkAlert::displayBody($data);
                   }
                   echo "</table></div>";
@@ -203,7 +203,7 @@ class PluginAdditionalalertsAdditionalalert extends CommonDBTM {
                echo "<th>" . __('Technician') . "</th>";
                echo "<th>" . __('Manager') . "</th>";
 
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetchArray($result)) {
                   echo PluginAdditionalalertsTicketUnresolved::displayBody($data);
                }
 

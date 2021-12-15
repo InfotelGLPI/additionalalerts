@@ -116,7 +116,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
       $cartridges = $DB->query($query);
       if ($DB->numrows($cartridges) > 0) {
          $PluginAdditionalalertsInkThreshold = new PluginAdditionalalertsInkThreshold();
-         while ($cartridge = $DB->fetch_array($cartridges)) {
+         while ($cartridge = $DB->fetchArray($cartridges)) {
             $PluginAdditionalalertsInkThreshold->add($cartridge);
          }
       }
@@ -358,7 +358,7 @@ class PluginAdditionalalertsInkAlert extends CommonDBTM {
          if ($DB->numrows($result) != 1) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
+         $this->fields = $DB->fetchAssoc($result);
          if (is_array($this->fields) && count($this->fields)) {
             return true;
          }
