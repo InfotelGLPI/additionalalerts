@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-15 14:37+0000\n"
+"POT-Creation-Date: 2021-12-15 14:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,15 +29,15 @@ msgstr[1] ""
 msgid "Please activate the plugin"
 msgstr ""
 
-#: inc/additionalalert.class.php:110
+#: inc/additionalalert.class.php:109
 msgid "No used alerts"
 msgstr ""
 
-#: inc/additionalalert.class.php:142
+#: inc/additionalalert.class.php:141
 msgid "No computers with no buy date"
 msgstr ""
 
-#: inc/additionalalert.class.php:163 inc/config.class.php:122
+#: inc/additionalalert.class.php:162 inc/config.class.php:122
 #: inc/inkalert.class.php:48 inc/inkalert.class.php:98
 #: inc/inkalert.class.php:276 inc/inkalert.class.php:398
 #: inc/notificationtargetinkalert.class.php:45
@@ -45,29 +45,29 @@ msgstr ""
 msgid "Cartridges whose level is low"
 msgstr ""
 
-#: inc/additionalalert.class.php:170
+#: inc/additionalalert.class.php:169
 msgid "Ink level"
 msgstr ""
 
-#: inc/additionalalert.class.php:177
+#: inc/additionalalert.class.php:176
 msgid "No cartridge is below the threshold"
 msgstr ""
 
-#: inc/additionalalert.class.php:181 inc/inkthreshold.class.php:55
+#: inc/additionalalert.class.php:180 inc/inkthreshold.class.php:55
 #: inc/inkthreshold.class.php:58
 msgid "Ink level alerts"
 msgstr ""
 
-#: inc/additionalalert.class.php:181 inc/config.class.php:128
+#: inc/additionalalert.class.php:180 inc/config.class.php:128
 #: inc/inkalert.class.php:405 inc/inkthreshold.class.php:70
 msgid "Fusioninventory plugin is not installed"
 msgstr ""
 
-#: inc/additionalalert.class.php:197
+#: inc/additionalalert.class.php:196
 msgid "Tickets unresolved since more"
 msgstr ""
 
-#: inc/additionalalert.class.php:213
+#: inc/additionalalert.class.php:212
 msgid "No tickets unresolved since more"
 msgstr ""
 
