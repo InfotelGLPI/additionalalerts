@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_ADDITIONALALERTS_VERSION', '2.2.0');
+define('PLUGIN_ADDITIONALALERTS_VERSION', '2.3.0');
 
 // Init the hooks of the plugins -Needed
 function plugin_init_additionalalerts() {
@@ -82,7 +82,7 @@ function plugin_version_additionalalerts() {
       'homepage'       => 'https://github.com/InfotelGLPI/additionalalerts',
       'requirements'   => [
          'glpi' => [
-            'min' => '9.4',
+            'min' => '9.5',
             'dev' => false
          ]
       ]
@@ -94,10 +94,10 @@ function plugin_version_additionalalerts() {
  * @return bool
  */
 function plugin_additionalalerts_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '9.4', 'lt')
-       || version_compare(GLPI_VERSION, '9.5', 'ge')) {
+   if (version_compare(GLPI_VERSION, '9.5', 'lt')
+       || version_compare(GLPI_VERSION, '9.6', 'ge')) {
       if (method_exists('Plugin', 'messageIncompatible')) {
-         echo Plugin::messageIncompatible('core', '9.4');
+         echo Plugin::messageIncompatible('core', '9.5');
       }
       return false;
    }
