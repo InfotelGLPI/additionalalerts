@@ -89,9 +89,9 @@ class PluginAdditionalalertsProfile extends Profile {
     */
    static function getAllRights() {
       return [['itemtype' => 'PluginAdditionalalertsConfig',
-                         'label'    => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
-                         'field'    => 'plugin_additionalalerts',
-                         'rights'   => [READ => __('Read'), UPDATE => __('Update')]]];
+               'label'    => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
+               'field'    => 'plugin_additionalalerts',
+               'rights'   => [READ => __('Read'), UPDATE => __('Update')]]];
    }
 
    /**
@@ -120,12 +120,12 @@ class PluginAdditionalalertsProfile extends Profile {
    }
 
    /**
-    * @since 0.85
-    * Migration rights from old system to the new one for one profile
-    *
     * @param $profiles_id the profile ID
     *
     * @return bool
+    * @since 0.85
+    * Migration rights from old system to the new one for one profile
+    *
     */
    static function migrateOneProfile($profiles_id) {
       global $DB;
@@ -161,7 +161,7 @@ class PluginAdditionalalertsProfile extends Profile {
       $dbu     = new DbUtils();
       //Add new rights in glpi_profilerights table
       foreach ($profile->getAllRights() as $data) {
-         if ($dbu->countElementsInTable("glpi_profilerights",["name" => $data['field']]) == 0) {
+         if ($dbu->countElementsInTable("glpi_profilerights", ["name" => $data['field']]) == 0) {
             ProfileRight::addProfileRights([$data['field']]);
          }
       }
@@ -199,12 +199,12 @@ class PluginAdditionalalertsProfile extends Profile {
       foreach ($rights as $right => $value) {
          if ($dbu->countElementsInTable('glpi_profilerights',
                                         ["profiles_id" => $profiles_id,
-                                         "name" => $right]) && $drop_existing) {
+                                         "name"        => $right]) && $drop_existing) {
             $profileRight->deleteByCriteria(['profiles_id' => $profiles_id, 'name' => $right]);
          }
          if (!$dbu->countElementsInTable('glpi_profilerights',
                                          ["profiles_id" => $profiles_id,
-                                          "name" => $right])) {
+                                          "name"        => $right])) {
             $myright['profiles_id'] = $profiles_id;
             $myright['name']        = $right;
             $myright['rights']      = $value;
@@ -241,15 +241,14 @@ class PluginAdditionalalertsProfile extends Profile {
 
       $rights = $this->getAllRights();
       $profile->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
-                                                         'default_class' => 'tab_bg_2',
-                                                         'title'         => __('General')]);
+                                                    'default_class' => 'tab_bg_2',
+                                                    'title'         => __('General')]);
 
       if ($canedit
           && $closeform) {
          echo "<div class='center'>";
          echo Html::hidden('id', ['value' => $profiles_id]);
-         echo Html::submit(_sx('button', 'Save'),
-                           ['name' => 'update']);
+         echo Html::submit(_sx('button', 'Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
          echo "</div>\n";
          Html::closeForm();
       }
