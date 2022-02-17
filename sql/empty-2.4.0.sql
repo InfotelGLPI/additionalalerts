@@ -36,7 +36,7 @@ CREATE TABLE `glpi_plugin_additionalalerts_inkalerts` (
 
 DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_notificationtypes`;
 CREATE TABLE `glpi_plugin_additionalalerts_notificationtypes` (
-   `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+   `id` int unsigned NOT NULL AUTO_INCREMENT ,
    `types_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_computertypes (id)',
    PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -51,7 +51,7 @@ CREATE TABLE `glpi_plugin_additionalalerts_inkthresholds` (
 
 DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_inkprinterstates`;
 CREATE TABLE `glpi_plugin_additionalalerts_inkprinterstates` (
-   `id` INT( 11 ) NOT NULL AUTO_INCREMENT,
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
    `states_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_states (id)',
    PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
