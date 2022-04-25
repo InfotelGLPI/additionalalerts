@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_ADDITIONALALERTS_VERSION', '2.4.0-rc1');
+define('PLUGIN_ADDITIONALALERTS_VERSION', '2.4.0');
 
 if (!defined("PLUGIN_ADDITIONALALERTS_DIR")) {
    define("PLUGIN_ADDITIONALALERTS_DIR", Plugin::getPhpDir("additionalalerts"));
