@@ -537,9 +537,8 @@ function plugin_additionalalerts_uninstall() {
  */
 function plugin_additionalalerts_getDatabaseRelations() {
 
-   $plugin = new Plugin();
    $links = [];
-   if ($plugin->isActivated("additionalalerts")) {
+   if (Plugin::isPluginActive("additionalalerts")) {
       $links = [
          "glpi_states" => [
             "glpi_plugin_additionalalerts_notificationstates" => "states_id"
@@ -548,7 +547,7 @@ function plugin_additionalalerts_getDatabaseRelations() {
             "glpi_plugin_additionalalerts_notificationtypes" => "types_id"
          ]];
    }
-   if ($plugin->isActivated("fusioninventory")) {
+   if (Plugin::isPluginActive("fusioninventory")) {
       $links[] = ["glpi_plugin_fusioninventory_printercartridges" => [
          "glpi_plugin_additionalalerts_ink" => "cartridges_id"
       ]];

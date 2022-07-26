@@ -29,8 +29,7 @@
 
 include('../../../inc/includes.php');
 
-$plugin = new Plugin();
-if ($plugin->isActivated("additionalalerts")) {
+if (Plugin::isPluginActive("additionalalerts")) {
 
    $config = new PluginAdditionalalertsConfig();
    if (isset($_POST["update"])) {
