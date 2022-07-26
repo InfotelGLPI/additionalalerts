@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-25 08:00+0000\n"
+"POT-Creation-Date: 2022-07-26 13:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgid_plural "Others alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/config.form.php:48
+#: front/config.form.php:47
 msgid "Please activate the plugin"
 msgstr ""
 
@@ -37,7 +37,7 @@ msgstr ""
 msgid "No computers with no buy date"
 msgstr ""
 
-#: inc/additionalalert.class.php:162 inc/config.class.php:122
+#: inc/additionalalert.class.php:162 inc/config.class.php:121
 #: inc/inkalert.class.php:48 inc/inkalert.class.php:98
 #: inc/inkalert.class.php:276 inc/inkalert.class.php:398
 #: inc/notificationtargetinkalert.class.php:45
@@ -58,7 +58,7 @@ msgstr ""
 msgid "Ink level alerts"
 msgstr ""
 
-#: inc/additionalalert.class.php:180 inc/config.class.php:128
+#: inc/additionalalert.class.php:180 inc/config.class.php:127
 #: inc/inkalert.class.php:405 inc/inkthreshold.class.php:70
 msgid "Fusioninventory plugin is not installed"
 msgstr ""
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Plugin setup"
 msgstr ""
 
-#: inc/config.class.php:133
+#: inc/config.class.php:132
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
