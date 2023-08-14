@@ -1,0 +1,111 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Additionalalerts Development Team
+# This file is distributed under the same license as the GLPI - Additionalalerts plugin package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Soporte Infraestructura Standby, 2023
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: GLPI - Additionalalerts plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-26 13:52+0000\n"
+"PO-Revision-Date: 2020-11-02 15:40+0000\n"
+"Last-Translator: Soporte Infraestructura Standby, 2023\n"
+"Language-Team: Spanish (Ecuador) (https://app.transifex.com/infotelGLPI/teams/12353/es_EC/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_EC\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: setup.php:82 inc/additionalalert.class.php:48 inc/menu.class.php:41
+#: inc/profile.class.php:92
+msgid "Other alert"
+msgid_plural "Others alerts"
+msgstr[0] "Otras alertas"
+msgstr[1] "Otras alertas"
+msgstr[2] "Otras descripciones"
+
+#: front/config.form.php:47
+msgid "Please activate the plugin"
+msgstr "Por favor, active el plugin"
+
+#: inc/additionalalert.class.php:109
+msgid "No used alerts"
+msgstr "No se han utilizado las descripciones"
+
+#: inc/additionalalert.class.php:141
+msgid "No computers with no buy date"
+msgstr "No hay ordenadores sin fecha de compra"
+
+#: inc/additionalalert.class.php:162 inc/config.class.php:121
+#: inc/inkalert.class.php:48 inc/inkalert.class.php:98
+#: inc/inkalert.class.php:276 inc/inkalert.class.php:398
+#: inc/notificationtargetinkalert.class.php:45
+#: inc/notificationtargetinkalert.class.php:104
+msgid "Cartridges whose level is low"
+msgstr "Cartuchos cuyo nivel es bajo"
+
+#: inc/additionalalert.class.php:169
+msgid "Ink level"
+msgstr "Nivel de tinta"
+
+#: inc/additionalalert.class.php:176
+msgid "No cartridge is below the threshold"
+msgstr "Ningún cartucho está por debajo del umbral"
+
+#: inc/additionalalert.class.php:180 inc/inkthreshold.class.php:55
+#: inc/inkthreshold.class.php:58
+msgid "Ink level alerts"
+msgstr "Alertas de nivel de tinta"
+
+#: inc/additionalalert.class.php:180 inc/config.class.php:127
+#: inc/inkalert.class.php:405 inc/inkthreshold.class.php:70
+msgid "Fusioninventory plugin is not installed"
+msgstr "El plugin Fusioninventory no está instalado"
+
+#: inc/additionalalert.class.php:196
+msgid "Tickets unresolved since more"
+msgstr "Tickets sin resolver desde más"
+
+#: inc/additionalalert.class.php:212
+msgid "No tickets unresolved since more"
+msgstr "No hay tickets sin resolver desde hace más"
+
+#: inc/config.class.php:46 inc/infocomalert.class.php:60
+#: inc/inkalert.class.php:60
+msgid "Plugin setup"
+msgstr "Configuración del plugin"
+
+#: inc/config.class.php:132
+msgid "Unresolved Ticket Alerts"
+msgstr "Unresolved Ticket Alerts"
+
+#: inc/infocomalert.class.php:48
+msgid "Computer with no buy date"
+msgid_plural "Computers with no buy date"
+msgstr[0] "Ordenadores sin fecha de compra"
+msgstr[1] "Ordenadores sin fecha de compra"
+msgstr[2] "Ordenadores sin fecha de compra"
+
+#: inc/infocomalert.class.php:351 inc/inkalert.class.php:331
+msgid "Parameter"
+msgstr "Parámetro"
+
+#: inc/infocomalert.class.php:352
+msgid "Type not used for check of buy date"
+msgstr "Tipo no utilizado para la comprobación de la fecha de compra"
+
+#: inc/inkalert.class.php:332
+msgid "Statutes used for the ink level"
+msgstr "Estatutos utilizados para el nivel de tinta"
+
+#: inc/ticketunresolved.class.php:48
+msgid "Ticket unresolved"
+msgid_plural "Tickets unresolved"
+msgstr[0] "Tickets sin resolver"
+msgstr[1] "Tickets sin resolver"
+msgstr[2] "Tickets sin resolver"
