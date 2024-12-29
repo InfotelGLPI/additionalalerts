@@ -35,7 +35,7 @@ msgstr "Lütfen eklentiyi etkinleştirin"
 
 #: inc/additionalalert.class.php:109
 msgid "No used alerts"
-msgstr "Kullanilmayan uyarilar"
+msgstr "Kullanilmayan uyarılar"
 
 #: inc/additionalalert.class.php:141
 msgid "No computers with no buy date"
