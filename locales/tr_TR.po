@@ -65,7 +65,7 @@ msgstr "Mürekkep düzeyi uyarıları"
 #: inc/additionalalert.class.php:180 inc/config.class.php:127
 #: inc/inkalert.class.php:405 inc/inkthreshold.class.php:70
 msgid "Fusioninventory plugin is not installed"
-msgstr "Fusioninventory uygulama eki yüklü değil"
+msgstr "Fusioninventory eklentisi kurulmamış"
 
 #: inc/additionalalert.class.php:196
 msgid "Tickets unresolved since more"
@@ -78,7 +78,7 @@ msgstr "Şu kadar gündür çözümlenmemiş bir destek kaydı yok"
 #: inc/config.class.php:46 inc/infocomalert.class.php:60
 #: inc/inkalert.class.php:60
 msgid "Plugin setup"
-msgstr "Uygulama eki ayarları"
+msgstr "Eklenti ayarları"
 
 #: inc/config.class.php:132
 msgid "Unresolved Ticket Alerts"
