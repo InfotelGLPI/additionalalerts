@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-28 13:44+0000\n"
+"POT-Creation-Date: 2025-09-28 14:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgid "No computers with no buy date"
 msgstr ""
 
 #: src/Additionalalert.php:167 src/Config.php:135 src/Inkalert.php:68
-#: src/Inkalert.php:125 src/Inkalert.php:304 src/Inkalert.php:400
+#: src/Inkalert.php:125 src/Inkalert.php:305 src/Inkalert.php:376
 #: src/Notificationtargetinkalert.php:54 src/Notificationtargetinkalert.php:124
 msgid "Cartridges whose level is low"
 msgstr ""
