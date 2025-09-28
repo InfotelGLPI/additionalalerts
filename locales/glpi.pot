@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-26 13:52+0000\n"
+"POT-Creation-Date: 2025-09-28 13:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,87 +18,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: setup.php:82 inc/additionalalert.class.php:48 inc/menu.class.php:41
-#: inc/profile.class.php:92
+#: setup.php:96 src/Additionalalert.php:58 src/Menu.php:45 src/Profile.php:116
 msgid "Other alert"
 msgid_plural "Others alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/config.form.php:47
+#: front/config.form.php:49
 msgid "Please activate the plugin"
 msgstr ""
 
-#: inc/additionalalert.class.php:109
+#: src/Additionalalert.php:120
 msgid "No used alerts"
 msgstr ""
 
-#: inc/additionalalert.class.php:141
+#: src/Additionalalert.php:149
 msgid "No computers with no buy date"
 msgstr ""
 
-#: inc/additionalalert.class.php:162 inc/config.class.php:121
-#: inc/inkalert.class.php:48 inc/inkalert.class.php:98
-#: inc/inkalert.class.php:276 inc/inkalert.class.php:398
-#: inc/notificationtargetinkalert.class.php:45
-#: inc/notificationtargetinkalert.class.php:104
+#: src/Additionalalert.php:167 src/Config.php:135 src/Inkalert.php:68
+#: src/Inkalert.php:125 src/Inkalert.php:304 src/Inkalert.php:400
+#: src/Notificationtargetinkalert.php:54 src/Notificationtargetinkalert.php:124
 msgid "Cartridges whose level is low"
 msgstr ""
 
-#: inc/additionalalert.class.php:169
+#: src/Additionalalert.php:174
 msgid "Ink level"
 msgstr ""
 
-#: inc/additionalalert.class.php:176
+#: src/Additionalalert.php:181
 msgid "No cartridge is below the threshold"
 msgstr ""
 
-#: inc/additionalalert.class.php:180 inc/inkthreshold.class.php:55
-#: inc/inkthreshold.class.php:58
-msgid "Ink level alerts"
-msgstr ""
-
-#: inc/additionalalert.class.php:180 inc/config.class.php:127
-#: inc/inkalert.class.php:405 inc/inkthreshold.class.php:70
-msgid "Fusioninventory plugin is not installed"
-msgstr ""
-
-#: inc/additionalalert.class.php:196
+#: src/Additionalalert.php:197
 msgid "Tickets unresolved since more"
 msgstr ""
 
-#: inc/additionalalert.class.php:212
+#: src/Additionalalert.php:213
 msgid "No tickets unresolved since more"
 msgstr ""
 
-#: inc/config.class.php:46 inc/infocomalert.class.php:60
-#: inc/inkalert.class.php:60
+#: src/Config.php:56 src/Infocomalert.php:84 src/Inkalert.php:86
 msgid "Plugin setup"
 msgstr ""
 
-#: inc/config.class.php:132
+#: src/Config.php:141
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
-#: inc/infocomalert.class.php:48
+#: src/Infocomalert.php:66
 msgid "Computer with no buy date"
 msgid_plural "Computers with no buy date"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/infocomalert.class.php:351 inc/inkalert.class.php:331
+#: src/Inkprinterstate.php:59 src/Notificationtype.php:64
 msgid "Parameter"
 msgstr ""
 
-#: inc/infocomalert.class.php:352
-msgid "Type not used for check of buy date"
-msgstr ""
-
-#: inc/inkalert.class.php:332
+#: src/Inkprinterstate.php:60
 msgid "Statutes used for the ink level"
 msgstr ""
 
-#: inc/ticketunresolved.class.php:48
+#: src/Inkthreshold.php:62 src/Inkthreshold.php:64
+msgid "Ink level alerts"
+msgstr ""
+
+#: src/Notificationtype.php:65
+msgid "Type not used for check of buy date"
+msgstr ""
+
+#: src/Ticketunresolved.php:65
 msgid "Ticket unresolved"
 msgid_plural "Tickets unresolved"
 msgstr[0] ""
