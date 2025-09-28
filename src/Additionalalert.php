@@ -67,7 +67,7 @@ class Additionalalert extends CommonDBTM
         $config = Config::getConfig();
 
         $infocom = new InfocomAlert();
-        $infocom->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
+        $infocom->getFromDBByCrit(['entities_id' => $_SESSION["glpiactive_entity"]]);
         if (isset($infocom->fields["use_infocom_alert"])
           && $infocom->fields["use_infocom_alert"] > 0) {
             $use_infocom_alert = $infocom->fields["use_infocom_alert"];
@@ -76,7 +76,7 @@ class Additionalalert extends CommonDBTM
         }
 
         $ticketunresolved = new TicketUnresolved();
-        $ticketunresolved->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
+        $ticketunresolved->getFromDBByCrit(['entities_id' => $_SESSION["glpiactive_entity"]]);
         if (isset($ticketunresolved->fields["delay_ticket_alert"])
           && $ticketunresolved->fields["delay_ticket_alert"] > 0) {
             $delay_ticket_alert = $ticketunresolved->fields["delay_ticket_alert"];
@@ -85,7 +85,7 @@ class Additionalalert extends CommonDBTM
         }
 
         $inkalert = new InkAlert();
-        $inkalert->getFromDBbyEntity($_SESSION["glpiactive_entity"]);
+        $inkalert->getFromDBByCrit(['entities_id' => $_SESSION["glpiactive_entity"]]);
         if (isset($inkalert->fields["use_ink_alert"])
           && $inkalert->fields["use_ink_alert"] > 0) {
             $use_ink_alert = $inkalert->fields["use_ink_alert"];

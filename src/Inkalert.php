@@ -210,15 +210,16 @@ class InkAlert extends CommonDBTM
     {
         global $DB;
 
-        $query = "SELECT `entities_id` as `entity`,`$field`
-                  FROM `glpi_plugin_additionalalerts_inkalerts`
-                  ORDER BY `entities_id` ASC";
+        $criteria = [
+            'SELECT' => ['entities_id as entity',$field],
+            'FROM' => 'glpi_plugin_additionalalerts_inkalerts',
+            'ORDERBY' => 'entities_id ASC'
+        ];
+        $iterator = $DB->request($criteria);
 
         $entities = [];
-        $result   = $DB->doQuery($query);
-
-        if ($DB->numrows($result) > 0) {
-            foreach ($DB->request($query) as $entitydatas) {
+        if (count($iterator) > 0) {
+            foreach ($iterator as $entitydatas) {
                 InkAlert::getDefaultValueForNotification($field, $entities, $entitydatas);
             }
         } else {
@@ -344,31 +345,6 @@ class InkAlert extends CommonDBTM
         return $cron_status;
     }
 
-   /**
-    * @param $entities_id
-    *
-    * @return bool
-    */
-    function getFromDBbyEntity($entities_id)
-    {
-        global $DB;
-
-        $query = "SELECT *
-                  FROM `" . $this->getTable() . "`
-                  WHERE `entities_id` = '$entities_id'";
-
-        if ($result = $DB->doQuery($query)) {
-            if ($DB->numrows($result) != 1) {
-                return false;
-            }
-            $this->fields = $DB->fetchAssoc($result);
-            if (is_array($this->fields) && count($this->fields)) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
 
    /**
     * @param Entity $entity
@@ -388,7 +364,7 @@ class InkAlert extends CommonDBTM
 
        // Get data
         $entitynotification = new InkAlert();
-        if (!$entitynotification->getFromDBbyEntity($ID)) {
+        if (!$entitynotification->getFromDBByCrit(['entities_id' => $ID])) {
             $entitynotification->getEmpty();
         }
 

@@ -140,13 +140,16 @@ class InfocomAlert extends CommonDBTM
                      AND `glpi_computers`.`is_template` = 0
                      AND `glpi_infocoms`.`buy_date` IS NULL ";
 
-        $query_type  = "SELECT `types_id`
-                    FROM `glpi_plugin_additionalalerts_notificationtypes` ";
-        $result_type = $DB->doQuery($query_type);
+        $criteria = [
+            'SELECT' => 'types_id',
+            'FROM' => 'glpi_plugin_additionalalerts_notificationtypes',
+        ];
 
-        if ($DB->numrows($result_type) > 0) {
+        $iterator = $DB->request($criteria);
+
+        if (count($iterator) > 0) {
             $query .= " AND (`glpi_computers`.`computertypes_id` != 0 ";
-            while ($data_type = $DB->fetchArray($result_type)) {
+            foreach ($iterator as $data_type) {
                 $type_where = "AND `glpi_computers`.`computertypes_id` != '" . $data_type["types_id"] . "' ";
                 $query      .= " $type_where ";
             }
@@ -220,15 +223,16 @@ class InfocomAlert extends CommonDBTM
     {
         global $DB;
 
-        $query = "SELECT `entities_id` as `entity`,`$field`
-               FROM `glpi_plugin_additionalalerts_infocomalerts`";
-        $query .= " ORDER BY `entities_id` ASC";
+        $criteria = [
+            'SELECT' => ['entities_id as entity',$field],
+            'FROM' => 'glpi_plugin_additionalalerts_infocomalerts',
+            'ORDERBY' => 'entities_id ASC'
+        ];
+        $iterator = $DB->request($criteria);
 
         $entities = [];
-        $result   = $DB->doQuery($query);
-
-        if ($DB->numrows($result) > 0) {
-            foreach ($DB->request($query) as $entitydatas) {
+        if (count($iterator) > 0) {
+            foreach ($iterator as $entitydatas) {
                 self::getDefaultValueForNotification($field, $entities, $entitydatas);
             }
         } else {
@@ -362,32 +366,6 @@ class InfocomAlert extends CommonDBTM
 
 
     /**
-     * @param $entities_id
-     *
-     * @return bool
-     */
-    public function getFromDBbyEntity($entities_id)
-    {
-        global $DB;
-
-        $query = "SELECT *
-                FROM `" . $this->getTable() . "`
-                WHERE `entities_id` = '$entities_id'";
-
-        if ($result = $DB->doQuery($query)) {
-            if ($DB->numrows($result) != 1) {
-                return false;
-            }
-            $this->fields = $DB->fetchAssoc($result);
-            if (is_array($this->fields) && count($this->fields)) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    /**
      * @param Entity $entity
      *
      * @return bool
@@ -405,7 +383,7 @@ class InfocomAlert extends CommonDBTM
 
         // Get data
         $entitynotification = new self();
-        if (!$entitynotification->getFromDBbyEntity($ID)) {
+        if (!$entitynotification->getFromDBByCrit(['entities_id' => $ID])) {
             $entitynotification->getEmpty();
         }
 

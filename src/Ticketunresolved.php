@@ -84,30 +84,6 @@ class TicketUnresolved extends CommonDBTM
         return [];
     }
 
-    /**
-     * @param $delay_ticket_alert
-     * @param $entity
-     *
-     * @return string
-     */
-    static function queryTechnician($delay_ticket_alert, $entity)
-    {
-        $delay_stamp = mktime(0, 0, 0, date("m"), date("d") - $delay_ticket_alert, date("y"));
-        $date = date("Y-m-d", $delay_stamp);
-        $date = $date . " 00:00:00";
-
-        $querytechnician = "SELECT `glpi_tickets`.*, `glpi_tickets_users`.users_id
-      FROM `glpi_tickets`
-      LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
-      WHERE `glpi_tickets`.`date` <= '" . $date . "'
-      AND `glpi_tickets`.`status` <= 4
-      AND `glpi_tickets_users`.`type` = 2
-      AND `glpi_tickets`.`entities_id` = '" . $entity . "'
-      AND `glpi_tickets`.`is_deleted` = 0
-      ORDER BY `glpi_tickets_users`.`users_id`";
-
-        return $querytechnician;
-    }
 
     /**
      * @param $delay_ticket_alert
@@ -188,15 +164,17 @@ class TicketUnresolved extends CommonDBTM
     static function getEntitiesToNotify($field, $with_value = false)
     {
         global $DB;
-        $query = "SELECT `entities_id` as `entity`,`$field`
-               FROM `glpi_plugin_additionalalerts_ticketunresolveds`";
-        $query .= " ORDER BY `entities_id` ASC";
+
+        $criteria = [
+            'SELECT' => ['entities_id as entity',$field],
+            'FROM' => 'glpi_plugin_additionalalerts_ticketunresolveds',
+            'ORDERBY' => 'entities_id ASC'
+        ];
+        $iterator = $DB->request($criteria);
 
         $entities = [];
-        $result = $DB->doQuery($query);
-
-        if ($DB->numrows($result) > 0) {
-            foreach ($result as $entitydatas) {
+        if (count($iterator) > 0) {
+            foreach ($iterator as $entitydatas) {
                 TicketUnresolved::getDefaultValueForNotification($field, $entities, $entitydatas);
             }
         } else {
@@ -218,7 +196,7 @@ class TicketUnresolved extends CommonDBTM
      */
     static function getDefaultValueForNotification($field, &$entities, $entitydatas)
     {
-        $config = new sConfig();
+        $config = new Config();
         $config->getFromDB(1);
         //If there's a configuration for this entity & the value is not the one of the global config
         if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
@@ -317,31 +295,6 @@ class TicketUnresolved extends CommonDBTM
         return $cron_status;
     }
 
-    /**
-     * @param $entities_id
-     *
-     * @return bool
-     */
-    function getFromDBbyEntity($entities_id)
-    {
-        global $DB;
-
-        $query = "SELECT *
-                FROM `" . $this->getTable() . "`
-                WHERE `entities_id` = '$entities_id'";
-
-        if ($result = $DB->doQuery($query)) {
-            if ($DB->numrows($result) != 1) {
-                return false;
-            }
-            $this->fields = $DB->fetchAssoc($result);
-            if (is_array($this->fields) && count($this->fields)) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
 
     /**
      * @param Entity $entity
@@ -361,7 +314,7 @@ class TicketUnresolved extends CommonDBTM
         // Get data
         $entitynotification = new TicketUnresolved();
 
-        if (!$entitynotification->getFromDBbyEntity($ID)) {
+        if (!$entitynotification->getFromDBByCrit(['entities_id' => $ID])) {
             $entitynotification->getEmpty();
         }
         if (empty($entitynotification->fields["delay_ticket_alert"])) {
