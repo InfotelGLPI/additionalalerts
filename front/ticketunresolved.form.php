@@ -27,10 +27,12 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
 
-$type = new PluginAdditionalalertsNotificationType();
-$ticket = new PluginAdditionalalertsTicketUnresolved();
+use GlpiPlugin\Additionalalerts\NotificationType;
+use GlpiPlugin\Additionalalerts\TicketUnresolved;
+
+$type = new NotificationType();
+$ticket = new TicketUnresolved();
 
 if (isset($_POST["add"])) {
 

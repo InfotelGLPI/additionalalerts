@@ -27,58 +27,72 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_ADDITIONALALERTS_VERSION', '2.4.0');
+use GlpiPlugin\Additionalalerts\Config;
+use GlpiPlugin\Additionalalerts\InfocomAlert;
+use GlpiPlugin\Additionalalerts\InkAlert;
+use GlpiPlugin\Additionalalerts\Menu;
+use GlpiPlugin\Additionalalerts\Profile;
+use GlpiPlugin\Additionalalerts\TicketUnresolved;
+
+define('PLUGIN_ADDITIONALALERTS_VERSION', '3.0.0');
+
+global $CFG_GLPI;
 
 if (!defined("PLUGIN_ADDITIONALALERTS_DIR")) {
-   define("PLUGIN_ADDITIONALALERTS_DIR", Plugin::getPhpDir("additionalalerts"));
-   define("PLUGIN_ADDITIONALALERTS_DIR_NOFULL", Plugin::getPhpDir("additionalalerts",false));
-   define("PLUGIN_ADDITIONALALERTS_WEBDIR", Plugin::getWebDir("additionalalerts"));
+    define("PLUGIN_ADDITIONALALERTS_DIR", Plugin::getPhpDir("additionalalerts"));
+    $root = $CFG_GLPI['root_doc'] . '/plugins/additionalalerts';
+    define("PLUGIN_ADDITIONALALERTS_WEBDIR", $root);
 }
 
 // Init the hooks of the plugins -Needed
-function plugin_init_additionalalerts() {
-   global $PLUGIN_HOOKS;
+function plugin_init_additionalalerts()
+{
+    global $PLUGIN_HOOKS;
 
-   $PLUGIN_HOOKS['csrf_compliant']['additionalalerts'] = true;
-   $PLUGIN_HOOKS['change_profile']['additionalalerts'] = ['PluginAdditionalalertsProfile', 'initProfile'];
+    $PLUGIN_HOOKS['csrf_compliant']['additionalalerts'] = true;
+    $PLUGIN_HOOKS['change_profile']['additionalalerts'] = [Profile::class, 'initProfile'];
 
-   Plugin::registerClass('PluginAdditionalalertsInfocomAlert', [
+    Plugin::registerClass(InfocomAlert::class, [
       'notificationtemplates_types' => true,
       'addtabon'                    => 'CronTask'
-   ]);
+    ]);
 
-   Plugin::registerClass('PluginAdditionalalertsTicketUnresolved', [
+    Plugin::registerClass(TicketUnresolved::class, [
       'notificationtemplates_types' => true
-   ]);
+    ]);
 
-   Plugin::registerClass('PluginAdditionalalertsInkAlert', [
+    Plugin::registerClass(InkAlert::class, [
       'notificationtemplates_types' => true,
-      'addtabon'                    => ['CartridgeItem', 'CronTask']
-   ]);
+      'addtabon'                    => ['Printer', 'CronTask']
+    ]);
 
-   Plugin::registerClass('PluginAdditionalalertsProfile',
-                         ['addtabon' => 'Profile']);
+    Plugin::registerClass(
+        Profile::class,
+        ['addtabon' => 'Profile']
+    );
 
-   Plugin::registerClass('PluginAdditionalalertsConfig',
-                         ['addtabon' => ['NotificationMailSetting', 'Entity']]);
+    Plugin::registerClass(
+        Config::class,
+        ['addtabon' => ['NotificationMailingSetting', 'Entity']]
+    );
 
-   if (Session::getLoginUserID()) {
-      // Display a menu entry ?
-      if (Session::haveRight("plugin_additionalalerts", READ)) {
-         $PLUGIN_HOOKS['config_page']['additionalalerts']           = 'front/config.form.php';
-         $PLUGIN_HOOKS["menu_toadd"]['additionalalerts']['admin'] = 'PluginAdditionalalertsMenu';
-      }
-   }
-
+    if (Session::getLoginUserID()) {
+       // Display a menu entry ?
+        if (Session::haveRight("plugin_additionalalerts", READ)) {
+            $PLUGIN_HOOKS['config_page']['additionalalerts']           = 'front/config.form.php';
+            $PLUGIN_HOOKS["menu_toadd"]['additionalalerts']['admin'] = Menu::class;
+        }
+    }
 }
 
 // Get the name and the version of the plugin - Needed
 /**
  * @return array
  */
-function plugin_version_additionalalerts() {
+function plugin_version_additionalalerts()
+{
 
-   return [
+    return [
       'name'           => _n('Other alert', 'Others alerts', 2, 'additionalalerts'),
       'version'        => PLUGIN_ADDITIONALALERTS_VERSION,
       'license'        => 'GPLv2+',
@@ -88,10 +102,10 @@ function plugin_version_additionalalerts() {
       'homepage'       => 'https://github.com/InfotelGLPI/additionalalerts',
       'requirements'   => [
          'glpi' => [
-            'min' => '10.0',
-            'max' => '11.0',
+            'min' => '11.0',
+            'max' => '12.0',
             'dev' => false
          ]
       ]
-   ];
+    ];
 }

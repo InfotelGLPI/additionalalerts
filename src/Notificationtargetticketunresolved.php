@@ -27,16 +27,21 @@
  --------------------------------------------------------------------------
  */
 
+namespace GlpiPlugin\Additionalalerts;
+
+use Notification;
+use NotificationTarget;
+use Ticket;
+use User;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
-
 /**
- * Class PluginAdditionalalertsNotificationTargetTicketUnresolved
+ * Class NotificationTargetTicketUnresolved
  */
-class PluginAdditionalalertsNotificationTargetTicketUnresolved extends NotificationTarget {
+class NotificationTargetTicketUnresolved extends NotificationTarget {
 
    static $rightname = "plugin_additionalalerts";
 
@@ -44,7 +49,7 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
     * @return array
     */
    function getEvents() {
-      return ['ticketunresolved' => PluginAdditionalalertsTicketUnresolved::getTypeName(2)];
+      return ['ticketunresolved' => TicketUnresolved::getTypeName(2)];
    }
 
    /**
@@ -63,8 +68,8 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
    /**
     * Get datas for template
     *
-    * @param type       $event
-    * @param array|type $options
+    * @param        $event
+    * @param array $options
     */
    function addDataForTemplate($event, $options = []) {
 
@@ -128,6 +133,4 @@ class PluginAdditionalalertsNotificationTargetTicketUnresolved extends Notificat
          }
       }
    }
-
-
 }

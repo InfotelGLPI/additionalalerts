@@ -28,14 +28,18 @@
  --------------------------------------------------------------------------
  */
 
+namespace GlpiPlugin\Additionalalerts;
+
+use CommonGLPI;
+
 /**
- * Class PluginAdditionalalertsMenu
+ * Class Menu
  */
-class PluginAdditionalalertsMenu extends CommonGLPI {
+class Menu extends CommonGLPI {
    static $rightname = 'plugin_additionalalerts';
 
    /**
-    * @return translated
+    * @return string
     */
    static function getMenuName() {
       return _n('Other alert', 'Others alerts', 2, 'additionalalerts');
@@ -48,10 +52,10 @@ class PluginAdditionalalertsMenu extends CommonGLPI {
 
       $menu                    = [];
       $menu['title']           = self::getMenuName();
-      $menu['page']            = PLUGIN_ADDITIONALALERTS_DIR_NOFULL."/front/additionalalert.form.php";
-      $menu['links']['search'] = PluginAdditionalalertsAdditionalalert::getFormURL(false);
+      $menu['page']            = PLUGIN_ADDITIONALALERTS_WEBDIR."/front/additionalalert.form.php";
+      $menu['links']['search'] = Additionalalert::getFormURL(false);
 
-      $menu['links']['config'] = PLUGIN_ADDITIONALALERTS_DIR_NOFULL.'/front/config.form.php';
+      $menu['links']['config'] = PLUGIN_ADDITIONALALERTS_WEBDIR.'/front/config.form.php';
       $menu['icon']                                       = self::getIcon();
       return $menu;
    }
@@ -61,11 +65,11 @@ class PluginAdditionalalertsMenu extends CommonGLPI {
    }
 
    static function removeRightsFromSession() {
-      if (isset($_SESSION['glpimenu']['admin']['types']['PluginAdditionalalertsMenu'])) {
-         unset($_SESSION['glpimenu']['admin']['types']['PluginAdditionalalertsMenu']);
+      if (isset($_SESSION['glpimenu']['admin']['types'][Menu::class])) {
+         unset($_SESSION['glpimenu']['admin']['types'][Menu::class]);
       }
-      if (isset($_SESSION['glpimenu']['admin']['content']['pluginadditionalalertsmenu'])) {
-         unset($_SESSION['glpimenu']['admin']['content']['pluginadditionalalertsmenu']);
+      if (isset($_SESSION['glpimenu']['admin']['content'][Menu::class])) {
+         unset($_SESSION['glpimenu']['admin']['content'][Menu::class]);
       }
    }
 }

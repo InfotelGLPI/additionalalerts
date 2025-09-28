@@ -27,10 +27,14 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Additionalalerts\InkAlert;
+use GlpiPlugin\Additionalalerts\InkPrinterState;
+use GlpiPlugin\Additionalalerts\InkThreshold;
 
-$state = new PluginAdditionalalertsInkPrinterState();
-$alert = new PluginAdditionalalertsInkAlert();
+
+$state = new InkPrinterState();
+$alert = new InkAlert();
 
 if (isset($_POST["add"])) {
    if ($alert->canUpdate()) {
@@ -57,11 +61,12 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update_threshold"])) {
 
-   $PluginAdditionalalertsInkThreshold = new PluginAdditionalalertsInkThreshold();
+   $InkThreshold = new InkThreshold();
    if ($alert->canUpdate()) {
-      $PluginAdditionalalertsInkThreshold->update($_POST);
+       $InkThreshold->update($_POST);
    } else {
-      Html::displayRightError();
+       throw new AccessDeniedHttpException();
+
    }
 }
 Html::back();

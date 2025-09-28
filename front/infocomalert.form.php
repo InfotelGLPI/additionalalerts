@@ -27,10 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Additionalalerts\InfocomAlert;
+use GlpiPlugin\Additionalalerts\NotificationType;
 
-$type = new PluginAdditionalalertsNotificationType();
-$infocom = new PluginAdditionalalertsInfocomAlert();
+$type = new NotificationType();
+$infocom = new InfocomAlert();
 
 if (isset($_POST["add"])) {
 
