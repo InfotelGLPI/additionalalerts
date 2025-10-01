@@ -80,7 +80,7 @@ class InkPrinterState extends NotificationState {
             ];
             Html::showMassiveActions($massiveactionparams);
 
-            echo "<div align='center'>";
+            echo "<div class='center'>";
             echo "<form method='post' name='massiveaction_form$rand' id='massiveaction_form$rand'  action=\"$target\">";
             echo "<table class='tab_cadre_fixe' cellpadding='5'>";
             echo "<tr>";

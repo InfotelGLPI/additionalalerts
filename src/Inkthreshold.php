@@ -69,7 +69,7 @@ class InkThreshold extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td colspan='2' align='center'>";
+        echo "<td colspan='2' class='center'>";
         echo Html::submit(_sx('button', 'Save'), ['name' => 'update_threshold', 'class' => 'btn btn-primary']);
         echo "</td/>";
         echo "</tr>";

@@ -117,7 +117,7 @@ class Additionalalert extends CommonDBTM
         if ($additionalalerts_not_infocom == 0
           && $additionalalerts_ink == 0
           && $additionalalerts_ticket_unresolved == 0) {
-            echo "<div align='center'><b>" . __('No used alerts', 'additionalalerts') . "</b></div>";
+            echo "<div class='center'><b>" . __('No used alerts', 'additionalalerts') . "</b></div>";
         }
         if ($additionalalerts_not_infocom != 0) {
             if (Session::haveRight("infocom", READ)) {
@@ -146,7 +146,7 @@ class Additionalalert extends CommonDBTM
                     }
                     echo "</table></div>";
                 } else {
-                    echo "<br><div align='center'><b>" . __('No computers with no buy date', 'additionalalerts') . "</b></div>";
+                    echo "<br><div class='center'><b>" . __('No computers with no buy date', 'additionalalerts') . "</b></div>";
                 }
                 echo "<br>";
             }
@@ -178,7 +178,7 @@ class Additionalalert extends CommonDBTM
                     }
                     echo "</table></div>";
                 } else {
-                    echo "<br><div align='center'><b>" . __('No cartridge is below the threshold', 'additionalalerts') . "</b></div>";
+                    echo "<br><div class='center'><b>" . __('No cartridge is below the threshold', 'additionalalerts') . "</b></div>";
                 }
             }
         }
@@ -210,7 +210,7 @@ class Additionalalert extends CommonDBTM
 
                     echo "</table></div>";
                 } else {
-                    echo "<br><div align='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " .
+                    echo "<br><div class='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " .
                     $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</b></div>";
                 }
 

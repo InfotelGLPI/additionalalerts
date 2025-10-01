@@ -175,7 +175,7 @@ class InkAlert extends CommonDBTM
         }
         $body .= "</a></td>";
         if (Session::isMultiEntitiesMode()) {
-            $body .= "<td align='center'>" . Dropdown::getDropdownName("glpi_entities", $printer->fields["entities_id"]) . "</td>";
+            $body .= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $printer->fields["entities_id"]) . "</td>";
         }
 
         $color_translated = "";
@@ -191,9 +191,9 @@ class InkAlert extends CommonDBTM
             $color = str_replace('toner', '', $snmp->fields['property']);
             $color_translated = $color_translations[$color] ?? ucwords($color);
         }
-        $body .= "<td align='center'>".__('Toner')." ".$color_translated."</td>";
+        $body .= "<td class='center'>".__('Toner')." ".$color_translated."</td>";
 
-        $body .= "<td align='center'>" . $snmp->fields["value"] . "%</td>";
+        $body .= "<td class='center'>" . $snmp->fields["value"] . "%</td>";
         $body .= "</tr>";
 
         return $body;
