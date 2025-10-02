@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-01 07:23+0000\n"
+"POT-Creation-Date: 2025-10-02 07:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,9 +36,9 @@ msgstr ""
 msgid "No computers with no buy date"
 msgstr ""
 
-#: src/Additionalalert.php:167 src/Config.php:135 src/Inkalert.php:68
-#: src/Inkalert.php:125 src/Inkalert.php:305 src/Inkalert.php:376
-#: src/Notificationtargetinkalert.php:54 src/Notificationtargetinkalert.php:124
+#: src/Additionalalert.php:167 src/Config.php:135 src/InkAlert.php:68
+#: src/InkAlert.php:125 src/InkAlert.php:305 src/InkAlert.php:376
+#: src/NotificationTargetInkAlert.php:54 src/NotificationTargetInkAlert.php:124
 msgid "Cartridges whose level is low"
 msgstr ""
 
@@ -58,7 +58,7 @@ msgstr ""
 msgid "No tickets unresolved since more"
 msgstr ""
 
-#: src/Config.php:56 src/Infocomalert.php:84 src/Inkalert.php:86
+#: src/Config.php:56 src/InfocomAlert.php:84 src/InkAlert.php:86
 msgid "Plugin setup"
 msgstr ""
 
@@ -66,29 +66,29 @@ msgstr ""
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
-#: src/Infocomalert.php:66
+#: src/InfocomAlert.php:66
 msgid "Computer with no buy date"
 msgid_plural "Computers with no buy date"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Inkprinterstate.php:59 src/Notificationtype.php:64
+#: src/InkPrinterState.php:59 src/NotificationType.php:64
 msgid "Parameter"
 msgstr ""
 
-#: src/Inkprinterstate.php:60
+#: src/InkPrinterState.php:60
 msgid "Statutes used for the ink level"
 msgstr ""
 
-#: src/Inkthreshold.php:62 src/Inkthreshold.php:64
+#: src/InkThreshold.php:62 src/InkThreshold.php:64
 msgid "Ink level alerts"
 msgstr ""
 
-#: src/Notificationtype.php:65
+#: src/NotificationType.php:65
 msgid "Type not used for check of buy date"
 msgstr ""
 
-#: src/Ticketunresolved.php:65
+#: src/TicketUnresolved.php:65
 msgid "Ticket unresolved"
 msgid_plural "Tickets unresolved"
 msgstr[0] ""
