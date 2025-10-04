@@ -34,7 +34,7 @@ msgstr "Lütfen eklentiyi etkinleştirin"
 
 #: src/Additionalalert.php:120
 msgid "No used alerts"
-msgstr "Kullanilmayan uyarılar"
+msgstr "Kullanılmıyor uyarıları"
 
 #: src/Additionalalert.php:149
 msgid "No computers with no buy date"
