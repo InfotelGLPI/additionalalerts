@@ -96,5 +96,5 @@ msgstr "Tür satın alma tarihini denetlemek için kullanılmıyor"
 #: src/TicketUnresolved.php:65
 msgid "Ticket unresolved"
 msgid_plural "Tickets unresolved"
-msgstr[0] "Destek kaydı çözümlenmemiş"
+msgstr[0] "Çözümlenmemiş destek kaydı"
 msgstr[1] "Çözümlenmemiş destek kayıtları"
