@@ -53,7 +53,7 @@ class Menu extends CommonGLPI {
       $menu                    = [];
       $menu['title']           = self::getMenuName();
       $menu['page']            = PLUGIN_ADDITIONALALERTS_WEBDIR."/front/additionalalert.form.php";
-      $menu['links']['search'] = Additionalalert::getFormURL(false);
+      $menu['links']['search'] = AdditionalAlert::getFormURL(false);
 
       $menu['links']['config'] = PLUGIN_ADDITIONALALERTS_WEBDIR.'/front/config.form.php';
       $menu['icon']                                       = self::getIcon();

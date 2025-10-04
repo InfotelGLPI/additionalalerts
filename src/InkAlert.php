@@ -85,7 +85,7 @@ class InkAlert extends CommonDBTM
         if ($item->getType() == 'CronTask' && $item->getField('name') == "AdditionalalertsInk") {
             return self::createTabEntry(__('Plugin setup', 'additionalalerts'));
         } elseif (get_class($item) == 'Printer') {
-            return self::createTabEntry(Additionalalert::getTypeName(2));
+            return self::createTabEntry(AdditionalAlert::getTypeName(2));
         }
         return '';
     }

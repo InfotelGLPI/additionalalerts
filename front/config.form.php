@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-use GlpiPlugin\Additionalalerts\Additionalalert;
+use GlpiPlugin\Additionalalerts\AdditionalAlert;
 use GlpiPlugin\Additionalalerts\Config;
 use GlpiPlugin\Additionalalerts\Menu;
 
@@ -38,7 +38,7 @@ if (Plugin::isPluginActive("additionalalerts")) {
       $config->update($_POST);
       Html::back();
    } else {
-      Html::header(Additionalalert::getTypeName(2), '', "admin", Menu::class);
+      Html::header(AdditionalAlert::getTypeName(2), '', "admin", Menu::class);
       $config = new Config();
       $config->showConfigForm();
       Html::footer();

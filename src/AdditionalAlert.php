@@ -40,9 +40,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Class Additionalalert
+ * Class AdditionalAlert
  */
-class Additionalalert extends CommonDBTM
+class AdditionalAlert extends CommonDBTM
 {
 
     static $rightname = "plugin_additionalalerts";

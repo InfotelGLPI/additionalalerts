@@ -86,9 +86,9 @@ class Config extends CommonDBTM
             && $item->getField('id')
                && $CFG_GLPI["notifications_mailing"]
         ) {
-            return self::createTabEntry(Additionalalert::getTypeName(2));
+            return self::createTabEntry(AdditionalAlert::getTypeName(2));
         } elseif ($item->getType()=='Entity') {
-            return self::createTabEntry(Additionalalert::getTypeName(2));
+            return self::createTabEntry(AdditionalAlert::getTypeName(2));
         }
          return '';
     }

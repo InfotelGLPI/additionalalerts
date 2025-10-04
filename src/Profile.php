@@ -63,7 +63,7 @@ class Profile extends \Profile
     {
         if ($item->getType() == 'Profile'
             && $item->getField('interface') != 'helpdesk') {
-            return self::createTabEntry(Additionalalert::getTypeName(2));
+            return self::createTabEntry(AdditionalAlert::getTypeName(2));
         }
         return '';
     }
