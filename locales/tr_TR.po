@@ -75,7 +75,7 @@ msgstr "Çözümlenmemiş destek kaydı uyarıları"
 msgid "Computer with no buy date"
 msgid_plural "Computers with no buy date"
 msgstr[0] "Satın alma tarihi olmayan bilgisayar"
-msgstr[1] "Satın alma tarihi olmayan bilgisayar"
+msgstr[1] "Satın alma tarihi olmayan bilgisayarlar"
 
 #: src/InkPrinterState.php:59 src/NotificationType.php:64
 msgid "Parameter"
