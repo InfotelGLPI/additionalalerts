@@ -34,7 +34,7 @@ use GlpiPlugin\Additionalalerts\Menu;
 use GlpiPlugin\Additionalalerts\Profile;
 use GlpiPlugin\Additionalalerts\TicketUnresolved;
 
-define('PLUGIN_ADDITIONALALERTS_VERSION', '3.0.1');
+define('PLUGIN_ADDITIONALALERTS_VERSION', '3.0.2');
 
 global $CFG_GLPI;
 

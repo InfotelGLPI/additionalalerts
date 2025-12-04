@@ -79,6 +79,8 @@ function plugin_additionalalerts_install()
         $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR . "/sql/update-3.0.0.sql");
     }
 
+    $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR . "/sql/update-3.0.2.sql");
+
     if ($update78) {
         //Do One time on 0.78
         $iterator = $DB->request([
