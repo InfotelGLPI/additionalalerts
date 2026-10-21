@@ -35,6 +35,22 @@ use GlpiPlugin\Additionalalerts\Profile;
 use GlpiPlugin\Additionalalerts\TicketUnresolved;
 
 /**
+ * Itemtypes of the notifications created by the versions before the namespaces
+ *
+ * @return array
+ */
+function plugin_additionalalerts_legacy_itemtypes()
+{
+    return [
+        'PluginAdditionalalertsInfocomAlert',
+        'PluginAdditionalalertsInkAlert',
+        'PluginAdditionalalertsTicketUnresolved',
+        'PluginAdditionalalertsOcsAlert',
+        'PluginAdditionalalertsReminderAlert',
+    ];
+}
+
+/**
  * @return bool
  */
 function plugin_additionalalerts_install()
@@ -82,6 +98,33 @@ function plugin_additionalalerts_install()
     $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR . "/sql/update-3.0.2.sql");
 
     $DB->runFile(PLUGIN_ADDITIONALALERTS_DIR . "/sql/update-3.0.3.sql");
+
+    $migration = new Migration(PLUGIN_ADDITIONALALERTS_VERSION);
+
+    // Notifications and templates created by the versions before the namespaces: they keep
+    // working (targets, custom templates) once linked to the current classes
+    foreach ([
+        'PluginAdditionalalertsInfocomAlert'     => InfocomAlert::class,
+        'PluginAdditionalalertsInkAlert'         => InkAlert::class,
+        'PluginAdditionalalertsTicketUnresolved' => TicketUnresolved::class,
+    ] as $old_itemtype => $new_itemtype) {
+        $migration->renameItemtype($old_itemtype, $new_itemtype, false);
+    }
+
+    // A per-entity Yes/No setting may be -1: use the global configuration
+    foreach ([
+        'glpi_plugin_additionalalerts_infocomalerts' => 'use_infocom_alert',
+        'glpi_plugin_additionalalerts_inkalerts'     => 'use_ink_alert',
+    ] as $table => $field) {
+        $migration->changeField($table, $field, $field, "tinyint NOT NULL DEFAULT '-1'");
+    }
+    $migration->changeField(
+        'glpi_plugin_additionalalerts_ticketunresolveds',
+        'delay_ticket_alert',
+        'delay_ticket_alert',
+        "int NOT NULL DEFAULT '-1'"
+    );
+    $migration->executeMigration();
 
     if ($update78) {
         //Do One time on 0.78
@@ -158,142 +201,19 @@ function plugin_additionalalerts_uninstall()
     }
 
 
+    // Notifications and templates of the current classes and of the old (not namespaced) ones:
+    // their purge also deletes their targets, translations and links
+    $itemtypes = array_merge(
+        [InfocomAlert::class, InkAlert::class, TicketUnresolved::class],
+        plugin_additionalalerts_legacy_itemtypes()
+    );
     $notif = new Notification();
-    $options = ['itemtype' => InkAlert::class];
-    foreach (
-        $DB->request([
-            'FROM' => 'glpi_notifications',
-            'WHERE' => $options
-        ]) as $data
-    ) {
-        $notif->delete($data);
+    foreach ($notif->find(['itemtype' => $itemtypes]) as $data) {
+        $notif->delete(['id' => $data['id']], true);
     }
-
-    //templates
     $template = new NotificationTemplate();
-    $translation = new NotificationTemplateTranslation();
-    $notif_template = new Notification_NotificationTemplate();
-    $options = ['itemtype' => InkAlert::class];
-    foreach (
-        $DB->request([
-            'FROM' => 'glpi_notificationtemplates',
-            'WHERE' => $options
-        ]) as $data
-    ) {
-        $options_template = [
-            'notificationtemplates_id' => $data['id'],
-        ];
-
-        foreach (
-            $DB->request([
-                'FROM' => 'glpi_notificationtemplatetranslations',
-                'WHERE' => $options_template
-            ]) as $data_template
-        ) {
-            $translation->delete($data_template);
-        }
-        $template->delete($data);
-
-        foreach (
-            $DB->request([
-                'FROM' => 'glpi_notifications_notificationtemplates',
-                'WHERE' => $options_template
-            ]) as $data_template
-        ) {
-            $notif_template->delete($data_template);
-        }
-    }
-
-    $notif = new Notification();
-    $options = ['itemtype' => InfocomAlert::class];
-    foreach (
-        $DB->request([
-            'FROM' => 'glpi_notifications',
-            'WHERE' => $options
-        ]) as $data
-    ) {
-        $notif->delete($data);
-    }
-
-    //templates
-    $template = new NotificationTemplate();
-    $translation = new NotificationTemplateTranslation();
-    $notif_template = new Notification_NotificationTemplate();
-    $options = ['itemtype' => InfocomAlert::class];
-    foreach (
-        $DB->request([
-            'FROM' => 'glpi_notificationtemplates',
-            'WHERE' => $options
-        ]) as $data
-    ) {
-        $options_template = [
-            'notificationtemplates_id' => $data['id'],
-        ];
-
-        foreach (
-            $DB->request([
-                'FROM' => 'glpi_notificationtemplatetranslations',
-                'WHERE' => $options_template
-            ]) as $data_template
-        ) {
-            $translation->delete($data_template);
-        }
-        $template->delete($data);
-
-        foreach (
-            $DB->request([
-                'FROM' => 'glpi_notifications_notificationtemplates',
-                'WHERE' => $options_template
-            ]) as $data_template
-        ) {
-            $notif_template->delete($data_template);
-        }
-    }
-
-    $notif = new Notification();
-    $options = ['itemtype' => TicketUnresolved::class];
-    foreach (
-        $DB->request([
-            'FROM' => 'glpi_notifications',
-            'WHERE' => $options
-        ]) as $data
-    ) {
-        $notif->delete($data);
-    }
-
-    //templates
-    $template = new NotificationTemplate();
-    $translation = new NotificationTemplateTranslation();
-    $notif_template = new Notification_NotificationTemplate();
-    $options = ['itemtype' => TicketUnresolved::class];
-    foreach (
-        $DB->request([
-            'FROM' => 'glpi_notificationtemplates',
-            'WHERE' => $options
-        ]) as $data
-    ) {
-        $options_template = [
-            'notificationtemplates_id' => $data['id'],
-        ];
-
-        foreach (
-            $DB->request([
-                'FROM' => 'glpi_notificationtemplatetranslations',
-                'WHERE' => $options_template
-            ]) as $data_template
-        ) {
-            $translation->delete($data_template);
-        }
-        $template->delete($data);
-
-        foreach (
-            $DB->request([
-                'FROM' => 'glpi_notifications_notificationtemplates',
-                'WHERE' => $options_template
-            ]) as $data_template
-        ) {
-            $notif_template->delete($data_template);
-        }
+    foreach ($template->find(['itemtype' => $itemtypes]) as $data) {
+        $template->delete(['id' => $data['id']], true);
     }
 
     //Delete rights associated with the plugin

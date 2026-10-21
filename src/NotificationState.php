@@ -121,7 +121,8 @@ class NotificationState extends CommonDBTM
         switch ($ma->getAction()) {
             case "purge":
                 foreach ($ids as $key) {
-                    if ($item->can($key, UPDATE)) {
+                    // Exclusion lists apply to every entity: same right as their form
+                    if (AdditionalAlert::canUpdateExclusionLists() && $item->can($key, UPDATE)) {
                         if ($item->delete(['id' => $key])) {
                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                         } else {

@@ -52,6 +52,84 @@ class AdditionalAlert extends CommonDBTM
 
     static $rightname = "plugin_additionalalerts";
 
+    /** Value of a per-entity setting which uses the global configuration */
+    public const INHERIT_GLOBAL = -1;
+
+    /**
+     * Value of an alert setting for each entity: the value of the entity when it has its own one
+     * (0 = disabled), else the global configuration
+     *
+     * @param string $table  per-entity setting table
+     * @param string $field  setting field, also a field of the global configuration
+     *
+     * @return array entities_id => value, only the entities where the alert is enabled (value > 0)
+     */
+    public static function getEntitiesToNotify(string $table, string $field): array
+    {
+        global $DB;
+
+        $global = (int) (Config::getConfig()->fields[$field] ?? 0);
+
+        $own_values = [];
+        foreach ($DB->request([
+            'SELECT' => ['entities_id', $field],
+            'FROM'   => $table,
+        ]) as $data) {
+            if ((int) $data[$field] !== self::INHERIT_GLOBAL) {
+                $own_values[(int) $data['entities_id']] = (int) $data[$field];
+            }
+        }
+
+        $entities = [];
+        foreach ($DB->request(['SELECT' => 'id', 'FROM' => 'glpi_entities', 'ORDER' => 'id']) as $entity) {
+            $value = $own_values[(int) $entity['id']] ?? $global;
+            if ($value > 0) {
+                $entities[(int) $entity['id']] = $value;
+            }
+        }
+
+        return $entities;
+    }
+
+    /**
+     * Value of an alert setting for one entity, see getEntitiesToNotify()
+     *
+     * @param string $table
+     * @param string $field
+     * @param int    $entities_id
+     *
+     * @return int
+     */
+    public static function getValueForEntity(string $table, string $field, int $entities_id): int
+    {
+        return self::getEntitiesToNotify($table, $field)[$entities_id] ?? 0;
+    }
+
+    /**
+     * The choices of a per-entity Yes/No setting
+     *
+     * @return array
+     */
+    public static function getYesNoChoices(): array
+    {
+        return [
+            self::INHERIT_GLOBAL => __('Global configuration', 'additionalalerts'),
+            0                    => __('No'),
+            1                    => __('Yes'),
+        ];
+    }
+
+    /**
+     * The exclusion lists (computer types, printer states) apply to every entity:
+     * the same right as the CronTask tab which shows them
+     *
+     * @return bool
+     */
+    public static function canUpdateExclusionLists(): bool
+    {
+        return self::canUpdate() && Session::haveRight('config', UPDATE);
+    }
+
    /**
     * @param int $nb
     *
@@ -123,34 +201,15 @@ class AdditionalAlert extends CommonDBTM
 
         $CronTask = new CronTask();
 
-        $config = Config::getConfig();
-
-        $infocom = new InfocomAlert();
-        $infocom->getFromDBByCrit(['entities_id' => $_SESSION["glpiactive_entity"]]);
-        if (isset($infocom->fields["use_infocom_alert"])
-          && $infocom->fields["use_infocom_alert"] > 0) {
-            $use_infocom_alert = $infocom->fields["use_infocom_alert"];
-        } else {
-            $use_infocom_alert = $config->useInfocomAlert();
-        }
-
-        $ticketunresolved = new TicketUnresolved();
-        $ticketunresolved->getFromDBByCrit(['entities_id' => $_SESSION["glpiactive_entity"]]);
-        if (isset($ticketunresolved->fields["delay_ticket_alert"])
-          && $ticketunresolved->fields["delay_ticket_alert"] > 0) {
-            $delay_ticket_alert = $ticketunresolved->fields["delay_ticket_alert"];
-        } else {
-            $delay_ticket_alert = $config->getDelayTicketAlert();
-        }
-
-        $inkalert = new InkAlert();
-        $inkalert->getFromDBByCrit(['entities_id' => $_SESSION["glpiactive_entity"]]);
-        if (isset($inkalert->fields["use_ink_alert"])
-          && $inkalert->fields["use_ink_alert"] > 0) {
-            $use_ink_alert = $inkalert->fields["use_ink_alert"];
-        } else {
-            $use_ink_alert = $config->useInkAlert();
-        }
+        // Same per-entity values as the crons
+        $active_entity      = (int) $_SESSION["glpiactive_entity"];
+        $use_infocom_alert  = self::getValueForEntity(InfocomAlert::getTable(), 'use_infocom_alert', $active_entity);
+        $use_ink_alert      = self::getValueForEntity(InkAlert::getTable(), 'use_ink_alert', $active_entity);
+        $ticket_entities    = TicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
+        $delay_ticket_alert = count(array_intersect_key(
+            $ticket_entities,
+            array_flip($_SESSION['glpiactiveentities'] ?? [])
+        ));
 
         $additionalalerts_ink = 0;
         if ($CronTask->getFromDBbyName(InkAlert::class, "AdditionalalertsInk")) {
@@ -242,9 +301,7 @@ class AdditionalAlert extends CommonDBTM
 
         if ($additionalalerts_ticket_unresolved != 0
             && Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-            $entities = TicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
-
-            foreach ($entities as $entity => $delay_ticket_alert) {
+            foreach ($ticket_entities as $entity => $delay_ticket_alert) {
                 // The cron sees every entity, the page only the ones of the current user
                 if (!in_array($entity, $_SESSION['glpiactiveentities'] ?? [])) {
                     continue;

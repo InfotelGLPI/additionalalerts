@@ -232,62 +232,15 @@ class InfocomAlert extends CommonDBTM
 
 
     /**
-     * @param      $field
-     * @param bool $with_value
+     * Entities where the alert is enabled, with the value of the setting
      *
-     * @return array
+     * @param string $field
+     *
+     * @return array entities_id => value
      */
-    public static function getEntitiesToNotify($field, $with_value = false)
+    public static function getEntitiesToNotify($field)
     {
-        global $DB;
-
-        $criteria = [
-            'SELECT' => ['entities_id as entity',$field],
-            'FROM' => 'glpi_plugin_additionalalerts_infocomalerts',
-            'ORDERBY' => 'entities_id ASC'
-        ];
-        $iterator = $DB->request($criteria);
-
-        $entities = [];
-        if (count($iterator) > 0) {
-            foreach ($iterator as $entitydatas) {
-                self::getDefaultValueForNotification($field, $entities, $entitydatas);
-            }
-        } else {
-            $config = new Config();
-            $config->getFromDB(1);
-            $dbu = new DbUtils();
-            foreach ($dbu->getAllDataFromTable('glpi_entities') as $entity) {
-                $entities[$entity['id']] = $config->fields[$field];
-            }
-        }
-
-        return $entities;
-    }
-
-    /**
-     * @param $field
-     * @param $entities
-     * @param $entitydatas
-     */
-    public static function getDefaultValueForNotification($field, &$entities, $entitydatas)
-    {
-
-        $config = new Config();
-        $config->getFromDB(1);
-        //If there's a configuration for this entity & the value is not the one of the global config
-        if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
-            $entities[$entitydatas['entity']] = $entitydatas[$field];
-        } //No configuration for this entity : if global config allows notification then add the entity
-        //to the array of entities to be notified
-        elseif ((!isset($entitydatas[$field])
-                || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
-               && $config->fields[$field]) {
-            $dbu = new DbUtils();
-            foreach ($dbu->getAllDataFromTable('glpi_entities') as $entity) {
-                $entities[$entity['id']] = $config->fields[$field];
-            }
-        }
+        return AdditionalAlert::getEntitiesToNotify(self::getTable(), $field);
     }
 
     /**
@@ -306,15 +259,10 @@ class InfocomAlert extends CommonDBTM
             return 0;
         }
 
-        $config = Config::getConfig();
-
+        // The global option is only the default of the entities: getEntitiesToNotify() applies it
         $CronTask = new CronTask();
-        if ($CronTask->getFromDBbyName(InfocomAlert::class, "AdditionalalertsNotInfocom")) {
-            if ($CronTask->fields["state"] == CronTask::STATE_DISABLE
-             || !$config->useInfocomAlert()) {
-                return 0;
-            }
-        } else {
+        if (!$CronTask->getFromDBbyName(InfocomAlert::class, "AdditionalalertsNotInfocom")
+            || $CronTask->fields["state"] == CronTask::STATE_DISABLE) {
             return 0;
         }
 
@@ -331,13 +279,13 @@ class InfocomAlert extends CommonDBTM
             $notinfocom_infos[$type] = [];
             foreach ($DB->request($query_notinfocom) as $data) {
                 $entity                             = $data['entities_id'];
-                $message                            = $data["name"];
                 $notinfocom_infos[$type][$entity][] = $data;
 
+                // Plain text: the message only goes to the log of the task
                 if (!isset($notinfocom_messages[$type][$entity])) {
-                    $notinfocom_messages[$type][$entity] = self::getTypeName(2) . "<br />";
+                    $notinfocom_messages[$type][$entity] = self::getTypeName(2) . " :";
                 }
-                $notinfocom_messages[$type][$entity] .= $message;
+                $notinfocom_messages[$type][$entity] .= " " . $data["name"];
             }
 
             foreach ($notinfocom_infos[$type] as $entity => $notinfocoms) {
@@ -355,26 +303,17 @@ class InfocomAlert extends CommonDBTM
                 )) {
                     $message     = $notinfocom_messages[$type][$entity];
                     $cron_status = 1;
+                    // Messages go to the task log only, never to the HTML of a session
                     if ($task) {
                         $task->log(Dropdown::getDropdownName(
                             "glpi_entities",
                             $entity
                         ) . ":  $message\n");
                         $task->addVolume(1);
-                    } else {
-                        Session::addMessageAfterRedirect(Dropdown::getDropdownName(
-                            "glpi_entities",
-                            $entity
-                        ) . ":  $message");
                     }
-                } else {
-                    if ($task) {
-                        $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
-                             . ":  Send infocoms alert failed\n");
-                    } else {
-                        Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
-                                                   . ":  Send infocoms alert failed", false, ERROR);
-                    }
+                } elseif ($task) {
+                    $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
+                         . ":  Send infocoms alert failed\n");
                 }
             }
         }
@@ -414,10 +353,10 @@ class InfocomAlert extends CommonDBTM
         echo "<tr><th colspan='2'>" . __('Alarms options') . "</th></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . self::getTypeName(2) . "</td><td>";
-        $default_value = $entitynotification->fields['use_infocom_alert'];
-        Alert::dropdownYesNo(['name'           => "use_infocom_alert",
-            'value'          => $default_value,
-            'inherit_global' => 1]);
+        // -1: the entity uses the global configuration
+        Dropdown::showFromArray('use_infocom_alert', AdditionalAlert::getYesNoChoices(), [
+            'value' => $entitynotification->fields['use_infocom_alert'] ?? AdditionalAlert::INHERIT_GLOBAL,
+        ]);
         echo "</td></tr>";
 
         if ($canedit) {

@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["add_type"])) {
 
-   if (!$ticket->canUpdate()) {
+   if (!AdditionalAlert::canUpdateExclusionLists()) {
       throw new AccessDeniedHttpException();
    }
    $type->add(['types_id' => (int) ($_POST['types_id'] ?? 0)]);
@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["delete_type"])) {
 
-   if (!$ticket->canUpdate()) {
+   if (!AdditionalAlert::canUpdateExclusionLists()) {
       throw new AccessDeniedHttpException();
    }
    AdditionalAlert::deleteCheckedItems($type, $_POST);

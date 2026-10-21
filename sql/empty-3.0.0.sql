@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_infocomalerts`;
 CREATE TABLE `glpi_plugin_additionalalerts_infocomalerts` (
    `id` int unsigned NOT NULL auto_increment,
    `entities_id` int unsigned NOT NULL default '0',
-   `use_infocom_alert` tinyint NOT NULL DEFAULT '0',
+   `use_infocom_alert` tinyint NOT NULL DEFAULT '-1',
    PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_ticketunresolveds`;
 CREATE TABLE `glpi_plugin_additionalalerts_ticketunresolveds` (
    `id` int unsigned NOT NULL auto_increment,
    `entities_id` int unsigned NOT NULL default '0',
-   `delay_ticket_alert` int unsigned NOT NULL DEFAULT '0',
+   `delay_ticket_alert` int NOT NULL DEFAULT '-1',
    PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -30,7 +30,7 @@ DROP TABLE IF EXISTS `glpi_plugin_additionalalerts_inkalerts`;
 CREATE TABLE `glpi_plugin_additionalalerts_inkalerts` (
    `id` int unsigned NOT NULL auto_increment,
    `entities_id` int unsigned NOT NULL default '0',
-   `use_ink_alert` tinyint NOT NULL DEFAULT '0',
+   `use_ink_alert` tinyint NOT NULL DEFAULT '-1',
    PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

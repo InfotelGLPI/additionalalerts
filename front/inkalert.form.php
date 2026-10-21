@@ -45,12 +45,12 @@ if (isset($_POST["add"])) {
    $input = AdditionalAlert::checkEntitySettingWrite($alert, $_POST);
    $alert->update($input);
 } else if (isset($_POST["add_state"])) {
-   if (!$alert->canUpdate()) {
+   if (!AdditionalAlert::canUpdateExclusionLists()) {
       throw new AccessDeniedHttpException();
    }
    $state->add(['states_id' => (int) ($_POST['states_id'] ?? 0)]);
 } else if (isset($_POST["delete_state"])) {
-   if (!$alert->canUpdate()) {
+   if (!AdditionalAlert::canUpdateExclusionLists()) {
       throw new AccessDeniedHttpException();
    }
    AdditionalAlert::deleteCheckedItems($state, $_POST);
