@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-05 11:18+0000\n"
+"POT-Creation-Date: 2026-10-21 17:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,47 +18,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: setup.php:96 src/AdditionalAlert.php:58 src/Menu.php:45 src/Profile.php:116
+#: setup.php:96 src/AdditionalAlert.php:63 src/Menu.php:45 src/Profile.php:116
 msgid "Other alert"
 msgid_plural "Others alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/config.form.php:49
+#: front/config.form.php:50
 msgid "Please activate the plugin"
 msgstr ""
 
-#: src/AdditionalAlert.php:120
+#: src/AdditionalAlert.php:179
 msgid "No used alerts"
 msgstr ""
 
-#: src/AdditionalAlert.php:149
+#: src/AdditionalAlert.php:207
 msgid "No computers with no buy date"
 msgstr ""
 
-#: src/AdditionalAlert.php:167 src/Config.php:135 src/InkAlert.php:68
-#: src/InkAlert.php:125 src/InkAlert.php:305 src/InkAlert.php:376
+#: src/AdditionalAlert.php:224 src/Config.php:135 src/InkAlert.php:71
+#: src/InkAlert.php:128 src/InkAlert.php:338 src/InkAlert.php:410
 #: src/NotificationTargetInkAlert.php:54 src/NotificationTargetInkAlert.php:124
 msgid "Cartridges whose level is low"
 msgstr ""
 
-#: src/AdditionalAlert.php:174
+#: src/AdditionalAlert.php:231
 msgid "Ink level"
 msgstr ""
 
-#: src/AdditionalAlert.php:181
+#: src/AdditionalAlert.php:238
 msgid "No cartridge is below the threshold"
 msgstr ""
 
-#: src/AdditionalAlert.php:197
+#: src/AdditionalAlert.php:258
 msgid "Tickets unresolved since more"
 msgstr ""
 
-#: src/AdditionalAlert.php:213
+#: src/AdditionalAlert.php:274
 msgid "No tickets unresolved since more"
 msgstr ""
 
-#: src/Config.php:56 src/InfocomAlert.php:84 src/InkAlert.php:86
+#: src/Config.php:56 src/InfocomAlert.php:85 src/InkAlert.php:89
 msgid "Plugin setup"
 msgstr ""
 
@@ -66,7 +66,7 @@ msgstr ""
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
-#: src/InfocomAlert.php:66
+#: src/InfocomAlert.php:67
 msgid "Computer with no buy date"
 msgid_plural "Computers with no buy date"
 msgstr[0] ""
@@ -80,7 +80,7 @@ msgstr ""
 msgid "Statutes used for the ink level"
 msgstr ""
 
-#: src/InkThreshold.php:62 src/InkThreshold.php:64
+#: src/InkThreshold.php:87 src/InkThreshold.php:89
 msgid "Ink level alerts"
 msgstr ""
 
@@ -88,7 +88,7 @@ msgstr ""
 msgid "Type not used for check of buy date"
 msgstr ""
 
-#: src/TicketUnresolved.php:65
+#: src/TicketUnresolved.php:66
 msgid "Ticket unresolved"
 msgid_plural "Tickets unresolved"
 msgstr[0] ""
