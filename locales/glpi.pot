@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 17:10+0000\n"
+"POT-Creation-Date: 2026-10-21 17:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: setup.php:96 src/AdditionalAlert.php:63 src/Menu.php:45 src/Profile.php:116
+#: setup.php:96 src/AdditionalAlert.php:141 src/Menu.php:45 src/Profile.php:116
 msgid "Other alert"
 msgid_plural "Others alerts"
 msgstr[0] ""
@@ -28,33 +28,37 @@ msgstr[1] ""
 msgid "Please activate the plugin"
 msgstr ""
 
-#: src/AdditionalAlert.php:179
+#: src/AdditionalAlert.php:116 src/TicketUnresolved.php:322
+msgid "Global configuration"
+msgstr ""
+
+#: src/AdditionalAlert.php:238
 msgid "No used alerts"
 msgstr ""
 
-#: src/AdditionalAlert.php:207
+#: src/AdditionalAlert.php:266
 msgid "No computers with no buy date"
 msgstr ""
 
-#: src/AdditionalAlert.php:224 src/Config.php:135 src/InkAlert.php:71
-#: src/InkAlert.php:128 src/InkAlert.php:338 src/InkAlert.php:410
+#: src/AdditionalAlert.php:283 src/Config.php:135 src/InkAlert.php:71
+#: src/InkAlert.php:128 src/InkAlert.php:288 src/InkAlert.php:351
 #: src/NotificationTargetInkAlert.php:54 src/NotificationTargetInkAlert.php:124
 msgid "Cartridges whose level is low"
 msgstr ""
 
-#: src/AdditionalAlert.php:231
+#: src/AdditionalAlert.php:290
 msgid "Ink level"
 msgstr ""
 
-#: src/AdditionalAlert.php:238
+#: src/AdditionalAlert.php:297
 msgid "No cartridge is below the threshold"
 msgstr ""
 
-#: src/AdditionalAlert.php:258
+#: src/AdditionalAlert.php:315
 msgid "Tickets unresolved since more"
 msgstr ""
 
-#: src/AdditionalAlert.php:274
+#: src/AdditionalAlert.php:331
 msgid "No tickets unresolved since more"
 msgstr ""
 
