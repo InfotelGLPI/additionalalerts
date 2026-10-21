@@ -35,17 +35,18 @@ if (Plugin::isPluginActive("additionalalerts")) {
 
    $config = new Config();
    if (isset($_POST["update"])) {
-      $config->update($_POST);
+      $config->check(1, UPDATE);
+      $config->update(['id' => 1] + $_POST);
       Html::back();
    } else {
+      Session::checkRight(Config::$rightname, READ);
       Html::header(AdditionalAlert::getTypeName(2), '', "admin", Menu::class);
-      $config = new Config();
       $config->showConfigForm();
       Html::footer();
    }
 } else {
    Html::header(__('Setup'), '', "config", "plugins");
    echo "<div class='alert alert-important alert-warning d-flex'>";
-   echo "<b>" . __('Please activate the plugin', 'additionalalerts') . "</b></div>";
+   echo "<b>" . __s('Please activate the plugin', 'additionalalerts') . "</b></div>";
    Html::footer();
 }

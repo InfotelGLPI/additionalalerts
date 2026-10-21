@@ -33,6 +33,7 @@ namespace GlpiPlugin\Additionalalerts;
 use Alert;
 use CommonDBTM;
 use CommonGLPI;
+use Computer;
 use CronTask;
 use DbUtils;
 use Dropdown;
@@ -125,41 +126,57 @@ class InfocomAlert extends CommonDBTM
     /**
      * @param $entity
      *
-     * @return string
+     * @return array
      */
     public static function query($entity)
     {
         global $DB;
 
-        $query       = "SELECT `glpi_computers`.*, `glpi_items_operatingsystems`.`operatingsystems_id`
-                     FROM `glpi_computers`
-                     LEFT JOIN `glpi_infocoms` ON (`glpi_computers`.`id` = `glpi_infocoms`.`items_id` AND `glpi_infocoms`.`itemtype` = 'Computer')
-                     LEFT JOIN `glpi_items_operatingsystems` ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id`
-                               AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')
-                     WHERE `glpi_computers`.`is_deleted` = 0
-                     AND `glpi_computers`.`is_template` = 0
-                     AND `glpi_infocoms`.`buy_date` IS NULL ";
-
-        $criteria = [
-            'SELECT' => 'types_id',
-            'FROM' => 'glpi_plugin_additionalalerts_notificationtypes',
+        $where = [
+            'glpi_computers.is_deleted'  => 0,
+            'glpi_computers.is_template' => 0,
+            'glpi_infocoms.buy_date'     => null,
+            'glpi_computers.entities_id' => (int) $entity,
         ];
 
-        $iterator = $DB->request($criteria);
-
-        if (count($iterator) > 0) {
-            $query .= " AND (`glpi_computers`.`computertypes_id` != 0 ";
-            foreach ($iterator as $data_type) {
-                $type_where = "AND `glpi_computers`.`computertypes_id` != '" . $data_type["types_id"] . "' ";
-                $query      .= " $type_where ";
-            }
-            $query .= ") ";
+        $excluded_types = [];
+        foreach ($DB->request([
+            'SELECT' => 'types_id',
+            'FROM'   => 'glpi_plugin_additionalalerts_notificationtypes',
+        ]) as $data_type) {
+            $excluded_types[] = (int) $data_type['types_id'];
         }
-        $query .= "AND `glpi_computers`.`entities_id`= '" . $entity . "' ";
+        if (count($excluded_types) > 0) {
+            // Computers without type are excluded too when a type filter is set
+            $excluded_types[] = 0;
+            $where[] = ['NOT' => ['glpi_computers.computertypes_id' => $excluded_types]];
+        }
 
-        $query .= " ORDER BY `glpi_computers`.`name` ASC";
-
-        return $query;
+        return [
+            'SELECT'    => [
+                'glpi_computers.*',
+                'glpi_items_operatingsystems.operatingsystems_id',
+            ],
+            'FROM'      => 'glpi_computers',
+            'LEFT JOIN' => [
+                'glpi_infocoms'               => [
+                    'ON' => [
+                        'glpi_computers' => 'id',
+                        'glpi_infocoms'  => 'items_id',
+                        ['AND' => ['glpi_infocoms.itemtype' => Computer::class]],
+                    ],
+                ],
+                'glpi_items_operatingsystems' => [
+                    'ON' => [
+                        'glpi_computers'              => 'id',
+                        'glpi_items_operatingsystems' => 'items_id',
+                        ['AND' => ['glpi_items_operatingsystems.itemtype' => Computer::class]],
+                    ],
+                ],
+            ],
+            'WHERE'     => $where,
+            'ORDERBY'   => 'glpi_computers.name ASC',
+        ];
     }
 
 
@@ -172,38 +189,39 @@ class InfocomAlert extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/computer.form.php?id=" . $data["id"] . "\">" . $data["name"];
+        $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/computer.form.php?id=" . (int) $data["id"] . "\">"
+            . htmlescape($data["name"]);
 
         if ($_SESSION["glpiis_ids_visible"] == 1 || empty($data["name"])) {
             $body .= " (";
-            $body .= $data["id"] . ")";
+            $body .= (int) $data["id"] . ")";
         }
         $body .= "</a></td>";
         if (Session::isMultiEntitiesMode()) {
-            $body .= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data["entities_id"]) . "</td>";
+            $body .= "<td class='center'>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $data["entities_id"])) . "</td>";
         }
-        $body .= "<td>" . Dropdown::getDropdownName("glpi_computertypes", $data["computertypes_id"]) . "</td>";
-        $body .= "<td>" . Dropdown::getDropdownName("glpi_operatingsystems", $data["operatingsystems_id"]) . "</td>";
-        $body .= "<td>" . Dropdown::getDropdownName("glpi_states", $data["states_id"]) . "</td>";
-        $body .= "<td>" . Dropdown::getDropdownName("glpi_locations", $data["locations_id"]) . "</td>";
+        $body .= "<td>" . htmlescape(Dropdown::getDropdownName("glpi_computertypes", $data["computertypes_id"])) . "</td>";
+        $body .= "<td>" . htmlescape(Dropdown::getDropdownName("glpi_operatingsystems", $data["operatingsystems_id"])) . "</td>";
+        $body .= "<td>" . htmlescape(Dropdown::getDropdownName("glpi_states", $data["states_id"])) . "</td>";
+        $body .= "<td>" . htmlescape(Dropdown::getDropdownName("glpi_locations", $data["locations_id"])) . "</td>";
         $body .= "<td>";
         if (!empty($data["users_id"])) {
             $dbu = new DbUtils();
-            $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["users_id"] . "\">"
-                  . $dbu->getUserName($data["users_id"]) . "</a>";
+            $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . (int) $data["users_id"] . "\">"
+                  . htmlescape($dbu->getUserName($data["users_id"])) . "</a>";
         }
         if (!empty($data["groups_id"])) {
-            $body .= " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/group.form.php?id=" . $data["groups_id"] . "\">";
+            $body .= " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/group.form.php?id=" . (int) $data["groups_id"] . "\">";
 
-            $body .= Dropdown::getDropdownName("glpi_groups", $data["groups_id"]);
+            $body .= htmlescape(Dropdown::getDropdownName("glpi_groups", $data["groups_id"]));
             if ($_SESSION["glpiis_ids_visible"] == 1) {
                 $body .= " (";
-                $body .= $data["groups_id"] . ")";
+                $body .= (int) $data["groups_id"] . ")";
             }
             $body .= "</a>";
         }
         if (!empty($data["contact"])) {
-            $body .= " - " . $data["contact"];
+            $body .= " - " . htmlescape($data["contact"]);
         }
 
         $body .= "</td>";
@@ -326,8 +344,8 @@ class InfocomAlert extends CommonDBTM
                 Plugin::loadLang('additionalalerts');
 
                 if (count($notinfocoms) > 500) {
-                    //limit if it is too many element (does not work)
-                    $notinfocoms = array_slice($notinfocoms, 500);
+                    //limit if it is too many element: keep the first 500 ones
+                    $notinfocoms = array_slice($notinfocoms, 0, 500);
                 }
                 if (NotificationEvent::raiseEvent(
                     "notinfocom",
@@ -379,7 +397,8 @@ class InfocomAlert extends CommonDBTM
         }
 
         // Notification right applied
-        $canedit = Session::haveRight('notification', UPDATE) && Session::haveAccessToEntity($ID);
+        // Same conditions as the front controller (AdditionalAlert::checkEntitySettingWrite())
+        $canedit = self::canUpdate() && Session::haveRight('notification', UPDATE) && Session::haveAccessToEntity($ID);
 
         // Get data
         $entitynotification = new self();

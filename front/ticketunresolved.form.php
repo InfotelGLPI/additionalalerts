@@ -27,7 +27,8 @@
  --------------------------------------------------------------------------
  */
 
-
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Additionalalerts\AdditionalAlert;
 use GlpiPlugin\Additionalalerts\NotificationType;
 use GlpiPlugin\Additionalalerts\TicketUnresolved;
 
@@ -36,35 +37,31 @@ $ticket = new TicketUnresolved();
 
 if (isset($_POST["add"])) {
 
-   if ($ticket->canUpdate()) {
-      $newID = $ticket->add($_POST);
-   }
+   $input = AdditionalAlert::checkEntitySettingWrite($ticket, $_POST);
+   unset($input['id']);
+   $ticket->add($input);
    Html::back();
 
 } else if (isset($_POST["update"])) {
 
-   if ($ticket->canUpdate()) {
-      $ticket->update($_POST);
-   }
+   $input = AdditionalAlert::checkEntitySettingWrite($ticket, $_POST);
+   $ticket->update($input);
    Html::back();
 
 } else if (isset($_POST["add_type"])) {
 
-   if ($ticket->canUpdate()) {
-      $newID = $type->add($_POST);
+   if (!$ticket->canUpdate()) {
+      throw new AccessDeniedHttpException();
    }
+   $type->add(['types_id' => (int) ($_POST['types_id'] ?? 0)]);
    Html::back();
 
 } else if (isset($_POST["delete_type"])) {
 
-   if ($ticket->canUpdate()) {
-      $type->getFromDB($_POST["id"]);
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            $type->delete(['id' => $key]);
-         }
-      }
+   if (!$ticket->canUpdate()) {
+      throw new AccessDeniedHttpException();
    }
+   AdditionalAlert::deleteCheckedItems($type, $_POST);
    Html::back();
 
 }

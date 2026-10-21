@@ -34,7 +34,10 @@ use CartridgeItem;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
+use DBmysql;
 use DbUtils;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 use Dropdown;
 use Entity;
 use Html;
@@ -131,24 +134,53 @@ class InkAlert extends CommonDBTM
    /**
     * @param $entities
     *
-    * @return string
+    * @return array
     */
     static function query($entities)
     {
+        $entities = array_map('intval', (array) $entities);
 
-        $query = "SELECT glpi_printers_cartridgeinfos.id, glpi_printers_cartridgeinfos.property, glpi_printers.entities_id
-                  FROM glpi_printers_cartridgeinfos,
-                       glpi_plugin_additionalalerts_inkthresholds,
-                       glpi_printers
-                  WHERE glpi_printers_cartridgeinfos.printers_id = glpi_printers.id
-                    AND glpi_printers_cartridgeinfos.property LIKE 'toner%'
-                    AND glpi_printers_cartridgeinfos.value <= glpi_plugin_additionalalerts_inkthresholds.threshold
-                    AND glpi_printers.entities_id IN ($entities)
-                    AND glpi_printers.states_id IN (SELECT states_id FROM glpi_plugin_additionalalerts_inkprinterstates)
-                  ORDER BY glpi_printers.name";
+        // Each printer is compared to its own threshold, or to the default one when none is set
+        $threshold = new QueryExpression(
+            'COALESCE(' . DBmysql::quoteName('glpi_plugin_additionalalerts_inkthresholds.threshold')
+            . ', ' . InkThreshold::DEFAULT_THRESHOLD . ')'
+        );
 
-
-        return $query;
+        return [
+            'SELECT'    => [
+                'glpi_printers_cartridgeinfos.id',
+                'glpi_printers_cartridgeinfos.property',
+                'glpi_printers.entities_id',
+                'glpi_printers.name',
+            ],
+            'FROM'      => 'glpi_printers_cartridgeinfos',
+            'INNER JOIN' => [
+                'glpi_printers' => [
+                    'ON' => [
+                        'glpi_printers_cartridgeinfos' => 'printers_id',
+                        'glpi_printers'                => 'id',
+                    ],
+                ],
+            ],
+            'LEFT JOIN' => [
+                'glpi_plugin_additionalalerts_inkthresholds' => [
+                    'ON' => [
+                        'glpi_plugin_additionalalerts_inkthresholds' => 'printers_id',
+                        'glpi_printers'                              => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'     => [
+                'glpi_printers_cartridgeinfos.property' => ['LIKE', 'toner%'],
+                'glpi_printers_cartridgeinfos.value'    => ['<=', $threshold],
+                'glpi_printers.entities_id'             => $entities,
+                'glpi_printers.states_id'               => new QuerySubQuery([
+                    'SELECT' => 'states_id',
+                    'FROM'   => 'glpi_plugin_additionalalerts_inkprinterstates',
+                ]),
+            ],
+            'ORDERBY'   => 'glpi_printers.name',
+        ];
     }
 
 
@@ -167,15 +199,16 @@ class InkAlert extends CommonDBTM
         $printer = new Printer();
         $printer->getFromDB($snmp->fields["printers_id"]);
 
-        $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/printer.form.php?id=" . $printer->fields["id"] . "\">" . $printer->fields["name"];
+        $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/printer.form.php?id=" . (int) $printer->fields["id"] . "\">"
+            . htmlescape($printer->fields["name"]);
 
         if ($_SESSION["glpiis_ids_visible"] == 1 || empty($printer->fields["name"])) {
             $body .= " (";
-            $body .= $printer->fields["id"] . ")";
+            $body .= (int) $printer->fields["id"] . ")";
         }
         $body .= "</a></td>";
         if (Session::isMultiEntitiesMode()) {
-            $body .= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $printer->fields["entities_id"]) . "</td>";
+            $body .= "<td class='center'>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $printer->fields["entities_id"])) . "</td>";
         }
 
         $color_translated = "";
@@ -191,9 +224,9 @@ class InkAlert extends CommonDBTM
             $color = str_replace('toner', '', $snmp->fields['property']);
             $color_translated = $color_translations[$color] ?? ucwords($color);
         }
-        $body .= "<td class='center'>".__('Toner')." ".$color_translated."</td>";
+        $body .= "<td class='center'>" . __s('Toner') . " " . htmlescape($color_translated) . "</td>";
 
-        $body .= "<td class='center'>" . $snmp->fields["value"] . "%</td>";
+        $body .= "<td class='center'>" . htmlescape($snmp->fields["value"]) . "%</td>";
         $body .= "</tr>";
 
         return $body;
@@ -360,7 +393,8 @@ class InkAlert extends CommonDBTM
         }
 
        // Notification right applied
-        $canedit = Session::haveRight('notification', UPDATE) && Session::haveAccessToEntity($ID);
+        // Same conditions as the front controller (AdditionalAlert::checkEntitySettingWrite())
+        $canedit = self::canUpdate() && Session::haveRight('notification', UPDATE) && Session::haveAccessToEntity($ID);
 
        // Get data
         $entitynotification = new InkAlert();

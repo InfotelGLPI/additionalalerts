@@ -30,10 +30,15 @@
 namespace GlpiPlugin\Additionalalerts;
 
 use CommonDBTM;
+use Computer;
 use CronTask;
 use Dropdown;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Plugin;
+use Printer;
 use Session;
+use Ticket;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -56,6 +61,60 @@ class AdditionalAlert extends CommonDBTM
     {
 
         return _n('Other alert', 'Others alerts', $nb, 'additionalalerts');
+    }
+
+    /**
+     * Check that the current user may write the per-entity setting posted to a front controller,
+     * with the same conditions as the Entity tab form (plugin and notification UPDATE, entity access)
+     *
+     * @param CommonDBTM $item  InfocomAlert, InkAlert or TicketUnresolved
+     * @param array      $input posted values
+     *
+     * @return array the input restricted to the target entity
+     */
+    public static function checkEntitySettingWrite(CommonDBTM $item, array $input)
+    {
+        if (!$item::canUpdate() || !Session::haveRight('notification', UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if (isset($input['id']) && (int) $input['id'] > 0) {
+            // Update: the entity is the one of the stored row, not the posted one
+            if (!$item->getFromDB((int) $input['id'])) {
+                throw new BadRequestHttpException();
+            }
+            $entities_id = (int) $item->fields['entities_id'];
+        } else {
+            if (!isset($input['entities_id'])) {
+                throw new BadRequestHttpException();
+            }
+            $entities_id = (int) $input['entities_id'];
+        }
+
+        if (!Session::haveAccessToEntity($entities_id)) {
+            throw new AccessDeniedHttpException();
+        }
+        $input['entities_id'] = $entities_id;
+
+        return $input;
+    }
+
+    /**
+     * Delete the rows checked in an exclusion list (NotificationType, InkPrinterState)
+     *
+     * @param CommonDBTM $item
+     * @param array      $input posted values
+     */
+    public static function deleteCheckedItems(CommonDBTM $item, array $input)
+    {
+        if (!isset($input['item']) || !is_array($input['item'])) {
+            return;
+        }
+        foreach ($input['item'] as $key => $val) {
+            if ($val == 1) {
+                $item->delete(['id' => (int) $key]);
+            }
+        }
     }
 
     static function displayAlerts()
@@ -120,11 +179,10 @@ class AdditionalAlert extends CommonDBTM
             echo "<div class='center'><b>" . __('No used alerts', 'additionalalerts') . "</b></div>";
         }
         if ($additionalalerts_not_infocom != 0) {
-            if (Session::haveRight("infocom", READ)) {
-                $query  = InfocomAlert::query($_SESSION["glpiactive_entity"]);
-                $result = $DB->doQuery($query);
+            if (Session::haveRight("infocom", READ) && Session::haveRight(Computer::$rightname, READ)) {
+                $iterator = $DB->request(InfocomAlert::query($_SESSION["glpiactive_entity"]));
 
-                if ($DB->numrows($result) > 0) {
+                if (count($iterator) > 0) {
                     if (Session::isMultiEntitiesMode()) {
                         $nbcol = 7;
                     } else {
@@ -141,7 +199,7 @@ class AdditionalAlert extends CommonDBTM
                     echo "<th>" . __('Status') . "</th>";
                     echo "<th>" . __('Location') . "</th>";
                     echo "<th>" . __('User') . " / " . __('Group') . " / " . __('Alternate username') . "</th></tr>";
-                    while ($data = $DB->fetchArray($result)) {
+                    foreach ($iterator as $data) {
                         echo InfocomAlert::displayBody($data);
                     }
                     echo "</table></div>";
@@ -153,11 +211,10 @@ class AdditionalAlert extends CommonDBTM
         }
 
         if ($additionalalerts_ink != 0) {
-            if (Session::haveRight("cartridge", READ)) {
-                $query  = InkAlert::query($_SESSION["glpiactive_entity"]);
-                $result = $DB->doQuery($query);
+            if (Session::haveRight("cartridge", READ) && Session::haveRight(Printer::$rightname, READ)) {
+                $iterator = $DB->request(InkAlert::query($_SESSION["glpiactive_entity"]));
 
-                if ($DB->numrows($result) > 0) {
+                if (count($iterator) > 0) {
                     if (Session::isMultiEntitiesMode()) {
                         $nbcol = 4;
                     } else {
@@ -173,7 +230,7 @@ class AdditionalAlert extends CommonDBTM
                     echo "<th>" . __('Cartridge') . "</th>";
                     echo "<th>" . __('Ink level', 'additionalalerts') . "</th></tr>";
 
-                    while ($data = $DB->fetchArray($result)) {
+                    foreach ($iterator as $data) {
                         echo InkAlert::displayBody($data);
                     }
                     echo "</table></div>";
@@ -183,18 +240,22 @@ class AdditionalAlert extends CommonDBTM
             }
         }
 
-        if ($additionalalerts_ticket_unresolved != 0) {
+        if ($additionalalerts_ticket_unresolved != 0
+            && Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
             $entities = TicketUnresolved::getEntitiesToNotify('delay_ticket_alert');
 
             foreach ($entities as $entity => $delay_ticket_alert) {
-                $query  = TicketUnresolved::query($delay_ticket_alert, $entity);
-                $result = $DB->doQuery($query);
+                // The cron sees every entity, the page only the ones of the current user
+                if (!in_array($entity, $_SESSION['glpiactiveentities'] ?? [])) {
+                    continue;
+                }
+                $iterator = $DB->request(TicketUnresolved::query($delay_ticket_alert, $entity));
                 $nbcol  = 7;
 
 
-                if ($DB->numrows($result) > 0) {
+                if (count($iterator) > 0) {
                     echo "<div class='center'><table class='tab_cadre' cellspacing='2' cellpadding='3'><tr><th colspan='$nbcol'>";
-                    echo __('Tickets unresolved since more', 'additionalalerts') . " " . $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</th></tr>";
+                    echo __s('Tickets unresolved since more', 'additionalalerts') . " " . (int) $delay_ticket_alert . " " . _sn('Day', 'Days', 2) . ", " . __s('Entity') . " : " . htmlescape(Dropdown::getDropdownName("glpi_entities", $entity)) . "</th></tr>";
                     echo "<tr><th>" . __('Title') . "</th>";
                     echo "<th>" . __('Entity') . "</th>";
                     echo "<th>" . __('Status') . "</th>";
@@ -203,15 +264,15 @@ class AdditionalAlert extends CommonDBTM
                     echo "<th>" . __('Technician') . "</th>";
                     echo "<th>" . __('Manager') . "</th>";
 
-                    while ($data = $DB->fetchArray($result)) {
+                    foreach ($iterator as $data) {
                         echo TicketUnresolved::displayBody($data);
                     }
 
 
                     echo "</table></div>";
                 } else {
-                    echo "<br><div class='center'><b>" . __('No tickets unresolved since more', 'additionalalerts') . " " .
-                    $delay_ticket_alert . " " . _n('Day', 'Days', 2) . ", " . __('Entity') . " : " . Dropdown::getDropdownName("glpi_entities", $entity) . "</b></div>";
+                    echo "<br><div class='center'><b>" . __s('No tickets unresolved since more', 'additionalalerts') . " " .
+                    (int) $delay_ticket_alert . " " . _sn('Day', 'Days', 2) . ", " . __s('Entity') . " : " . htmlescape(Dropdown::getDropdownName("glpi_entities", $entity)) . "</b></div>";
                 }
 
                 echo "<br>";

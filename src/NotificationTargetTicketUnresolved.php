@@ -106,30 +106,29 @@ class NotificationTargetTicketUnresolved extends NotificationTarget {
     */
    public function addSpecificTargets($data, $options) {
 
-      $items = reset($options['items']);
       //Look for all targets whose type is Notification::ITEM_USER
       switch ($data['items_id']) {
 
          case Notification::SUPERVISOR_ASSIGN_GROUP :
          case Notification::ASSIGN_TECH :
-            return $this->addUserByID("users_id", $items);
+            // The cron builds one list of tickets per recipient (technician or group manager)
+            // and gives its id: the list is sent to that user only
+            return $this->addUserByID((int) ($options['recipients_id'] ?? 0));
       }
    }
 
-   public function addUserByID($field, $items = []) {
+   public function addUserByID($users_id) {
       global $DB;
 
-      if (!empty($items[$field])) {
+      if ($users_id > 0) {
          //Look for the user by his id
          $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
          $criteria['FROM'] = User::getTable();
-         $criteria['WHERE'][User::getTable() . '.id'] = $items[$field];
-         $iterator = $DB->request($criteria);
+         $criteria['WHERE'][User::getTable() . '.id'] = $users_id;
 
-         foreach ($iterator as $data) {
+         foreach ($DB->request($criteria) as $data) {
             //Add the user email and language in the notified users list
             $this->addToRecipientsList($data);
-            $iterator->next();
          }
       }
    }

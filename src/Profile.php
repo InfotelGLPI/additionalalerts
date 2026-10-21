@@ -163,7 +163,7 @@ class Profile extends \Profile
         }
 
         $it = $DB->request([
-            'FROM' => 'glpi_plugin_accounts_profiles',
+            'FROM' => 'glpi_plugin_additionalalerts_profiles',
             'WHERE' => ['profiles_id' => $profiles_id],
         ]);
         foreach ($it as $profile_data) {

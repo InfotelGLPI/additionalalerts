@@ -96,7 +96,7 @@ class NotificationType extends CommonDBTM {
                 echo "<td width='10'>";
                 Html::showMassiveActionCheckBox(__CLASS__, $ligne["id"]);
                 echo "</td>";
-                echo "<td>" . Dropdown::getDropdownName("glpi_computertypes", $ligne["types_id"]) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getDropdownName("glpi_computertypes", $ligne["types_id"])) . "</td>";
                 echo "</tr>";
             }
 

@@ -27,21 +27,13 @@
  --------------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Additionalalerts\AdditionalAlert;
 use GlpiPlugin\Additionalalerts\Menu;
 
+Session::checkRight(AdditionalAlert::$rightname, READ);
 
 Html::header(AdditionalAlert::getTypeName(2), '', "admin", Menu::class);
 
-$alert = new AdditionalAlert();
-if (Session::haveRight("plugin_additionalalerts", READ)
-    || Session::haveRight("config", CREATE)) {
-
-    AdditionalAlert::displayAlerts();
-
-} else {
-    throw new AccessDeniedHttpException();
-}
+AdditionalAlert::displayAlerts();
 
 Html::footer();

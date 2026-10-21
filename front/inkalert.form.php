@@ -28,6 +28,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Additionalalerts\AdditionalAlert;
 use GlpiPlugin\Additionalalerts\InkAlert;
 use GlpiPlugin\Additionalalerts\InkPrinterState;
 use GlpiPlugin\Additionalalerts\InkThreshold;
@@ -37,36 +38,30 @@ $state = new InkPrinterState();
 $alert = new InkAlert();
 
 if (isset($_POST["add"])) {
-   if ($alert->canUpdate()) {
-      $newID = $alert->add($_POST);
-   }
+   $input = AdditionalAlert::checkEntitySettingWrite($alert, $_POST);
+   unset($input['id']);
+   $alert->add($input);
 } else if (isset($_POST["update"])) {
-   if ($alert->canUpdate()) {
-      $alert->update($_POST);
-   }
+   $input = AdditionalAlert::checkEntitySettingWrite($alert, $_POST);
+   $alert->update($input);
 } else if (isset($_POST["add_state"])) {
-   if ($alert->canUpdate()) {
-      $newID = $state->add($_POST);
+   if (!$alert->canUpdate()) {
+      throw new AccessDeniedHttpException();
    }
+   $state->add(['states_id' => (int) ($_POST['states_id'] ?? 0)]);
 } else if (isset($_POST["delete_state"])) {
-   if ($alert->canUpdate()) {
-      $state->getFromDB($_POST["id"]);
-
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            $state->delete(['id' => $key]);
-         }
-      }
+   if (!$alert->canUpdate()) {
+      throw new AccessDeniedHttpException();
    }
-
+   AdditionalAlert::deleteCheckedItems($state, $_POST);
 } else if (isset($_POST["update_threshold"])) {
-
-   $InkThreshold = new InkThreshold();
-   if ($alert->canUpdate()) {
-       $InkThreshold->update($_POST);
-   } else {
-       throw new AccessDeniedHttpException();
-
+   $printers_id = (int) ($_POST['printers_id'] ?? 0);
+   $printer     = new Printer();
+   if (!InkThreshold::canUpdate()) {
+      throw new AccessDeniedHttpException();
    }
+   // The threshold belongs to a printer: the user must be allowed to update it
+   $printer->check($printers_id, UPDATE);
+   InkThreshold::saveForPrinter($printers_id, $_POST['threshold'] ?? InkThreshold::DEFAULT_THRESHOLD);
 }
 Html::back();

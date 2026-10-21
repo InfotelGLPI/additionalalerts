@@ -92,7 +92,7 @@ class InkPrinterState extends NotificationState {
                 echo "<td width='10'>";
                 Html::showMassiveActionCheckBox(__CLASS__, $ligne["id"]);
                 echo "</td>";
-                echo "<td>" . Dropdown::getDropdownName("glpi_states", $ligne["states_id"]) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getDropdownName("glpi_states", $ligne["states_id"])) . "</td>";
                 echo "</tr>";
             }
 

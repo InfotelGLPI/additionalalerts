@@ -305,7 +305,10 @@ function plugin_additionalalerts_uninstall()
 
     Menu::removeRightsFromSession();
 
-    CronTask::Unregister('additionalalerts');
+    // CronTask::Unregister() does not match namespaced classes: delete the tasks by itemtype
+    $DB->delete('glpi_crontasks', [
+        'itemtype' => [InfocomAlert::class, InkAlert::class, TicketUnresolved::class],
+    ]);
 
     return true;
 }
@@ -506,41 +509,42 @@ function install_notifications_additionalalerts()
                 }
             }
         }
+    }
 
-        // Alert Ticket Unresolved
-        $options_notif = [
-            'itemtype' => TicketUnresolved::class,
-            'name' => 'Alert Ticket Unresolved'
-        ];
+    // Alert Ticket Unresolved
+    $options_notif = [
+        'itemtype' => TicketUnresolved::class,
+        'name' => 'Alert Ticket Unresolved'
+    ];
 
-        $DB->insert(
-            "glpi_notificationtemplates",
-            $options_notif
-        );
+    $DB->insert(
+        "glpi_notificationtemplates",
+        $options_notif
+    );
 
-        foreach (
-            $DB->request([
-                'FROM' => 'glpi_notificationtemplates',
-                'WHERE' => $options_notif
-            ]) as $data
-        ) {
-            $templates_id = $data['id'];
+    foreach (
+        $DB->request([
+            'FROM' => 'glpi_notificationtemplates',
+            'WHERE' => $options_notif
+        ]) as $data
+    ) {
+        $templates_id = $data['id'];
 
-            if ($templates_id) {
-                $DB->insert(
-                    "glpi_notificationtemplatetranslations",
-                    [
-                        'notificationtemplates_id' => $templates_id,
-                        'subject' => '##ticket.action## ##ticket.entity##',
-                        'content_text' => '##ticket.action## ##ticket.entity##
-         ##FOREACHtickets##
+        if ($templates_id) {
+            $DB->insert(
+                "glpi_notificationtemplatetranslations",
+                [
+                    'notificationtemplates_id' => $templates_id,
+                    'subject' => '##ticket.action## ##ticket.entity##',
+                    'content_text' => '##ticket.action## ##ticket.entity##
+     ##FOREACHtickets##
 
-          ##lang.ticket.title## : ##ticket.title##
-           ##lang.ticket.status## : ##ticket.status##
+      ##lang.ticket.title## : ##ticket.title##
+       ##lang.ticket.status## : ##ticket.status##
 
-           ##ticket.url##
-           ##ENDFOREACHtickets##',
-                        'content_html' => '&lt;table class=\"tab_cadre\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&gt;
+       ##ticket.url##
+       ##ENDFOREACHtickets##',
+                    'content_html' => '&lt;table class=\"tab_cadre\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&gt;
     &lt;tbody&gt;
     &lt;tr&gt;
     &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#95bde4\"&gt;&lt;span style=\"font-family: Verdana; font-size: 11px; text-align: left;\"&gt;##lang.ticket.authors##&lt;/span&gt;&lt;/td&gt;
@@ -564,49 +568,48 @@ function install_notifications_additionalalerts()
     ##ENDFOREACHtickets##
     &lt;/tbody&gt;
     &lt;/table&gt;',
-                    ]
-                );
+                ]
+            );
 
-                $DB->insert(
-                    "glpi_notifications",
-                    [
-                        'name' => 'Alert Ticket Unresolved',
-                        'entities_id' => 0,
-                        'itemtype' => TicketUnresolved::class,
-                        'event' => 'ticketunresolved',
-                        'is_recursive' => 1,
-                    ]
-                );
-
-                $options_notif = [
-                    'itemtype' => TicketUnresolved::class,
+            $DB->insert(
+                "glpi_notifications",
+                [
                     'name' => 'Alert Ticket Unresolved',
-                    'event' => 'ticketunresolved'
-                ];
+                    'entities_id' => 0,
+                    'itemtype' => TicketUnresolved::class,
+                    'event' => 'ticketunresolved',
+                    'is_recursive' => 1,
+                ]
+            );
 
-                foreach (
-                    $DB->request([
-                        'FROM' => 'glpi_notifications',
-                        'WHERE' => $options_notif
-                    ]) as $data_notif
-                ) {
-                    $notification = $data_notif['id'];
-                    if ($notification) {
-                        $DB->insert(
-                            "glpi_notifications_notificationtemplates",
-                            [
-                                'notifications_id' => $notification,
-                                'mode' => 'mailing',
-                                'notificationtemplates_id' => $templates_id,
-                            ]
-                        );
-                    }
+            $options_notif = [
+                'itemtype' => TicketUnresolved::class,
+                'name' => 'Alert Ticket Unresolved',
+                'event' => 'ticketunresolved'
+            ];
+
+            foreach (
+                $DB->request([
+                    'FROM' => 'glpi_notifications',
+                    'WHERE' => $options_notif
+                ]) as $data_notif
+            ) {
+                $notification = $data_notif['id'];
+                if ($notification) {
+                    $DB->insert(
+                        "glpi_notifications_notificationtemplates",
+                        [
+                            'notifications_id' => $notification,
+                            'mode' => 'mailing',
+                            'notificationtemplates_id' => $templates_id,
+                        ]
+                    );
                 }
             }
         }
-
-        $migration->executeMigration();
-        return true;
     }
+
+    $migration->executeMigration();
+    return true;
 }
 

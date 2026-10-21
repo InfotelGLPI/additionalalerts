@@ -31,6 +31,7 @@ namespace GlpiPlugin\Additionalalerts;
 
 use Alert;
 use CommonDBTM;
+use CommonITILActor;
 use CronTask;
 use DbUtils;
 use Dropdown;
@@ -89,29 +90,51 @@ class TicketUnresolved extends CommonDBTM
      * @param $delay_ticket_alert
      * @param $entity
      *
-     * @return string
+     * @return array
      */
     static function query($delay_ticket_alert, $entity)
     {
-        $delay_stamp = mktime(0, 0, 0, date("m"), date("d") - $delay_ticket_alert, date("y"));
-        $date = date("Y-m-d", $delay_stamp);
-        $date = $date . " 00:00:00";
+        $delay_stamp = mktime(0, 0, 0, date("m"), date("d") - (int) $delay_ticket_alert, date("y"));
+        $date = date("Y-m-d", $delay_stamp) . " 00:00:00";
 
-        $query = "SELECT `glpi_tickets`.*,`glpi_tickets_users`.users_id, `glpi_groups_users`.`users_id` as supervisor
-         FROM `glpi_tickets`
-         LEFT JOIN `glpi_tickets_users` ON `glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
-          AND `glpi_tickets_users`.`type` = 2
-         LEFT JOIN `glpi_groups_tickets` ON `glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`
-          AND `glpi_groups_tickets`.`type` = 2
-         LEFT JOIN `glpi_groups_users` ON `glpi_groups_users`.`groups_id` = `glpi_groups_tickets`.`groups_id`
-          AND `glpi_groups_users`.`is_manager` = 1
-         WHERE `glpi_tickets`.`date` <= '" . $date . "'
-         AND `glpi_tickets`.`status` <= 4
-         AND `glpi_tickets`.`is_deleted` = 0
-         AND `glpi_tickets`.`entities_id` = '" . $entity . "'
-         ORDER BY `glpi_tickets`.`id`";
-
-        return $query;
+        return [
+            'SELECT'    => [
+                'glpi_tickets.*',
+                'glpi_tickets_users.users_id',
+                'glpi_groups_users.users_id AS supervisor',
+            ],
+            'FROM'      => 'glpi_tickets',
+            'LEFT JOIN' => [
+                'glpi_tickets_users'  => [
+                    'ON' => [
+                        'glpi_tickets'       => 'id',
+                        'glpi_tickets_users' => 'tickets_id',
+                        ['AND' => ['glpi_tickets_users.type' => CommonITILActor::ASSIGN]],
+                    ],
+                ],
+                'glpi_groups_tickets' => [
+                    'ON' => [
+                        'glpi_tickets'        => 'id',
+                        'glpi_groups_tickets' => 'tickets_id',
+                        ['AND' => ['glpi_groups_tickets.type' => CommonITILActor::ASSIGN]],
+                    ],
+                ],
+                'glpi_groups_users'   => [
+                    'ON' => [
+                        'glpi_groups_users'   => 'groups_id',
+                        'glpi_groups_tickets' => 'groups_id',
+                        ['AND' => ['glpi_groups_users.is_manager' => 1]],
+                    ],
+                ],
+            ],
+            'WHERE'     => [
+                'glpi_tickets.date'        => ['<=', $date],
+                'glpi_tickets.status'      => [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING],
+                'glpi_tickets.is_deleted'  => 0,
+                'glpi_tickets.entities_id' => (int) $entity,
+            ],
+            'ORDERBY'   => 'glpi_tickets.id',
+        ];
     }
 
 
@@ -126,26 +149,27 @@ class TicketUnresolved extends CommonDBTM
 
         $dbu = new DbUtils();
 
-        $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . $data["id"] . "\">" . $data["name"];
+        $body = "<tr class='tab_bg_2'><td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . (int) $data["id"] . "\">"
+            . htmlescape($data["name"]);
         $body .= "</a></td>";
 
-        $body .= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data["entities_id"]) . "</td>";
-        $body .= "<td>" . Ticket::getStatus($data["status"]) . "</td>";
-        $body .= "<td>" . Html::convDateTime($data["date"]) . "</td>";
-        $body .= "<td>" . Html::convDateTime($data["date_mod"]) . "</td>";
+        $body .= "<td class='center'>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $data["entities_id"])) . "</td>";
+        $body .= "<td>" . htmlescape(Ticket::getStatus($data["status"])) . "</td>";
+        $body .= "<td>" . htmlescape(Html::convDateTime($data["date"])) . "</td>";
+        $body .= "<td>" . htmlescape(Html::convDateTime($data["date_mod"])) . "</td>";
         $body .= "<td>";
         if (!empty($data["users_id"])) {
-            $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["users_id"] . "\">" .
-                $dbu->getUserName($data["users_id"]) . "</a>";
+            $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . (int) $data["users_id"] . "\">" .
+                htmlescape($dbu->getUserName($data["users_id"])) . "</a>";
         }
         $body .= "</td>";
         $body .= "<td>";
         if (!empty($data["supervisor"])) {
-            $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["supervisor"] . "\">" .
-                $dbu->getUserName($data["supervisor"]) . "</a>";
+            $body .= "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . (int) $data["supervisor"] . "\">" .
+                htmlescape($dbu->getUserName($data["supervisor"])) . "</a>";
         }
         if (!empty($data["contact"])) {
-            $body .= " - " . $data["contact"];
+            $body .= " - " . htmlescape($data["contact"]);
         }
 
         $body .= "</td>";
@@ -259,33 +283,39 @@ class TicketUnresolved extends CommonDBTM
                     ["notifications_id" => $notif['id']]
                 );
 
+                // Tickets grouped by recipient: the assigned technician and/or the manager of the assigned group
                 $list_ticket = [];
                 foreach ($DB->request($query) as $tick) {
                     foreach ($targets as $target) {
-                        if ($target['type'] == Notification::USER_TYPE
-                            && $target['items_id'] == Notification::ASSIGN_TECH) {
-                            $list_ticket[$tick['users_id']][$tick['id']] = $tick;
+                        if ($target['type'] != Notification::USER_TYPE) {
+                            continue;
                         }
-
-                        if ($target['type'] == Notification::USER_TYPE
-                            && $target['items_id'] == Notification::SUPERVISOR_ASSIGN_GROUP) {
-                            $list_ticket[$tick['supervisor']][$tick['id']] = $tick;
-                            $list_ticket[$tick['supervisor']][$tick['id']]['users_id'] = $tick['supervisor'];
+                        if ($target['items_id'] == Notification::ASSIGN_TECH
+                            && !empty($tick['users_id'])) {
+                            $list_ticket[(int) $tick['users_id']][$tick['id']] = $tick;
+                        }
+                        if ($target['items_id'] == Notification::SUPERVISOR_ASSIGN_GROUP
+                            && !empty($tick['supervisor'])) {
+                            $list_ticket[(int) $tick['supervisor']][$tick['id']] = $tick;
                         }
                     }
                 }
-                foreach ($list_ticket as $tickets) {
+                foreach ($list_ticket as $recipients_id => $tickets) {
                     Plugin::loadLang('additionalalerts');
 
                     if (NotificationEvent::raiseEvent(
                         'ticketunresolved',
                         $ticket,
                         [
-                            'entities_id' => $entity,
-                            'items' => $tickets
+                            'entities_id'   => $entity,
+                            'items'         => $tickets,
+                            // The user the list was built for, see NotificationTargetTicketUnresolved
+                            'recipients_id' => $recipients_id,
                         ]
                     )) {
-                        $task->addVolume(1);
+                        if ($task) {
+                            $task->addVolume(1);
+                        }
                         $cron_status = 1;
                     }
                 }
@@ -309,7 +339,8 @@ class TicketUnresolved extends CommonDBTM
         }
 
         // Notification right applied
-        $canedit = Session::haveRight('notification', UPDATE) && Session::haveAccessToEntity($ID);
+        // Same conditions as the front controller (AdditionalAlert::checkEntitySettingWrite())
+        $canedit = self::canUpdate() && Session::haveRight('notification', UPDATE) && Session::haveAccessToEntity($ID);
 
         // Get data
         $entitynotification = new TicketUnresolved();
