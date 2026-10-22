@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Additionalalerts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 17:27+0000\n"
+"POT-Creation-Date: 2026-10-22 08:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,9 +40,9 @@ msgstr ""
 msgid "No computers with no buy date"
 msgstr ""
 
-#: src/AdditionalAlert.php:283 src/Config.php:135 src/InkAlert.php:71
+#: src/AdditionalAlert.php:283 src/Config.php:153 src/InkAlert.php:71
 #: src/InkAlert.php:128 src/InkAlert.php:288 src/InkAlert.php:351
-#: src/NotificationTargetInkAlert.php:54 src/NotificationTargetInkAlert.php:124
+#: src/NotificationTargetInkAlert.php:54 src/NotificationTargetInkAlert.php:125
 msgid "Cartridges whose level is low"
 msgstr ""
 
@@ -62,11 +62,11 @@ msgstr ""
 msgid "No tickets unresolved since more"
 msgstr ""
 
-#: src/Config.php:56 src/InfocomAlert.php:85 src/InkAlert.php:89
+#: src/Config.php:57 src/InfocomAlert.php:85 src/InkAlert.php:89
 msgid "Plugin setup"
 msgstr ""
 
-#: src/Config.php:141
+#: src/Config.php:159
 msgid "Unresolved Ticket Alerts"
 msgstr ""
 
