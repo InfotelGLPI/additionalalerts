@@ -128,24 +128,20 @@ function plugin_additionalalerts_install()
 
     if ($update78) {
         //Do One time on 0.78
-        $iterator = $DB->request([
-            'SELECT' => [
-                'id',
-            ],
-            'FROM' => 'glpi_plugin_additionalalerts_profiles',
-        ]);
-        if (count($iterator) > 0) {
-            foreach ($iterator as $data) {
-                $query = "UPDATE `glpi_plugin_additionalalerts_profiles`
-                  SET `profiles_id` = '" . $data["id"] . "'
-                  WHERE `id` = '" . $data["id"] . "';";
-                $DB->doQuery($query);
-            }
+        foreach ($DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_plugin_additionalalerts_profiles',
+        ]) as $data) {
+            $DB->update(
+                'glpi_plugin_additionalalerts_profiles',
+                ['profiles_id' => (int) $data['id']],
+                ['id' => (int) $data['id']]
+            );
         }
 
-        $query = "ALTER TABLE `glpi_plugin_additionalalerts_profiles`
-               DROP `name` ;";
-        $DB->doQuery($query);
+        $migration_078 = new Migration('0.78');
+        $migration_078->dropField('glpi_plugin_additionalalerts_profiles', 'name');
+        $migration_078->executeMigration();
     }
 
     // To be called for each task the plugin manage

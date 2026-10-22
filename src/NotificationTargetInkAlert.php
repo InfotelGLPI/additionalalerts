@@ -112,7 +112,8 @@ class NotificationTargetInkAlert extends NotificationTarget
     {
 
         $tags = ['ink.printer'      => __('Printers'),
-               'ink.printerurl'   => 'URL ' . __('Printers'),
+               // Name of the tag filled by addDataForTemplate() and used by the default template
+               'ink.urlprinter'   => 'URL ' . __('Printers'),
                'ink.property'    => __('Toner percentage'),
                'ink.value'        => __('Value')];
         foreach ($tags as $tag => $label) {

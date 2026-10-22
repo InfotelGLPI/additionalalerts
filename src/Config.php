@@ -34,6 +34,7 @@ use CommonDBTM;
 use CommonGLPI;
 use Html;
 use Plugin;
+use Session;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -73,6 +74,17 @@ class Config extends CommonDBTM
         return "ti ti-bell-ringing";
     }
 
+    /**
+     * The global configuration is the default of every entity without its own setting:
+     * the right of the plugin and the right to update the GLPI configuration
+     *
+     * @return bool
+     */
+    public static function canUpdate(): bool
+    {
+        return parent::canUpdate() && Session::haveRight('config', UPDATE);
+    }
+
    /**
     * @param CommonGLPI $item
     * @param int $withtemplate
@@ -82,6 +94,9 @@ class Config extends CommonDBTM
     {
         global $CFG_GLPI;
 
+        if (!self::canView()) {
+            return '';
+        }
         if ($item->getType()=='NotificationMailingSetting'
             && $item->getField('id')
                && $CFG_GLPI["notifications_mailing"]
@@ -101,6 +116,9 @@ class Config extends CommonDBTM
     */
     static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!self::canView()) {
+            return false;
+        }
 
         if ($item->getType()=='NotificationMailingSetting') {
             $conf = new self();
